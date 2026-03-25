@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Boards_WP (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Boards_WP (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+<Solution>
+  <Configurations>
+    <Platform Name="ARM64" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="src/Boards_WP.Data/Boards_WP.Data.csproj" Id="9f08d387-4052-410b-9f5a-1ea95b5e45c3" />
+  <Project Path="src/Boards_WP.Tests/Boards_WP.Tests.csproj" Id="1777f348-71f3-4b14-9455-c738b234a8ce" />
+  <Project Path="src/Boards_WP/Boards_WP.csproj">
+    <Platform Solution="*|ARM64" Project="ARM64" />
+    <Platform Solution="*|x64" Project="x64" />
+    <Platform Solution="*|x86" Project="x86" />
+    <Deploy />
+  </Project>
+</Solution>
