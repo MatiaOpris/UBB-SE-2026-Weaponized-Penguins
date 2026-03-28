@@ -1,0 +1,82 @@
+<UserControl
+    x:Class="Boards_WP.Views.NotificationsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Boards_WP.Views">
+
+    <Border Background="#F0F0FF" CornerRadius="15" Margin="4">
+        <Grid Padding="15">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Notifications" 
+                       FontSize="18" 
+                       FontWeight="SemiBold" 
+                       Foreground="#6A67E1" 
+                       Margin="0,0,0,15"/>
+
+            <ListView x:Name="NotificationsList" 
+                      Grid.Row="1"
+                      SelectionMode="Single"
+                      Padding="0">
+
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="Margin" Value="0,0,0,10"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="local:NotificationItem">
+                        <Grid x:Name="RootGrid">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="PointerOver">
+                                        <VisualState.Setters>
+                                            <Setter Target="NotificationCard.BorderBrush" Value="#6A67E1"/>
+                                            <Setter Target="NotificationCard.BorderThickness" Value="2"/>
+                                            <Setter Target="NotificationCard.Background" Value="#F8F8FF"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+
+                            <Border x:Name="NotificationCard"
+                                    Background="White" 
+                                    BorderBrush="#E0E0FF" 
+                                    BorderThickness="1" 
+                                    CornerRadius="10" 
+                                    Padding="12">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Text="{x:Bind Message}" 
+                                               FontSize="13" 
+                                               Foreground="#333333" 
+                                               TextWrapping="Wrap"
+                                               VerticalAlignment="Center"/>
+
+                                    <TextBlock Grid.Column="1" 
+                                               Text="{x:Bind Time}" 
+                                               FontSize="11" 
+                                               Foreground="Gray" 
+                                               Margin="10,0,0,0"
+                                               VerticalAlignment="Bottom"/>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+    </Border>
+</UserControl>

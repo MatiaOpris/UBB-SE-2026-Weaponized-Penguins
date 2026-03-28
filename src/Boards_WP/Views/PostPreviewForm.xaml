@@ -1,0 +1,60 @@
+<UserControl
+    x:Class="Boards_WP.Views.PostPreviewForm"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:Boards_WP.Data.Models"
+    mc:Ignorable="d"
+    Margin="0,0,0,16">
+
+    <Grid Background="White" CornerRadius="12" Padding="15" BorderBrush="#E0E0FF" BorderThickness="1">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="50"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Center" 
+                    Background="#F8F8FF" CornerRadius="8" Padding="4" BorderBrush="#E0E0FF" BorderThickness="1">
+            <Button Content="▲" Click="Upvote_Click" Background="Transparent" BorderThickness="0" HorizontalAlignment="Center"/>
+            <TextBlock x:Name="ScoreLabel" 
+                       Text="{x:Bind PostData.Score, Mode=OneWay}" 
+                       HorizontalAlignment="Center" FontWeight="Bold" Foreground="#6A67E1"/>
+            <Button Content="▼" Click="Downvote_Click" Background="Transparent" BorderThickness="0" HorizontalAlignment="Center"/>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Margin="15,0">
+            <Grid Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel>
+                    <TextBlock Text="{x:Bind PostData.CommunityName, Mode=OneWay}" FontWeight="Bold" FontSize="14"/>
+                    <TextBlock Text="{x:Bind PostData.OwnerName, Mode=OneWay}" FontSize="12" Foreground="Gray"/>
+                </StackPanel>
+
+                <TextBlock Grid.Column="1" 
+                           Text="{x:Bind FormatDate(PostData.CreationTime), Mode=OneWay}" 
+                           FontSize="11" Foreground="Silver" VerticalAlignment="Top"/>
+            </Grid>
+
+            <TextBlock Text="{x:Bind PostData.Title, Mode=OneWay}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,5" TextWrapping="Wrap"/>
+            <TextBlock Text="{x:Bind PostData.Description, Mode=OneWay}" TextWrapping="Wrap" Foreground="#444"/>
+        </StackPanel>
+
+        <StackPanel Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Center">
+            <Border BorderBrush="#E0E0FF" BorderThickness="1" CornerRadius="5" Padding="5">
+                <StackPanel>
+                    <FontIcon Glyph="&#xE8BD;" FontSize="18" Foreground="#6A67E1"/>
+                    <TextBlock Text="{x:Bind PostData.CommentsNumber, Mode=OneWay}" HorizontalAlignment="Center" FontSize="10"/>
+                </StackPanel>
+            </Border>
+            <Button Background="Transparent" BorderThickness="0" Margin="0,10,0,0">
+                <FontIcon Glyph="&#xE72D;" FontSize="18" Foreground="#6A67E1"/>
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>
