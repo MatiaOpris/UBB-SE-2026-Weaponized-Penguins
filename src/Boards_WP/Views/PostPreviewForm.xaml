@@ -32,8 +32,8 @@
                 </Grid.ColumnDefinitions>
                 
                 <StackPanel>
-                    <TextBlock Text="{x:Bind PostData.CommunityName, Mode=OneWay}" FontWeight="Bold" FontSize="14"/>
-                    <TextBlock Text="{x:Bind PostData.OwnerName, Mode=OneWay}" FontSize="12" Foreground="Gray"/>
+                    <TextBlock Text="{x:Bind PostData.Community.Name, Mode=OneWay}" FontWeight="Bold" FontSize="14"/>
+                    <TextBlock Text="{x:Bind PostData.Owner.Username, Mode=OneWay}" FontSize="12" Foreground="Gray"/>
                 </StackPanel>
 
                 <TextBlock Grid.Column="1" 

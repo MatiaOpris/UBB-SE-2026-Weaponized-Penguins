@@ -16,31 +16,34 @@ namespace Boards_WP.Views.Pages
             var posts = new List<Post>
             {
                 new Post {
+                    PostID = 1,
                     Title = "How to make your CV better",
-                    OwnerName = "@AlexBindiu",
-                    CommunityName = "Computer Science",
+                    Owner = new User { Username = "@AlexBindiu" },
+                    Community = new Community { Name = "Computer Science" },
                     Score = 50,
                     CommentsNumber = 30,
                     CreationTime = new DateTime(2026, 3, 11),
-                    Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+                    Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
                 },
                 new Post {
+                    PostID = 2,
                     Title = ".NET Internship",
-                    OwnerName = "@Matei",
-                    CommunityName = "UBB",
+                    Owner = new User { Username = "@Matei" },
+                    Community = new Community { Name = "UBB" },
                     Score = 37,
                     CommentsNumber = 9,
                     CreationTime = new DateTime(2026, 3, 7),
-                    Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+                    Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
                 },
                 new Post {
+                    PostID = 3,
                     Title = "My First Meme!",
-                    OwnerName = "@AlexandraBochis",
-                    CommunityName = "WeaponizedPenguins",
+                    Owner = new User { Username = "@AlexandraBochis" },
+                    Community = new Community { Name = "WeaponizedPenguins" },
                     Score = 17,
                     CommentsNumber = 5,
                     CreationTime = new DateTime(2026, 2, 28),
-                    Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+                    Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
                 }
             };
 
