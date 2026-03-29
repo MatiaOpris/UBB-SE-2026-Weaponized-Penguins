@@ -7,19 +7,17 @@ namespace Boards_WP.Data.Models
 {
     public class Comment
     {
-        private int commentID { get; set; }
-        private int postID { get; set; }
-        private int? parentID { get; set; }
-        private String description { get; set; } = String.Empty;
-        private int score { get; set; }
-        private DateTime creationTime { get; set; }
-        private int indentation { get; set; }
-        private Boolean isDeleted { get; set; }
-        private String ownerName { get; set; } = String.Empty;
-        private byte[]? ownerPicture { get; set; }
-        private VoteType userCurrentVote { get; set; } = VoteType.None;
-
-        public String getShareLink => $"boards://post/{postID}";
+        public int CommentID { get; init; }
+        public Post Post { get; init; }
+        public Comment? ParentComment { get; init; }
+        public User Owner { get; init; }
+        public String Description { get; set; } = String.Empty;
+        public int Score { get; set; }
+        public DateTime CreationTime { get; set; }
+        public int Indentation { get; init; }
+        public Boolean IsDeleted { get; set; }
+        public VoteType UserCurrentVote { get; set; } = VoteType.None;
+        public String GetShareLink => $"boards://post/{Post.PostID}";
 
     }
 }
