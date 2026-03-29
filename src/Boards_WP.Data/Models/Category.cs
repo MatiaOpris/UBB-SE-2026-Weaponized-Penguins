@@ -6,7 +6,7 @@ namespace Boards_WP.Data.Models;
 
 public class Category
 {
-    public int CategoryID { get; set; }
+    public int CategoryID { get; init; }
     
     public string CategoryName { get; set; }
 
