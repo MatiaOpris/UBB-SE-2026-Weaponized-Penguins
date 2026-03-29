@@ -46,5 +46,18 @@ public partial class App : Application
     {
         _window = new MainWindow();
         _window.Activate();
+
+        var activatedArgs = Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().GetActivatedEventArgs();
+        if (activatedArgs.Kind == Microsoft.Windows.AppLifecycle.ExtendedActivationKind.Protocol)
+        {
+            var protocolArgs = activatedArgs.Data as Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs;
+            Uri uri = protocolArgs.Uri;
+
+            string[] parts = uri.AbsolutePath.Split('/');
+            if (parts.Length > 0 && int.TryParse(parts.Last(), out int postId))
+            {
+                //--load selected post
+            }
+        }
     }
 }
