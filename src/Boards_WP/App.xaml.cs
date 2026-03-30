@@ -27,7 +27,7 @@ namespace Boards_WP;
 /// </summary>
 public partial class App : Application
 {
-    private Window? _window;
+    public Window? m_window;
 
     /// <summary>
     /// Initializes the singleton application object.  This is the first line of authored code
@@ -44,20 +44,7 @@ public partial class App : Application
     /// <param name="args">Details about the launch request and process.</param>
     protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
     {
-        _window = new MainWindow();
-        _window.Activate();
-
-        var activatedArgs = Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().GetActivatedEventArgs();
-        if (activatedArgs.Kind == Microsoft.Windows.AppLifecycle.ExtendedActivationKind.Protocol)
-        {
-            var protocolArgs = activatedArgs.Data as Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs;
-            Uri uri = protocolArgs.Uri;
-
-            string[] parts = uri.AbsolutePath.Split('/');
-            if (parts.Length > 0 && int.TryParse(parts.Last(), out int postId))
-            {
-                //--load selected post
-            }
-        }
+        m_window = new MainWindow();
+        m_window.Activate();
     }
 }

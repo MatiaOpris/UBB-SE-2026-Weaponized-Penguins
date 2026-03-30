@@ -6,16 +6,24 @@
     xmlns:models="using:Boards_WP.Data.Models"
     Background="Transparent">
 
+
+    <!-- SelectionMode="None" disables the highlight effect when a post is clicked -->
     <Grid>
         <ListView x:Name="FeedList" 
                   SelectionMode="None" 
                   Padding="0,0,10,0">
+
+            <!-- here, we specify how each piece of data (in this case Post) should look like -->
+            <!-- models:Post specifies that the objects we display are of type Post -->
+            <!-- PostPreviewForm PostData="{x:Bind}" specifies that the current Post object should be parsed through PostPreviewForm (how the post should look like)-->
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="models:Post">
                     <views:PostPreviewForm PostData="{x:Bind}" />
                 </DataTemplate>
             </ListView.ItemTemplate>
             
+
+            <!-- here, we specify that the posts should stretch accross the entire width of the middle section -->
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>

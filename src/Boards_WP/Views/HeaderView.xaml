@@ -12,18 +12,23 @@
     </UserControl.Resources>
     
     
+    <!-- creates the container for the header -->
+    <!-- the header is divided into 2 parts: the logo and the search bar, each getting a column of the grid -->
     <Grid Background="#E6E2FF" Height="80" Padding="20,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
+
+        <!-- logo properties -->
         <Image Source="ms-appx:///Assets/WPLogo.png" 
                Width="200" 
                HorizontalAlignment="Left" 
                VerticalAlignment="Center"
                Margin="40,0,0,5"/>
               
+        <!-- search bar properties -->
         <Border Grid.Column="1" 
                 Background="White" 
                 CornerRadius="20" 
@@ -33,6 +38,8 @@
                 MaxWidth="800"
                 HorizontalAlignment="Stretch">
     
+
+            <!-- the actual search input -->
             <AutoSuggestBox PlaceholderText="Search communities..."
                             QueryIcon="Find"
                             Background="Transparent"
