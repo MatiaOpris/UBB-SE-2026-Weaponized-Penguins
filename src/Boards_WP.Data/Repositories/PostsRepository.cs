@@ -32,7 +32,7 @@ public class PostsRepository : IPostsRepository
 
         using var command = new SqlCommand(insertPostQuery, connection);
         command.Parameters.AddWithValue("@OwnerID", p.Owner.UserID);
-        command.Parameters.AddWithValue("@CommunityID", p.Community.CommunityID);
+        command.Parameters.AddWithValue("@CommunityID", p.ParentCommunity.CommunityID);
         command.Parameters.AddWithValue("@Title", p.Title);
         command.Parameters.AddWithValue("@Description", p.Description);
 
@@ -151,7 +151,6 @@ public class PostsRepository : IPostsRepository
                 {
                     TagID = reader.GetInt32(reader.GetOrdinal("tagID")),
                     TagName = reader.GetString(reader.GetOrdinal("tagName")),
-                    ColorHex = reader.GetString(reader.GetOrdinal("categoryColor")),
                     CategoryBelongingTo = category
                 });
             }
@@ -186,9 +185,11 @@ public class PostsRepository : IPostsRepository
             SELECT p.*, 
                    u.username AS owner_username, u.email AS owner_email, u.avatarUrl AS owner_avatarUrl, u.bio AS owner_bio, u.status AS owner_status,
                    c.name AS community_name, c.description AS community_description
+                   adm.userID AS admin_userID, adm.username AS admin_username
             FROM Posts p
             JOIN Users u ON p.ownerID = u.userID
             JOIN Communities c ON p.communityID = c.communityID
+            JOIN Users adm ON c.adminID = adm.userID
             WHERE p.communityID NOT IN ({idList})";
 
         return FetchList(query);
@@ -222,13 +223,19 @@ public class PostsRepository : IPostsRepository
             Status = reader.IsDBNull(reader.GetOrdinal("owner_status")) ? null : reader.GetString(reader.GetOrdinal("owner_status"))
         };
 
+        var communityAdmin = new User
+        {
+            UserID = reader.GetInt32(reader.GetOrdinal("admin_userID")),
+            Username = reader.GetString(reader.GetOrdinal("admin_username")),
+        };
+
 
         var community = new Community
         {
             CommunityID = reader.GetInt32(reader.GetOrdinal("communityID")),
             Name = reader.GetString(reader.GetOrdinal("community_name")),
             Description = reader.GetString(reader.GetOrdinal("community_description")),
-
+            Admin = communityAdmin,
         };
 
         return new Post
@@ -241,7 +248,7 @@ public class PostsRepository : IPostsRepository
             CommentsNumber = reader.GetInt32(reader.GetOrdinal("commentsNumber")),
             CreationTime = reader.GetDateTime(reader.GetOrdinal("creationTime")),
             Owner = owner,
-            Community = community
+            ParentCommunity = community
         };
     }
 }
