@@ -6,4 +6,19 @@
     <AnalysisLevel>latest</AnalysisLevel>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="System" />
+    <Using Include="System.Collections.Generic" />
+    <Using Include="System.Linq" />
+    <Using Include="System.Collections.ObjectModel" />
+    
+    <Using Include="Boards_WP.Data.Models" />
+    <Using Include="Boards_WP.Data.Repositories" />
+    <Using Include="Boards_WP.Data.Repositories.Interfaces" />
+    <Using Include="Boards_WP.Data.Services" />
+    <Using Include="Boards_WP.Data.Services.Interfaces" />
+    
+    <Using Include="Microsoft.Data.SqlClient" />
+  </ItemGroup>
 </Project>
