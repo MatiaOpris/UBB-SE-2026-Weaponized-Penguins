@@ -8,7 +8,7 @@ public class Category
 {
     public int CategoryID { get; init; }
     
-    public string CategoryName { get; set; }
+    public String CategoryName { get; set; } = String.Empty;
 
-    public string ColorHex { get; set; }
+    public String ColorHex { get; set; } = String.Empty;
 }

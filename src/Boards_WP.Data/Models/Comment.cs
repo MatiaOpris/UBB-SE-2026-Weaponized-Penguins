@@ -8,16 +8,16 @@ namespace Boards_WP.Data.Models
     public class Comment
     {
         public int CommentID { get; init; }
-        public Post Post { get; init; }
+        public required Post ParentPost { get; init; }
         public Comment? ParentComment { get; init; }
-        public User Owner { get; init; }
+        public required User Owner { get; init; }
         public String Description { get; set; } = String.Empty;
         public int Score { get; set; }
         public DateTime CreationTime { get; set; }
         public int Indentation { get; init; }
-        public Boolean IsDeleted { get; set; }
+        public bool IsDeleted { get; set; }
         public VoteType UserCurrentVote { get; set; } = VoteType.None;
-        public String GetShareLink => $"boards://post/{Post.PostID}";
+        public String GetShareLink => $"boards://post/{ParentPost.PostID}";
 
     }
 }

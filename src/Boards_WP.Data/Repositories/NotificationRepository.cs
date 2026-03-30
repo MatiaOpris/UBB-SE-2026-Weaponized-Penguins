@@ -138,6 +138,8 @@ namespace Boards_WP.Data.Repositories
                 {
                     PostID = reader.GetInt32(postIdOrdinal),
                     Title = reader.GetString(postTitleOrdinal),
+                    Owner = null!,
+                    ParentCommunity = null!
                 },
             };
         }
