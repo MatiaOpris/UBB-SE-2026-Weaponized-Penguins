@@ -10,8 +10,8 @@ public interface ICommentsService
 {
     public void AddComment(Comment c);
     public void SoftDeleteComment(Comment c, int userID);
-    public void IncreaseComment(Comment c, int currentUserID);
-    public void DecreaseComment(Comment c, int currentUserID);
+    public void IncreaseScore(Comment c, int currentUserID);
+    public void DecreaseScore(Comment c, int currentUserID);
     public List<Comment> GetCommentsByPost(int postID, int currentUserID);
 
 }
