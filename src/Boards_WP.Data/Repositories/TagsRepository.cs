@@ -55,4 +55,14 @@ public class TagsRepository : ITagsRepository
         connection.Open();
         command.ExecuteNonQuery();
     }
+
+    public int GetCategoryCount()
+    {
+        using var connection = new SqlConnection(_connectionString);
+        const string query = "SELECT COUNT(*) FROM Categories";
+        using var command = new SqlCommand(query, connection);
+
+        connection.Open();
+        return (int)command.ExecuteScalar();
+    }
 }

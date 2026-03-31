@@ -6,7 +6,7 @@ namespace Boards_WP.Data.Repositories.Interfaces;
 
 public interface IUsersMoodRepository
 {
-    public Dictionary<int, int> GetUsersMoodScores(int userID);
+    public Dictionary<int, int> GetUsersMoodScores(int userID, int categoryCount);
 
     public void UpdateUsersMoodScores(int userID, Dictionary<int, int> newMoodScores);
 }

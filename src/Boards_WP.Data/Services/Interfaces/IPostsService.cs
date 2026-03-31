@@ -17,4 +17,5 @@ public interface IPostsService
     public ThemeColor DetermineFeedThemeColorByLastLikes();
     public ThemeColor DetermineThemeForASinglePost(Post post);
     public void UpdateUserPreferences(int userID, Post p, bool hasCommented);
+    public void UpdateUserInterests(int userId, Post post, VoteType vote, bool hasCommented);
 }

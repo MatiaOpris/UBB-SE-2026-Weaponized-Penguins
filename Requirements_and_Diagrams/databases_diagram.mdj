@@ -1903,7 +1903,7 @@
 									"top": 1096,
 									"width": 167.591796875,
 									"height": 13,
-									"text": "PostsViews"
+									"text": "PostsVotes"
 								},
 								{
 									"_type": "ERDColumnCompartmentView",
@@ -3289,7 +3289,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"parentStyle": false,
-									"left": 1337,
+									"left": 1340,
 									"top": 1049,
 									"height": 13,
 									"alpha": 1.5707963267948966,
@@ -3325,7 +3325,7 @@
 									},
 									"font": "Arial;13;0",
 									"parentStyle": false,
-									"left": 1311,
+									"left": 1317,
 									"top": 1048,
 									"height": 13,
 									"alpha": -0.5235987755982988,
@@ -5205,7 +5205,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFLzntJC6EktCk="
 					},
-					"name": "PostsViews",
+					"name": "PostsVotes",
 					"columns": [
 						{
 							"_type": "ERDColumn",
