@@ -17,9 +17,8 @@
                         Height="60" 
                         CornerRadius="30" 
                         Background="#E0E0E0"/>
-                
-                <TextBox x:Name="NameInput" 
-                         Text="{x:Bind CommunityName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+
+                <TextBox Text="{x:Bind ViewModel.CommunityName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          PlaceholderText="Pick a name..." 
                          FontSize="24" 
                          Width="400" 
@@ -27,24 +26,27 @@
                          Background="Transparent"/>
             </StackPanel>
 
-            <TextBox x:Name="DescriptionInput" 
-                     Text="{x:Bind CommunityDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            <TextBox Text="{x:Bind ViewModel.CommunityDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      PlaceholderText="Add a description..." 
                      AcceptsReturn="True" 
                      Height="150" 
                      TextWrapping="Wrap" 
                      CornerRadius="8"/>
 
+            <TextBlock Text="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}"
+                       Foreground="Red"
+                       Visibility="{x:Bind ViewModel.HasError, Mode=OneWay}"/>
+
             <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
                 <Button Content="Cancel" 
-                        Click="Cancel_Click"
+                        Command="{x:Bind ViewModel.CancelCommand}"
                         Background="Transparent"
                         Foreground="Gray"
                         Padding="20,12"
                         CornerRadius="10"/>
-
+                
                 <Button Content="Create the community" 
-                        Click="CreateCommunity_Click" 
+                        Command="{x:Bind ViewModel.CreateCommunityCommand}"
                         Background="#6A67E1" 
                         Foreground="White" 
                         FontWeight="Bold"
