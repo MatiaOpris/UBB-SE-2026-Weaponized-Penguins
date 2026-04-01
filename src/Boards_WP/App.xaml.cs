@@ -58,18 +58,18 @@ public partial class App : Application
 
             .AddSingleton<FeedViewModel>()
             //VMs
-            //.AddTransient<CommunityViewModel>()
-            //.AddTransient<CreateCommunityViewModel>()
+            .AddTransient<CommunityViewModel>()
+            .AddTransient<CreateCommunityViewModel>()
             //.AddTransient<CreatePostViewModel>()
             .AddTransient<FullPostViewModel>()
             //.AddTransient<NotificationsViewModel>()
             .AddTransient<MainViewModel>()
 
             // Components / UserControls
-            //.AddTransient<PostPreviewViewModel>();
-            //.AddTransient<CommentViewModel>();
+            .AddTransient<PostPreviewViewModel>()
+            .AddTransient<CommentViewModel>()
             .AddTransient<CommunityBarViewModel>()
-            //.AddTransient<HeaderViewModel>();
+            //.AddTransient<HeaderViewModel>()
 
             .BuildServiceProvider();
     }
