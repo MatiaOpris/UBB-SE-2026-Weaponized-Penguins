@@ -27,15 +27,13 @@
                                 <TextBlock Text="{x:Bind MemberCountText, Mode=OneWay}" 
                                            FontSize="14" Foreground="Gray" VerticalAlignment="Center"/>
 
-                                <!-- show join button only if user is member of the community -->
                                 <Button Content="Join Community" 
                                         Click="JoinButton_Click"
                                         Background="#6A67E1" Foreground="White" CornerRadius="8"
-                                        Visibility="{x:Bind InverseBoolToVisibility(IsMember), Mode=OneWay}"/>
+                                        Visibility="{x:Bind JoinButtonVisibility, Mode=OneWay}"/>
 
-                                <!-- if the user is a member, then the join button dissapears, and two more buttons appear -->
                                 <StackPanel Orientation="Horizontal" Spacing="8" 
-                                            Visibility="{x:Bind BoolToVisibility(IsMember), Mode=OneWay}">
+                                            Visibility="{x:Bind MemberActionsVisibility, Mode=OneWay}">
                                     <Button Content="Create Post" Click="CreatePostButton_Click"
                                             Background="White" BorderBrush="#6A67E1" BorderThickness="1" CornerRadius="8"/>
                                     <Button Content="Leave Community" Click="LeaveButton_Click"
@@ -46,12 +44,10 @@
                     </StackPanel>
                 </Grid>
 
-                <!-- community description -->
                 <Border Background="White" CornerRadius="12" Margin="20,0" Padding="15" BorderBrush="#E0E0E0" BorderThickness="1">
                     <TextBlock Text="{x:Bind CurrentCommunity.Description, Mode=OneWay}" TextWrapping="Wrap" FontSize="15"/>
                 </Border>
 
-                <!-- community feed: a list of PostPreviewForm-->
                 <ItemsControl ItemsSource="{x:Bind CommunityPosts, Mode=OneWay}" Margin="20,10">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="models:Post">

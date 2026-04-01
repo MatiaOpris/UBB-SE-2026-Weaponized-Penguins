@@ -6,18 +6,48 @@
 
     <Grid Padding="40">
         <StackPanel Spacing="15" MaxWidth="600" HorizontalAlignment="Left">
-            <TextBlock Text="Create Post" FontSize="32" FontWeight="Bold" Foreground="#6A67E1" Margin="0,0,0,10"/>
+            <TextBlock Text="Create Post" 
+                       FontSize="32" 
+                       FontWeight="Bold" 
+                       Foreground="#6A67E1" 
+                       Margin="0,0,0,10"/>
 
-            <TextBox x:Name="TitleInput" PlaceholderText="Title" FontSize="18" FontWeight="SemiBold" CornerRadius="8"/>
+            <TextBox x:Name="TitleInput" 
+                     Text="{x:Bind PostTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     PlaceholderText="Title" 
+                     FontSize="18" 
+                     FontWeight="SemiBold" 
+                     CornerRadius="8"/>
             
-            <TextBox x:Name="DescriptionInput" PlaceholderText="Text (optional)" 
-                     AcceptsReturn="True" Height="200" TextWrapping="Wrap" CornerRadius="8" HorizontalAlignment="Stretch"/>
+            <TextBox x:Name="DescriptionInput" 
+                     Text="{x:Bind PostDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     PlaceholderText="Text (optional)" 
+                     AcceptsReturn="True" 
+                     Height="200" 
+                     TextWrapping="Wrap" 
+                     CornerRadius="8" 
+                     HorizontalAlignment="Stretch"/>
 
-            <TextBox x:Name="TagsInput" PlaceholderText="Add tags (e.g. tech, ubb, fun)" CornerRadius="8"/>
+            <TextBox x:Name="TagsInput" 
+                     PlaceholderText="Add tags (e.g. tech, ubb, fun)" 
+                     CornerRadius="8"/>
 
-            <Button Content="Upload Post" Click="UploadPost_Click" 
-                    Background="#6A67E1" Foreground="White" FontWeight="Bold"
-                    Padding="40,12" CornerRadius="10" HorizontalAlignment="Right" Margin="0,10,0,0"/>
+            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right" Margin="0,10,0,0">
+                <Button Content="Cancel" 
+                        Click="Cancel_Click"
+                        Background="Transparent"
+                        Foreground="Gray"
+                        Padding="20,12"
+                        CornerRadius="10"/>
+                
+                <Button Content="Upload Post" 
+                        Click="UploadPost_Click" 
+                        Background="#6A67E1" 
+                        Foreground="White" 
+                        FontWeight="Bold"
+                        Padding="40,12" 
+                        CornerRadius="10"/>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Page>

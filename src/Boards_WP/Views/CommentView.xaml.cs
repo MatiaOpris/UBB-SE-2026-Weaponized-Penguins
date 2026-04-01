@@ -1,21 +1,20 @@
-using System;
-
 using Boards_WP.Data.Models;
 using Boards_WP.ViewModels;
-using Boards_WP.Views.Pages; 
 
-using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Data;
+using System;
 
 namespace Boards_WP.Views
 {
     public sealed partial class CommentView : UserControl
     {
-        
+        public CommentViewModel ViewModel { get; set; }
+
         public static readonly DependencyProperty CommentDataProperty =
-            DependencyProperty.Register("CommentData", typeof(Comment), typeof(CommentView), new PropertyMetadata(null));
+            DependencyProperty.Register("CommentData", typeof(Comment), typeof(CommentView),
+                new PropertyMetadata(null, OnCommentDataChanged));
 
         public Comment CommentData
         {
@@ -23,66 +22,44 @@ namespace Boards_WP.Views
             set => SetValue(CommentDataProperty, value);
         }
 
-        public CommentView()
+        public CommentView() => this.InitializeComponent();
+
+        private static void OnCommentDataChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            this.InitializeComponent();
+            if (d is CommentView control && e.NewValue is Comment comment)
+            {
+                control.ViewModel = new CommentViewModel(comment);
+                control.ViewModel.ReplySubmitted = control.HandleReplySubmission;
+                control.Bindings.Update();
+            }
         }
 
-        
-        private FullPostViewModel GetParentViewModel()
+        private void HandleReplySubmission(Comment parent, string text)
         {
-            
-            if (App.Current is App myApp && myApp.m_window?.Content is Frame rootFrame)
+            if (App.Current is App myApp && myApp.m_window.Content is FrameworkElement root)
             {
-                if (rootFrame.Content is FullPostView page)
+                var frame = root.FindName("ContentFrame") as Frame;
+
+                if (frame?.Content is Pages.FullPostView postPage)
                 {
-                    return page.ViewModel;
+                    var newReply = new Comment
+                    {
+                        CommentID = new Random().Next(1000, 9999),
+                        Owner = new User { Username = "@Me" },
+                        Description = text,
+                        Score = 0,
+                        CreationTime = DateTime.Now,
+                        Indentation = parent.Indentation + 1
+                    };
+
+                    int index = postPage.ViewModel.PostComments.IndexOf(parent);
+                    postPage.ViewModel.PostComments.Insert(index + 1, newReply);
                 }
             }
-            return null;
         }
 
-        private void Upvote_Click(object sender, RoutedEventArgs e)
-        {
-            if (CommentData == null) return;
-            CommentData.Score++;
-            this.Bindings.Update();
-        }
-
-        private void Downvote_Click(object sender, RoutedEventArgs e)
-        {
-            if (CommentData == null) return;
-            CommentData.Score--;
-            this.Bindings.Update();
-        }
-
-        
-        private void DeleteComment_Click(object sender, RoutedEventArgs e)
-        {
-            var viewModel = GetParentViewModel();
-            if (viewModel != null && CommentData != null)
-            {
-                
-                viewModel.PostComments.Remove(this.CommentData);
-            }
-        }
-
-        
-        private void Grid_PointerEntered(object sender, PointerRoutedEventArgs e)
-        {
-            this.ProtectedCursor = InputSystemCursor.Create(InputSystemCursorShape.Hand);
-        }
-
-        private void Grid_PointerExited(object sender, PointerRoutedEventArgs e)
-        {
-            this.ProtectedCursor = InputSystemCursor.Create(InputSystemCursorShape.Arrow);
-        }
-        private void Reply_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void PostReply_Click(object sender, RoutedEventArgs e)
-        {
-        }
+        public string FormatCommentDate(DateTime date) => date.ToString("g");
+        public Thickness GetIndentMargin(int indentation) => new Thickness(indentation * 40, 0, 0, 10);
+        public Visibility GetLineVisibility(int indentation) => indentation > 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 }

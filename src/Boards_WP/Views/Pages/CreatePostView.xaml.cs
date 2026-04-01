@@ -1,15 +1,33 @@
-using Boards_WP.Data.Models;
-
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 
 using System;
 
+using Boards_WP.Data.Models;
+
 namespace Boards_WP.Views.Pages
 {
     public sealed partial class CreatePostView : Page
     {
+        public static readonly DependencyProperty PostTitleProperty =
+            DependencyProperty.Register("PostTitle", typeof(string), typeof(CreatePostView), new PropertyMetadata(string.Empty));
+
+        public string PostTitle
+        {
+            get => (string)GetValue(PostTitleProperty);
+            set => SetValue(PostTitleProperty, value);
+        }
+
+        public static readonly DependencyProperty PostDescriptionProperty =
+            DependencyProperty.Register("PostDescription", typeof(string), typeof(CreatePostView), new PropertyMetadata(string.Empty));
+
+        public string PostDescription
+        {
+            get => (string)GetValue(PostDescriptionProperty);
+            set => SetValue(PostDescriptionProperty, value);
+        }
+
         private Community _originCommunity;
 
         public CreatePostView()
@@ -19,23 +37,30 @@ namespace Boards_WP.Views.Pages
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            // Capture which community we are posting to
+            base.OnNavigatedTo(e);
             if (e.Parameter is Community com)
             {
                 _originCommunity = com;
             }
         }
 
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.Frame.CanGoBack)
+            {
+                this.Frame.GoBack();
+            }
+        }
+
         private void UploadPost_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(TitleInput.Text)) return;
+            if (string.IsNullOrWhiteSpace(PostTitle)) return;
 
-            // Create the post object locally
             var newPost = new Post
             {
-                PostID = 999, // Temporary ID
-                Title = TitleInput.Text,
-                Description = DescriptionInput.Text,
+                PostID = new Random().Next(1000, 9999),
+                Title = PostTitle,
+                Description = PostDescription,
                 ParentCommunity = _originCommunity,
                 Owner = new User { Username = "@Me" },
                 Score = 0,
@@ -43,7 +68,6 @@ namespace Boards_WP.Views.Pages
                 CreationTime = DateTime.Now
             };
 
-            // Navigate back and send the Post as the parameter
             this.Frame.Navigate(typeof(CommunityView), newPost);
         }
     }

@@ -6,20 +6,51 @@
 
     <Grid Padding="40">
         <StackPanel Spacing="20" MaxWidth="800" HorizontalAlignment="Left">
-            <TextBlock Text="Start a Community" FontSize="32" FontWeight="Bold" Foreground="#6A67E1"/>
+            <TextBlock Text="Start a Community" 
+                       FontSize="32" 
+                       FontWeight="Bold" 
+                       Foreground="#6A67E1"/>
 
             <StackPanel Orientation="Horizontal" Spacing="15">
-                <Button Content="📷" Width="60" Height="60" CornerRadius="30" Background="#E0E0E0"/>
-                <TextBox x:Name="NameInput" PlaceholderText="Pick a name..." 
-                         FontSize="24" Width="400" BorderThickness="0,0,0,1" Background="Transparent"/>
+                <Button Content="📷" 
+                        Width="60" 
+                        Height="60" 
+                        CornerRadius="30" 
+                        Background="#E0E0E0"/>
+                
+                <TextBox x:Name="NameInput" 
+                         Text="{x:Bind CommunityName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         PlaceholderText="Pick a name..." 
+                         FontSize="24" 
+                         Width="400" 
+                         BorderThickness="0,0,0,1" 
+                         Background="Transparent"/>
             </StackPanel>
 
-            <TextBox x:Name="DescriptionInput" PlaceholderText="Add a description..." 
-                     AcceptsReturn="True" Height="150" TextWrapping="Wrap" CornerRadius="8"/>
+            <TextBox x:Name="DescriptionInput" 
+                     Text="{x:Bind CommunityDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     PlaceholderText="Add a description..." 
+                     AcceptsReturn="True" 
+                     Height="150" 
+                     TextWrapping="Wrap" 
+                     CornerRadius="8"/>
 
-            <Button Content="Create the community" Click="CreateCommunity_Click" 
-                    Background="#6A67E1" Foreground="White" FontWeight="Bold"
-                    Padding="30,12" CornerRadius="10" HorizontalAlignment="Right"/>
+            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
+                <Button Content="Cancel" 
+                        Click="Cancel_Click"
+                        Background="Transparent"
+                        Foreground="Gray"
+                        Padding="20,12"
+                        CornerRadius="10"/>
+
+                <Button Content="Create the community" 
+                        Click="CreateCommunity_Click" 
+                        Background="#6A67E1" 
+                        Foreground="White" 
+                        FontWeight="Bold"
+                        Padding="30,12" 
+                        CornerRadius="10"/>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Page>

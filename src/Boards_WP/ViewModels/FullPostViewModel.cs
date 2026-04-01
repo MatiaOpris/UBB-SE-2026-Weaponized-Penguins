@@ -31,7 +31,7 @@ namespace Boards_WP.ViewModels
         {
             var hardcodedComments = new List<Comment>
             {
-                new Comment { CommentID = 1, Owner = new User { Username = "@FilipOszkar" }, Description = "Lorem ipsum...", Score = 15, CreationTime = DateTime.Now.AddHours(-2), Indentation = 0 },
+                new Comment { CommentID = 1, Owner = new User { Username = "@Alexandra" }, Description = "Lorem ipsum...", Score = 15, CreationTime = DateTime.Now.AddHours(-2), Indentation = 0 },
                 new Comment { CommentID = 2, Owner = new User { Username = "@BerceaMatei" }, Description = "Short comment.", Score = 8, CreationTime = DateTime.Now.AddHours(-1), Indentation = 1 },
                 new Comment { CommentID = 3, Owner = new User { Username = "@RazvanBerbecar" }, Description = "Longer comment text here...", Score = 12, CreationTime = DateTime.Now.AddMinutes(-30), Indentation = 2 },
                 new Comment { CommentID = 4, Owner = new User { Username = "@BeneIonut" }, Description = "Perspiciatis unde omnis...", Score = 2, CreationTime = DateTime.Now.AddMinutes(-10), Indentation = 0 }
