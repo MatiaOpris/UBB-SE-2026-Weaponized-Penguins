@@ -10,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Boards_WP.ViewModels;
 using Boards_WP.Views.Pages;
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
@@ -34,6 +36,7 @@ public partial class App : Application
         InitializeComponent();
 
     }
+
 
     protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
     {
@@ -99,7 +102,8 @@ string connectionString = @"Data Source=DESKTOP-1JCJMN6\SQLEXPRESS;Initial Catal
         services.AddTransient<NotificationItemViewModel>();
         services.AddTransient<NotificationsListViewModel>();
         services.AddTransient<HeaderViewModel>();
-        services.AddSingleton<CommunityBarViewModel>(); //--this must be signelton
+        services.AddTransient<CommunityBarViewModel>();
+        services.AddTransient<BetsViewModel>();
 
         return services.BuildServiceProvider();
     }

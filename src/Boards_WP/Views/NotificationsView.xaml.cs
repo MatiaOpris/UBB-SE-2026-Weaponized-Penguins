@@ -1,9 +1,13 @@
+using System;
 using System.Collections.ObjectModel;
 
 using Boards_WP.ViewModels;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
+
+using Boards_WP.Data.Models;
+using Boards_WP.Views.Pages; 
 
 namespace Boards_WP.Views
 {

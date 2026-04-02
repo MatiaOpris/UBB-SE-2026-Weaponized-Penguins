@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using System;
+using Microsoft.UI.Xaml.Controls;
 namespace Boards_WP.Data.Services;
 
 public class NavigationService : INavigationService
@@ -18,8 +19,11 @@ public class NavigationService : INavigationService
         {
             _frame.Navigate(pageType, parameter);
         }
+        else
+        {
+            _frame.Navigate(pageType);
+        }
     }
-
     public void GoBack()
     {
         if (CanGoBack)

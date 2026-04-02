@@ -13,24 +13,32 @@ public class UsersMoodRepository : IUsersMoodRepository
     public Dictionary<int, int> GetUsersMoodScores(int userID, int categoryCount)
     {
         var scores = new Dictionary<int, int>();
-        using var connection = new SqlConnection(_connectionString);
 
-        const string query = "" +
-            "SELECT categoryID, score " +
-            "FROM UsersMoodScores WHERE userID = @UID";
-        using var command = new SqlCommand(query, connection);
-        command.Parameters.AddWithValue("@UID", userID);
-
-        connection.Open();
-        using var reader = command.ExecuteReader();
-
-        while (reader.Read())
+        try
         {
-            scores.Add(reader.GetInt32(0), reader.GetInt32(1));
+            using var connection = new SqlConnection(_connectionString);
+            const string query = "SELECT categoryID, score FROM UsersMoodScores WHERE userID = @UID";
+
+            using var command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@UID", userID);
+
+            connection.Open();
+            using var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                scores.Add(reader.GetInt32(0), reader.GetInt32(1));
+            }
+        }
+        catch (SqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Discovery Warning: Mood table missing. {ex.Message}");
         }
 
-        //new user that has no scores yet
-        if (scores.Count == 0) return GetDefaultDistribution(categoryCount);
+        if (scores.Count == 0)
+        {
+            return GetDefaultDistribution(categoryCount);
+        }
 
         return scores;
     }

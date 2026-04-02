@@ -22,6 +22,7 @@ namespace Boards_WP.ViewModels
         [ObservableProperty]
         private string _authorUsername;
 
+        public string FormattedDate => PostData?.CreationTime.ToString("dd/MM/yyyy") ?? "";
 
         public string DescriptionSnippet
         {
@@ -34,7 +35,6 @@ namespace Boards_WP.ViewModels
             }
         }
 
-        public string FormattedDate => PostData?.CreationTime.ToString("dd/MM/yyyy") ?? "";
 
         public PostPreviewViewModel(
             Post post, 
@@ -105,9 +105,7 @@ namespace Boards_WP.ViewModels
             if (PostData == null) return;
 
             if (App.Current is App myApp && myApp.m_window is MainWindow mainWindow)
-            {
                 mainWindow.NavigateToPage(typeof(Views.Pages.FullPostView), PostData);
-            }
         }
     }
 }

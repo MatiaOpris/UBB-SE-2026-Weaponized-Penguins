@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
+using Boards_WP.Data.Models;
+using Boards_WP.Data.Services; // Ensure this matches your Service namespace
 using Boards_WP.ViewModels;
 using Boards_WP.Views.Pages;
 using Boards_WP;

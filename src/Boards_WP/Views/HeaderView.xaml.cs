@@ -33,9 +33,32 @@ namespace Boards_WP.Views
         {
             if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput && ViewModel != null)
             {
+                string query = sender.Text.ToLower().Trim();
+
+                if (query == "/weaponizedpenguins")
+                {
+                    TokenDisplay.Visibility = Visibility.Visible;
+                    sender.Text = string.Empty;
+                    ViewModel.UserTokens += 5;
+                    NavigateToPage(typeof(Pages.BetsView), null);
+
+                    ResultsPopup.IsOpen = false;
+                    return;
+                }
+
                 ViewModel.SearchText = sender.Text;
                 ResultsPopup.IsOpen = (ViewModel.SearchResults.Count > 0);
             }
+        }
+
+        private void NavigateToPage(Type pageType, object parameter)
+        {
+            var rootFrame = (App.Current as App)?.m_window?.Content as Frame;
+            if (rootFrame == null && (App.Current as App)?.m_window?.Content is FrameworkElement fe)
+            {
+                rootFrame = fe.FindName("ContentFrame") as Frame;
+            }
+            rootFrame?.Navigate(pageType, parameter);
         }
 
         private void ResultsList_ItemClick(object sender, ItemClickEventArgs e)

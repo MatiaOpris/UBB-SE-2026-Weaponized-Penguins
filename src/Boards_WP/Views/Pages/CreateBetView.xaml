@@ -1,0 +1,43 @@
+<Page
+    x:Class="Boards_WP.Views.Pages.CreateBetView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="#F3F2FF">
+
+    <ScrollViewer>
+        <StackPanel Padding="40" Spacing="20" MaxWidth="600" HorizontalAlignment="Left">
+            <TextBlock Text="Create New Bet" FontSize="32" FontWeight="Bold" Foreground="#1A1A2E"/>
+            <TextBlock Text="A fee of 5 tokens has been deducted." Foreground="Gray" Margin="0,-15,0,0"/>
+
+            <ComboBox x:Name="CommunityPicker" Header="Target Community" HorizontalAlignment="Stretch">
+                <ComboBoxItem Content="UBB"/>
+                <ComboBoxItem Content="Weaponized Penguins"/>
+                <ComboBoxItem Content="Programming"/>
+            </ComboBox>
+
+            <StackPanel Spacing="5">
+                <TextBlock Text="Bet Type" FontWeight="SemiBold"/>
+                <RadioButton Content="Post" IsChecked="True" x:Name="IsPost"/>
+                <RadioButton Content="Comment" x:Name="IsComment"/>
+            </StackPanel>
+
+            <TextBox x:Name="ExpressionBox" Header="Expression" PlaceholderText="Enter the phrase..."/>
+
+            <StackPanel Spacing="5">
+                <TextBlock Text="Ending Time (Validation)" FontWeight="SemiBold"/>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <CalendarDatePicker x:Name="EndDate" PlaceholderText="Pick Date"/>
+                    <TimePicker x:Name="EndTime"/>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,20,0,0">
+                <Button Content="Confirm &amp; Publish" Style="{StaticResource AccentButtonStyle}" Click="Publish_Click" Width="150"/>
+                <Button Content="Cancel" Click="Cancel_Click" Width="100"/>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

@@ -15,9 +15,7 @@
     
     <Grid Background="{x:Bind ViewModel.MainViewModel.VividThemeBrush, Mode=OneWay}" Height="80" Padding="20,0">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/> <ColumnDefinition Width="*"/>   <ColumnDefinition Width="250"/> </Grid.ColumnDefinitions>
 
         <Image Source="ms-appx:///Assets/WPLogo.png" 
                Width="200" 
@@ -25,7 +23,7 @@
                VerticalAlignment="Center"
                Margin="40,0,0,5"/>
               
-        <Grid Grid.Column="1" VerticalAlignment="Center" Margin="0,0,120,0" MaxWidth="800" HorizontalAlignment="Stretch">
+        <Grid Grid.Column="1" VerticalAlignment="Center" MaxWidth="800" HorizontalAlignment="Stretch">
             <Border x:Name="SearchBoxBorder" Background="White" CornerRadius="20" Height="40">
                 <AutoSuggestBox x:Name="CommunitySearchBox"
                                 PlaceholderText="Search communities..."
@@ -71,5 +69,24 @@
                Margin="0,50,0,0"
                Visibility="{x:Bind GetVisibility(ViewModel.NoResultsToggle), Mode=OneWay}"/>
         </Grid>
+
+        <StackPanel x:Name="TokenDisplay" 
+                    Grid.Column="2" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right" 
+                    Spacing="10" 
+                    Visibility="Collapsed">
+            <FontIcon Glyph="&#xEB1B;" Foreground="Gold" VerticalAlignment="Center" FontSize="20"/>
+            <TextBlock x:Name="TokenCountText" 
+                       Text="1250" 
+                       FontSize="20" 
+                       FontWeight="Bold" 
+                       VerticalAlignment="Center"/>
+            <TextBlock Text="Tokens" 
+                       Foreground="#6A67E1" 
+                       VerticalAlignment="Center" 
+                       Margin="0,4,0,0" 
+                       FontSize="14"/>
+        </StackPanel>
     </Grid>
 </UserControl>

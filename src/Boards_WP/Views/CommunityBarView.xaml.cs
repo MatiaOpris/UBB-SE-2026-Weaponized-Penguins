@@ -1,3 +1,6 @@
+using Boards_WP.ViewModels; // Adjust to your actual VM namespace
+
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
@@ -31,20 +34,22 @@ namespace Boards_WP.Views
             }
         }
 
+        // We can now remove the complex FindChildFrame and manual navigation logic 
+        // for Home and Discover because the ViewModel handles them via RelayCommands!
 
-        private void HomeNavigation_ItemClick(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
+        private void HomeNavigation_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
-            ViewModel?.NavigateHomeCommand.Execute(null);
+            ViewModel.NavigateHomeCommand.Execute(null);
         }
 
-        private void DiscoverNavigation_ItemClick(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
+        private void DiscoverNavigation_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
-            ViewModel?.NavigateDiscoveryCommand.Execute(null);
+            ViewModel.NavigateDiscoveryCommand.Execute(null);
         }
 
-        private void StartCommunity_ItemClick(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
+        private void StartCommunity_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
-            ViewModel?.NavigateCreateCommunityCommand.Execute(null);
+            ViewModel.NavigateCreateCommunityCommand.Execute(null);
         }
     }
 }

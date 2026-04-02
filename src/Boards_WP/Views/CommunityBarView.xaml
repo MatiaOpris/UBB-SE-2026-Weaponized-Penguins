@@ -2,10 +2,11 @@
     x:Class="Boards_WP.Views.CommunityBarView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:models="using:Boards_WP.Data.Models">
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:Boards_WP.Data.Models"
+    mc:Ignorable="d">
 
-
-    <!-- describes how the side-bar and each option within it should look like and act (hover) -->
     <UserControl.Resources>
         <CornerRadius x:Key="ControlCornerRadius">10</CornerRadius>
         <CornerRadius x:Key="ListViewItemSelectedCornerRadius">10</CornerRadius>
@@ -28,32 +29,28 @@
     <Border Background="{x:Bind ViewModel.MainViewModel.VividThemeBrush, Mode=OneWay}" CornerRadius="15" Margin="4">
         <StackPanel Padding="10,20">
             
-            <!-- here, we define the 3 options the user has: Home, Discover, Start Community -->
-            <!-- setting SelectionMode to Single, tells the app that only one option at a time can be selected/active -->
             <ListView SelectionMode="Single" ItemContainerStyle="{StaticResource NavigationListViewStyle}">
     
-                <ListViewItem x:Name="HomeItem" Tapped="HomeNavigation_ItemClick">
+                <ListViewItem x:Name="HomeItem" Tapped="HomeNavigation_Tapped">
                     <TextBlock Text="Home" Foreground="White" FontSize="18" FontWeight="SemiBold" />
                 </ListViewItem>
     
-                <ListViewItem x:Name="DiscoveryItem" Tapped="DiscoverNavigation_ItemClick">
+                <ListViewItem x:Name="DiscoveryItem" Tapped="DiscoverNavigation_Tapped">
                     <TextBlock Text="Discovery" Foreground="White" FontSize="18" FontWeight="SemiBold" />
                 </ListViewItem>
     
-                <ListViewItem x:Name="StartCommunityItem" Tapped="StartCommunity_ItemClick">
+                <ListViewItem x:Name="StartCommunityItem" Tapped="StartCommunity_Tapped">
                     <TextBlock Text="Start Community" Foreground="White" FontSize="18" FontWeight="SemiBold" />
                 </ListViewItem>
     
             </ListView>
 
-            <!-- in this section, we describe how the name of the communities that the user is part of should look like -->
             <TextBlock Text="MY COMMUNITIES" 
                        Foreground="#AFAFFF" 
                        FontSize="11" 
                        FontWeight="Bold" 
                        Margin="12,20,0,10" />
 
-            <!-- here, we populate the sidebar with the communities names we have -->
             <ListView 
                 x:Name="CommunityListView"
                 ItemsSource="{x:Bind ViewModel.Communities}"
@@ -62,7 +59,7 @@
     
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="models:Community">
-                        <TextBlock Text="{x:Bind Name}" Margin="10,5"/>
+                        <TextBlock Text="{x:Bind Name}" Margin="10,5" Foreground="White"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

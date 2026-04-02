@@ -82,7 +82,7 @@ namespace Boards_WP.Data.Repositories
                 FROM Notifications n
                 JOIN Users receiver ON n.receiverID = receiver.userID
                 JOIN Users actor    ON n.actorID    = actor.userID
-                LEFT JOIN Posts p          ON n.postID     = p.postID
+                LEFT JOIN Posts p          ON n.RelatedPostID     = p.postID
                 WHERE n.receiverID = @UserID
                 ORDER BY n.creationTime DESC";
 
