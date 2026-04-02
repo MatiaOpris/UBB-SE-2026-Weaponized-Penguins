@@ -11,12 +11,13 @@
     mc:Ignorable="d"
     Title="Boards_WP">
 
+
     <Window.SystemBackdrop>
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
     <!-- the window is divided into 2 rows (Row 0 is the header, Row 1 is the rest of the page: navigation and notifications sidebars and middle section) -->
-    <Grid Background="#E6E2FF">
+    <Grid Background="{Bind MainViewModel.AppThemeBrush, Mode=OneWay}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>

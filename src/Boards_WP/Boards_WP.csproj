@@ -14,6 +14,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Content Remove="Assets\WPLogo1.png" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Assets\WeaponizedPenguinsLogo.png" />
   </ItemGroup>
 

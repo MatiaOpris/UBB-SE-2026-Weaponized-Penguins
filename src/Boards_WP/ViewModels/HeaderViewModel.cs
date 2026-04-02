@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using System.Text;
+
 using Boards_WP.Data.Models;
 using Boards_WP.Data.Services.Interfaces;
+
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+
+using Windows.Networking.NetworkOperators;
 
 namespace Boards_WP.ViewModels;
 
@@ -14,6 +18,10 @@ public partial class HeaderViewModel : ObservableObject
 {
     private readonly ICommunitiesService _communitiesService;
     private readonly INavigationService _navigationService;
+    private readonly MainViewModel _mainViewModel;
+    private readonly UserSession _userSession;
+
+    public MainViewModel MainViewModel => _mainViewModel;
 
     [ObservableProperty]
     private string _searchText = string.Empty;
@@ -24,10 +32,12 @@ public partial class HeaderViewModel : ObservableObject
     [ObservableProperty]
     private bool _noResultsToggle;
 
-    public HeaderViewModel(ICommunitiesService communitiesService, INavigationService navigationService)
+    public HeaderViewModel(ICommunitiesService communitiesService, INavigationService navigationService, UserSession userSession, MainViewModel mainViewModel)
     {
         _communitiesService = communitiesService;
         _navigationService = navigationService;
+        _userSession = userSession;
+        _mainViewModel = mainViewModel;
     }
 
     partial void OnSearchTextChanged(string searchedValue)

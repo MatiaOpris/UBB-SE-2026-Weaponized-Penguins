@@ -8,7 +8,7 @@
 
 
     <!-- we define how the Notifications sidebar should look like  -->
-    <Border Background="#F0F0FF" CornerRadius="15" Margin="4">
+    <Border Background="{x:Bind ViewModel.MainViewModel.VividThemeBrush, Mode=OneWay}" CornerRadius="15" Margin="4">
         <Grid Padding="15">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>

@@ -72,6 +72,7 @@ namespace Boards_WP.ViewModels
             // 3. Update the theme
             var newThemeColor = _postsService.DetermineFeedThemeColorByLastLikes();
             _mainViewModel.ApplyNewTheme(newThemeColor);
+
         }
 
         [RelayCommand]

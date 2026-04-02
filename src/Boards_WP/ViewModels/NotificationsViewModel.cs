@@ -1,16 +1,19 @@
+using System;
+using System.Collections.ObjectModel;
+
+using Boards_WP.Data;
+using Boards_WP.Data.Models;
+using Boards_WP.Data.Repositories;
+using Boards_WP.Data.Services;
+using Boards_WP.Data.Services.Interfaces;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-using System.Collections.ObjectModel;
-using System;
-
-using Boards_WP.Data.Models;
-using Boards_WP.Data.Services.Interfaces;
-using Boards_WP.Data;
-using Boards_WP.Data.Repositories;
-using Boards_WP.Data.Services;
-using Windows.UI.Text;
 using Microsoft.UI.Text;
+
+using Windows.Networking.NetworkOperators;
+using Windows.UI.Text;
 
 namespace Boards_WP.ViewModels;
 
@@ -104,9 +107,17 @@ public partial class NotificationsListViewModel : ObservableObject
 
     public ObservableCollection<NotificationItemViewModel> Notifications { get; } = new();
 
-    public NotificationsListViewModel(INotificationsService notificationsService = null)
+    private readonly MainViewModel _mainViewModel;
+    private readonly UserSession _userSession;
+
+
+    public MainViewModel MainViewModel => _mainViewModel;
+
+    public NotificationsListViewModel(UserSession userSession, MainViewModel mainViewModel, INotificationsService notificationsService = null)
     {
         _notificationsService = notificationsService;
+        _userSession = userSession;
+        _mainViewModel = mainViewModel;
         LoadNotifications(1); // Assuming current user ID is 1 for now
     }
 

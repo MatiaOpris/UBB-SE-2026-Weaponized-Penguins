@@ -13,7 +13,7 @@
         <SolidColorBrush x:Key="AutoSuggestBoxBottomBorderBrushFocused" Color="Transparent"/>
     </UserControl.Resources>
     
-    <Grid Background="#E6E2FF" Height="80" Padding="20,0">
+    <Grid Background="{x:Bind ViewModel.MainViewModel.VividThemeBrush, Mode=OneWay}" Height="80" Padding="20,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
