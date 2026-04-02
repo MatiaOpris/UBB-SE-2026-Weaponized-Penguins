@@ -1,70 +1,86 @@
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 using Boards_WP.Data.Models;
+using Boards_WP.Data.Services; // Ensure this matches your namespace
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Boards_WP.ViewModels
 {
     public partial class FullPostViewModel : ObservableObject
     {
+        // Dependencies
+        private readonly IPostsService _postsService;
+        private readonly ICommentsService _commentsService;
+        private readonly MainViewModel _mainViewModel;
+        private readonly UserSession _userSession;
+
         [ObservableProperty]
         private Post _currentPost;
 
         [ObservableProperty]
         private string _newCommentText;
 
+        public ObservableCollection<Comment> PostComments { get; } = new();
 
-        public ObservableCollection<Comment> PostComments { get; } = new ObservableCollection<Comment>();
-
-        private readonly IPostsService _postsService;
-        private readonly MainViewModel _mainViewModel;
-
-        public FullPostViewModel()
+        // 1. Constructor Injection (Strict MVVM)
+        public FullPostViewModel(
+            IPostsService postsService,
+            ICommentsService commentsService,
+            MainViewModel mainViewModel,
+            UserSession userSession)
         {
-
-            _mainViewModel = App.Services?.GetService<MainViewModel>();
-
-            _postsService = App.Services?.GetService<IPostsService>();
+            _postsService = postsService;
+            _commentsService = commentsService;
+            _mainViewModel = mainViewModel;
+            _userSession = userSession;
         }
 
-        public void LoadPost(Post post)
+        // 2. Initialization Method (Called by the View when navigated to)
+        public void Initialize(Post post)
         {
-            _currentPost = post;
-            LoadMockComments();
+            CurrentPost = post;
+            LoadComments();
         }
 
-        private void LoadMockComments()
+        private void LoadComments()
         {
-            var hardcodedComments = new List<Comment>
-            {
-                new Comment { CommentID = 1, Owner = new User { Username = "@Alexandra" }, Description = "Lorem ipsum...", Score = 15, CreationTime = DateTime.Now.AddHours(-2), Indentation = 0 },
-                new Comment { CommentID = 2, Owner = new User { Username = "@BerceaMatei" }, Description = "Short comment.", Score = 8, CreationTime = DateTime.Now.AddHours(-1), Indentation = 1 },
-                new Comment { CommentID = 3, Owner = new User { Username = "@RazvanBerbecar" }, Description = "Longer comment text here...", Score = 12, CreationTime = DateTime.Now.AddMinutes(-30), Indentation = 2 },
-                new Comment { CommentID = 4, Owner = new User { Username = "@BeneIonut" }, Description = "Perspiciatis unde omnis...", Score = 2, CreationTime = DateTime.Now.AddMinutes(-10), Indentation = 0 }
-            };
-
             PostComments.Clear();
-            foreach (var c in hardcodedComments) PostComments.Add(c);
+            if (CurrentPost == null) return;
+
+            var userId = _userSession.CurrentUser?.UserID ?? 0;
+
+            // Fetch real data from the database
+            var comments = _commentsService.GetCommentsByPost(CurrentPost.PostID, userId);
+
+            foreach (var c in comments)
+            {
+                PostComments.Add(c);
+            }
         }
 
         [RelayCommand]
         private void Upvote()
         {
             if (CurrentPost == null) return;
+            var userId = _userSession.CurrentUser?.UserID ?? 0;
+            if (userId == 0) return;
 
-            CurrentPost.Score++;
-            OnPropertyChanged(nameof(CurrentPost));
-
+            // 1. Tell the service to execute its logic
             _postsService.IncreaseScore(CurrentPost.PostID);
+            _postsService.UpdateUserInterests(userId, CurrentPost, VoteType.Like, false);
 
-            ThemeColor newThemeColor = _postsService.DetermineFeedThemeColorByLastLikes();
+            // 2. Fetch the true, calculated score back from the database
+            var updatedPost = _postsService.GetPostByPostID(CurrentPost.PostID);
+            if (updatedPost != null)
+            {
+                CurrentPost.Score = updatedPost.Score;
+                OnPropertyChanged(nameof(CurrentPost)); // Instantly update UI
+            }
 
+            // 3. Update the theme
+            var newThemeColor = _postsService.DetermineFeedThemeColorByLastLikes();
             _mainViewModel.ApplyNewTheme(newThemeColor);
         }
 
@@ -72,40 +88,54 @@ namespace Boards_WP.ViewModels
         private void Downvote()
         {
             if (CurrentPost == null) return;
+            var userId = _userSession.CurrentUser?.UserID ?? 0;
+            if (userId == 0) return;
 
-            CurrentPost.Score--;
-            OnPropertyChanged(nameof(CurrentPost));
-
+            // 1. Tell the service to execute its logic
             _postsService.DecreaseScore(CurrentPost.PostID);
+            _postsService.UpdateUserInterests(userId, CurrentPost, VoteType.Dislike, false);
 
-            ThemeColor newThemeColor = _postsService.DetermineFeedThemeColorByLastLikes();
+            // 2. Fetch the true, calculated score back from the database
+            var updatedPost = _postsService.GetPostByPostID(CurrentPost.PostID);
+            if (updatedPost != null)
+            {
+                CurrentPost.Score = updatedPost.Score;
+                OnPropertyChanged(nameof(CurrentPost)); // Instantly update UI
+            }
+
+            // 3. Update the theme
+            var newThemeColor = _postsService.DetermineFeedThemeColorByLastLikes();
             _mainViewModel.ApplyNewTheme(newThemeColor);
         }
 
         [RelayCommand]
         private void PostComment()
         {
-            if (string.IsNullOrWhiteSpace(NewCommentText)) return;
+            if (string.IsNullOrWhiteSpace(NewCommentText) || CurrentPost == null) return;
 
+            var currentUser = _userSession.CurrentUser;
+            if (currentUser == null) return;
+
+            // 1. Create the Comment object here in the ViewModel
             var newComment = new Comment
             {
-                CommentID = new Random().Next(1000, 9999),
-                ParentPost = CurrentPost,
-                Owner = new User { Username = "@Me" },
-                Description = NewCommentText,
-                Score = 0,
-                CreationTime = DateTime.Now,
-                Indentation = 0
+                ParentPost = CurrentPost,    // Required for Notifications
+                Owner = currentUser,         // Required for Notifications
+                Description = NewCommentText
+                // Note: Do NOT set the Indentation or CreationTime here. 
+                // Your Service is already handling that perfectly!
             };
 
+            // 2. Pass the object to the service 
+            _commentsService.AddComment(newComment);
+
+            // 3. Update the UI
             PostComments.Insert(0, newComment);
 
-            if (CurrentPost != null)
-            {
-                CurrentPost.CommentsNumber++;
-                OnPropertyChanged(nameof(CurrentPost));
-            }
+            CurrentPost.CommentsNumber++;
+            OnPropertyChanged(nameof(CurrentPost));
 
+            // 4. Clear the textbox
             NewCommentText = string.Empty;
         }
     }

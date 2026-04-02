@@ -11,15 +11,17 @@ public partial class FeedViewModel : ObservableObject
 {
     private readonly IPostsService _postsService;
     private readonly UserSession _userSession;
+    private readonly MainViewModel _mainViewModel;
 
     [ObservableProperty]
     private bool _isHome = true;
-    public ObservableCollection<Post> Posts { get; } = new();
+    public ObservableCollection<PostPreviewViewModel> Posts { get; } = new();
 
-    public FeedViewModel(IPostsService postsService, UserSession userSession)
+    public FeedViewModel(IPostsService postsService, UserSession userSession, MainViewModel mainViewModel)
     {
         _postsService = postsService;
         _userSession = userSession;
+        _mainViewModel = mainViewModel;
     }
 
     public void LoadFeed()
@@ -41,7 +43,8 @@ public partial class FeedViewModel : ObservableObject
         // IMPORTANT: Add each post to the ObservableCollection
         foreach (var post in data)
         {
-            Posts.Add(post);
+            var previewVm = new PostPreviewViewModel(post, _postsService, _userSession, _mainViewModel);
+            Posts.Add(previewVm);
         }
     }
 
@@ -49,15 +52,16 @@ public partial class FeedViewModel : ObservableObject
     {
 
         Posts.Clear();
-
-        // Fetch data from service
         var userId = _userSession.CurrentUser?.UserID ?? 0;
-        var data = _postsService.GetPostsForDiscoveryPage(userId);
 
-        // IMPORTANT: Add each post to the ObservableCollection
-        foreach (var post in data)
+        // Fetch raw database models
+        var rawPosts = _postsService.GetPostsForDiscoveryPage(userId);
+
+        // Wrap them in ViewModels before passing them to the UI!
+        foreach (var post in rawPosts)
         {
-            Posts.Add(post);
+            var previewVm = new PostPreviewViewModel(post, _postsService, _userSession, _mainViewModel);
+            Posts.Add(previewVm);
         }
     }
 }

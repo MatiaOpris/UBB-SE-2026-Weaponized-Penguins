@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:models="using:Boards_WP.Data.Models"
     xmlns:views="using:Boards_WP.Views"
+    xmlns:viewmodels="using:Boards_WP.ViewModels"
     Background="Transparent">
 
     <Grid>
@@ -52,8 +53,8 @@
 
                 <ItemsControl ItemsSource="{x:Bind ViewModel.CommunityPosts, Mode=OneWay}" Margin="20,10">
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="models:Post">
-                            <views:PostPreviewForm PostData="{x:Bind}" Margin="0,0,0,15"/>
+                        <DataTemplate x:DataType="viewmodels:PostPreviewViewModel">
+                            <views:PostPreviewForm Margin="0,0,0,15"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

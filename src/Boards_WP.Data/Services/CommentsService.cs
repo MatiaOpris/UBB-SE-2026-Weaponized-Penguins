@@ -101,14 +101,16 @@ public class CommentsService : ICommentsService
         }
 
     }
+    private const int RootParentSentinel = -1;
+
     public List<Comment> GetCommentsByPost(int postID, int currentUserID)
     {
         var comments = commentsRepo.GetCommentsByPostID(postID, currentUserID);
 
-        var childrenMap = new Dictionary<int?, List<Comment>>();
+        var childrenMap = new Dictionary<int, List<Comment>>();
         foreach (var c in comments)
         {
-            int? parentId = c.ParentComment?.CommentID;
+            int parentId = c.ParentComment?.CommentID ?? RootParentSentinel;
             if (!childrenMap.ContainsKey(parentId))
                 childrenMap[parentId] = new List<Comment>();
 
@@ -117,7 +119,7 @@ public class CommentsService : ICommentsService
 
         var sortedComments = new List<Comment>();
 
-        void AddSortedChildren(int? parentId)
+        void AddSortedChildren(int parentId)
         {
             if (childrenMap.TryGetValue(parentId, out var children))
             {
@@ -130,7 +132,7 @@ public class CommentsService : ICommentsService
             }
         }
 
-        AddSortedChildren(null);
+        AddSortedChildren(RootParentSentinel);
 
         return sortedComments;
     }

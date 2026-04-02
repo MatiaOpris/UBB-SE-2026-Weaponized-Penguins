@@ -1,68 +1,108 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-
 using Boards_WP.Data.Models;
-
-using System;
+using Boards_WP.Data.Services.Interfaces; 
 
 namespace Boards_WP.ViewModels
 {
-    // ObservableObject tells the UI to listen for property changes
     public partial class PostPreviewViewModel : ObservableObject
     {
-        
+        private readonly IPostsService _postsService;
+        private readonly UserSession _userSession;
+        private readonly MainViewModel _mainViewModel;
+
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(FormattedDate))]
+        [NotifyPropertyChangedFor(nameof(DescriptionSnippet))] 
         private Post _postData;
 
+        [ObservableProperty]
+        private string _communityName;
 
-        // constructor -> called by the .xaml.cs bridge
-        public PostPreviewViewModel(Post post)
-        {
-            _postData = post;
-        }
+        [ObservableProperty]
+        private string _authorUsername;
 
 
-        public string FormattedDate
+        public string DescriptionSnippet
         {
             get
             {
-                if (PostData != null)
-                {
-                    DateTime date = PostData.CreationTime;
-                    return date.ToString("dd/MM/yyyy");
-                }
-                else
-                {
-                    return "";
-                }
+                if (string.IsNullOrEmpty(PostData?.Description)) return string.Empty;
+                return PostData.Description.Length > 150 
+                    ? PostData.Description.Substring(0, 150) + "..." 
+                    : PostData.Description;
             }
         }
 
+        public string FormattedDate => PostData?.CreationTime.ToString("dd/MM/yyyy") ?? "";
 
-        [RelayCommand]  // generates the UpvoteCommand
+        public PostPreviewViewModel(
+            Post post, 
+            IPostsService postsService, 
+            UserSession userSession,
+            MainViewModel mainViewModel)
+        {
+            _postData = post;
+            _postsService = postsService;
+            _userSession = userSession;
+            _mainViewModel = mainViewModel;
+            _communityName = post.ParentCommunity?.Name ?? "Unknown";
+            _authorUsername = post.Owner?.Username ?? "Unknown";
+        }
+
+        [RelayCommand]
         private void Upvote()
         {
             if (PostData == null) return;
-            PostData.Score++;
-            OnPropertyChanged(nameof(PostData)); // refreshing the UI to display the new score
+            var userId = _userSession.CurrentUser?.UserID ?? 0;
+            if (userId == 0) return;
+
+            // 1. Tell the service to execute its logic
+            _postsService.IncreaseScore(PostData.PostID);
+            _postsService.UpdateUserInterests(userId, PostData, VoteType.Like, false);
+
+            // 2. Fetch the true, calculated score back from the database
+            var updatedPost = _postsService.GetPostByPostID(PostData.PostID);
+            if (updatedPost != null)
+            {
+                PostData.Score = updatedPost.Score;
+                OnPropertyChanged(nameof(PostData)); // Instantly update UI
+            }
+
+            // 3. Update the theme
+            var newThemeColor = _postsService.DetermineFeedThemeColorByLastLikes();
+            _mainViewModel.ApplyNewTheme(newThemeColor);
         }
 
         [RelayCommand]
         private void Downvote()
         {
             if (PostData == null) return;
-            PostData.Score--;
-            OnPropertyChanged(nameof(PostData));
+            var userId = _userSession.CurrentUser?.UserID ?? 0;
+            if (userId == 0) return;
+
+            // 1. Tell the service to execute its logic
+            _postsService.DecreaseScore(PostData.PostID);
+            _postsService.UpdateUserInterests(userId, PostData, VoteType.Dislike, false);
+
+            // 2. Fetch the true, calculated score back from the database
+            var updatedPost = _postsService.GetPostByPostID(PostData.PostID);
+            if (updatedPost != null)
+            {
+                PostData.Score = updatedPost.Score;
+                OnPropertyChanged(nameof(PostData)); // Instantly update UI
+            }
+
+            // 3. Update the theme
+            var newThemeColor = _postsService.DetermineFeedThemeColorByLastLikes();
+            _mainViewModel.ApplyNewTheme(newThemeColor);
         }
 
-
-        // this function finds the MainWindow and tells it to switch to the FullPostView of the corresponding post
         [RelayCommand]
         private void OpenPost()
         {
             if (PostData == null) return;
 
-            // navigation happens here
             if (App.Current is App myApp && myApp.m_window is MainWindow mainWindow)
             {
                 mainWindow.NavigateToPage(typeof(Views.Pages.FullPostView), PostData);
