@@ -256,7 +256,7 @@ public class PostsRepository : IPostsRepository
 
     private static Post MapReaderToPost(SqlDataReader reader)
     {
-        //var imageOrdinal = reader.GetOrdinal("Picture");
+        var imageOrdinal = reader.GetOrdinal("image");
 
         var owner = new User
         {
@@ -289,7 +289,7 @@ public class PostsRepository : IPostsRepository
             PostID = reader.GetInt32(reader.GetOrdinal("postID")),
             Title = reader.GetString(reader.GetOrdinal("title")),
             Description = reader.GetString(reader.GetOrdinal("description")),
-            //Image = reader.IsDBNull(imageOrdinal) ? null : (byte[])reader["image"],
+            Image = reader.IsDBNull(imageOrdinal) ? null : (byte[])reader["image"],
             Score = reader.GetInt32(reader.GetOrdinal("score")),
             CommentsNumber = reader.GetInt32(reader.GetOrdinal("commentsNumber")),
             CreationTime = reader.GetDateTime(reader.GetOrdinal("creationTime")),

@@ -5,7 +5,15 @@
     Background="Transparent">
 
     <Grid Padding="40">
-        <StackPanel Spacing="15" MaxWidth="600" HorizontalAlignment="Left">
+        <Grid.ColumnDefinitions>
+            <!-- Left side (form) -->
+            <ColumnDefinition Width="*" />
+            <!-- Right side (image picker) -->
+            <ColumnDefinition Width="300" />
+        </Grid.ColumnDefinitions>
+
+        <!-- LEFT: FORM -->
+        <StackPanel Grid.Column="0" Spacing="15" MaxWidth="600">
             <TextBlock Text="Create Post" 
                        FontSize="32" 
                        FontWeight="Bold" 
@@ -25,8 +33,7 @@
                      AcceptsReturn="True" 
                      Height="200" 
                      TextWrapping="Wrap" 
-                     CornerRadius="8" 
-                     HorizontalAlignment="Stretch"/>
+                     CornerRadius="8"/>
 
             <ComboBox x:Name="CategorySelector" 
                       ItemsSource="{x:Bind ViewModel.AvailableCategories, Mode=OneWay}"
@@ -58,5 +65,32 @@
                         CornerRadius="10"/>
             </StackPanel>
         </StackPanel>
+
+        <!-- RIGHT: IMAGE PICKER -->
+        <Grid Grid.Column="1" Margin="20,50,0,0">
+            <Grid Height="200" CornerRadius="12" Background="#E0E0E0">
+                <Border CornerRadius="12">
+                    <Grid x:Name="PicturePreviewMask" Visibility="Collapsed">
+                        <Rectangle RadiusX="12" RadiusY="12">
+                            <Rectangle.Fill>
+                                <ImageBrush x:Name="PicturePreviewBrush" Stretch="UniformToFill"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Grid>
+                </Border>
+
+                <Button HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Click="ImagePicker_Click"
+                        Background="#00000060"
+                        CornerRadius="8"
+                        Padding="14,8">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <TextBlock x:Name="PictureIcon" Text="📷" FontSize="16"/>
+                        <TextBlock Text="Add Photo" Foreground="White" FontSize="14"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+        </Grid>
     </Grid>
 </Page>

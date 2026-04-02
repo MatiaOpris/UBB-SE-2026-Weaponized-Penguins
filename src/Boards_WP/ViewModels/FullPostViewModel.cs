@@ -1,9 +1,17 @@
 using System.Collections.ObjectModel;
 using Boards_WP.Data.Models;
 using Boards_WP.Data.Services;
+using System.IO;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
+
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media.Imaging;
+
+using Boards_WP.Data.Models;
+using Boards_WP.Data.Services;
 
 namespace Boards_WP.ViewModels
 {
@@ -16,6 +24,8 @@ namespace Boards_WP.ViewModels
         private readonly UserSession _userSession;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(PostImageSource))]
+        [NotifyPropertyChangedFor(nameof(PostImageVisibility))]
         private Post _currentPost;
 
         [ObservableProperty]
@@ -52,6 +62,9 @@ namespace Boards_WP.ViewModels
             SelectedChatName = string.Empty;
         }
 
+        public BitmapImage PostImageSource => ConvertToBitmap(CurrentPost?.Image);
+        public Visibility PostImageVisibility => CurrentPost?.Image?.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
+
         public ObservableCollection<Comment> PostComments { get; } = new();
 
         public FullPostViewModel(
@@ -82,9 +95,16 @@ namespace Boards_WP.ViewModels
             var comments = _commentsService.GetCommentsByPost(CurrentPost.PostID, userId);
 
             foreach (var c in comments)
-            {
                 PostComments.Add(c);
-            }
+        }
+
+        private static BitmapImage ConvertToBitmap(byte[] data)
+        {
+            if (data == null || data.Length == 0) return null;
+            var bitmap = new BitmapImage();
+            using var ms = new MemoryStream(data);
+            bitmap.SetSource(ms.AsRandomAccessStream());
+            return bitmap;
         }
 
         [RelayCommand]

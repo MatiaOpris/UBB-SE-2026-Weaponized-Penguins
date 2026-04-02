@@ -30,6 +30,9 @@ namespace Boards_WP.ViewModels
         [NotifyCanExecuteChangedFor(nameof(UploadPostCommand))]
         private Category? _selectedCategory;
 
+        [ObservableProperty]
+        private byte[]? _postImage;
+
         public ObservableCollection<Category> AvailableCategories { get; } = new();
 
         public Community OriginCommunity { get; set; } = null!;
@@ -60,6 +63,7 @@ namespace Boards_WP.ViewModels
                 ParentCommunity = OriginCommunity,
                 Owner = _userSession.CurrentUser,
                 Score = 0,
+                Image = PostImage,
                 CommentsNumber = 0,
                 CreationTime = DateTime.Now
             };

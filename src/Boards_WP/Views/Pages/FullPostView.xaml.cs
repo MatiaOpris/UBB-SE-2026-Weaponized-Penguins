@@ -47,9 +47,7 @@ namespace Boards_WP.Views.Pages
         private void Back_Click(object sender, RoutedEventArgs e)
         {
             if (this.Frame.CanGoBack)
-            {
                 this.Frame.GoBack();
-            }
         }
     }
 }

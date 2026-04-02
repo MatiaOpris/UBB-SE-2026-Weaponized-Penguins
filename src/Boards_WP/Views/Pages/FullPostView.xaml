@@ -11,6 +11,7 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="0,0,10,20">
 
+                <!-- Back Button -->
                 <Button Click="Back_Click" Background="Transparent" BorderThickness="0" Margin="0,0,0,10" Padding="5">
                     <StackPanel Orientation="Horizontal">
                         <FontIcon Glyph="&#xE72B;" FontSize="16" />
@@ -18,14 +19,16 @@
                     </StackPanel>
                 </Button>
 
+                <!-- Main Post Card -->
                 <Border Background="White" CornerRadius="12" Padding="15" Margin="0,0,0,20" BorderBrush="#E0E0FF" BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="50"/>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="60"/>
                         </Grid.ColumnDefinitions>
 
+                        <!-- Left Column: Voting -->
                         <StackPanel Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Center"
                                     Background="#F8F8FF" CornerRadius="8" Padding="4" BorderBrush="#E0E0FF" BorderThickness="1">
                             <Button Content="▲" Command="{x:Bind ViewModel.UpvoteCommand}" Background="Transparent" BorderThickness="0"/>
@@ -33,9 +36,14 @@
                             <Button Content="▼" Command="{x:Bind ViewModel.DownvoteCommand}" Background="Transparent" BorderThickness="0"/>
                         </StackPanel>
 
+                        <!-- Middle Column: Content -->
                         <StackPanel Grid.Column="1" Margin="15,0">
                             <TextBlock Text="{x:Bind ViewModel.CurrentPost.Title, Mode=OneWay}" FontSize="22" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,0,0,10"/>
                             <TextBlock Text="{x:Bind ViewModel.CurrentPost.Description, Mode=OneWay}" TextWrapping="Wrap" Foreground="#444" Margin="0,0,0,15"/>
+
+                            <Image Source="{x:Bind ViewModel.PostImageSource, Mode=OneWay}"
+                                   Visibility="{x:Bind ViewModel.PostImageVisibility, Mode=OneWay}"
+                                   MaxHeight="400" Stretch="Uniform" HorizontalAlignment="Stretch" Margin="0,0,0,10"/>
 
                             <Grid Margin="0,5,0,0">
                                 <Grid.ColumnDefinitions>
@@ -60,9 +68,21 @@
                                 </Button>
                             </Grid>
                         </StackPanel>
+
+                        <!-- Right Column: Comment Count -->
+                        <StackPanel Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Center">
+                            <Border BorderBrush="#E0E0FF" BorderThickness="1" CornerRadius="5" Padding="5">
+                                <StackPanel>
+                                    <FontIcon Glyph="&#xE8BD;" FontSize="18" Foreground="#6A67E1"/>
+                                    <TextBlock Text="{x:Bind ViewModel.CurrentPost.CommentsNumber, Mode=OneWay}"
+                                               HorizontalAlignment="Center" FontSize="10"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
                     </Grid>
                 </Border>
 
+                <!-- Share Area -->
                 <Border Background="White" CornerRadius="12" Margin="0,0,0,20" Padding="15" 
                         BorderBrush="#6A67E1" BorderThickness="2"
                         Visibility="{x:Bind BooleanToVisibility(ViewModel.IsShareAreaVisible), Mode=OneWay}">
@@ -77,6 +97,7 @@
                     </Grid>
                 </Border>
 
+                <!-- Write Comment Area -->
                 <Border Background="White" CornerRadius="12" Margin="0,0,0,20" Padding="15" 
                         BorderBrush="#6A67E1" BorderThickness="2"
                         Visibility="{x:Bind BooleanToVisibility(ViewModel.IsCommentAreaVisible), Mode=OneWay}">
@@ -91,6 +112,7 @@
                     </Grid>
                 </Border>
 
+                <!-- Comments List -->
                 <ItemsControl ItemsSource="{x:Bind ViewModel.PostComments, Mode=OneWay}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="models:Comment">
@@ -98,6 +120,7 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+
             </StackPanel>
         </ScrollViewer>
     </Grid>

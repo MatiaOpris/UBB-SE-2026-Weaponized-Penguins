@@ -17,51 +17,64 @@
             <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="Transparent"/>
         </Button.Resources>
 
-        <Grid Background="White" 
-              CornerRadius="12" 
-              Padding="15" 
-              BorderBrush="#E0E0FF" 
+        <Grid Background="White"
+              CornerRadius="12"
+              Padding="15"
+              BorderBrush="#E0E0FF"
               BorderThickness="1">
-            
+
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="50"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="50"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Center" 
+            <StackPanel Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Center"
                         Background="#F8F8FF" CornerRadius="8" Padding="4" BorderBrush="#E0E0FF" BorderThickness="1">
-                
-                <Button Content="▲" Command="{x:Bind ViewModel.UpvoteCommand, Mode=OneWay}" 
+
+                <Button Content="▲" Command="{x:Bind ViewModel.UpvoteCommand, Mode=OneWay}"
                         Background="Transparent" BorderThickness="0" HorizontalAlignment="Center"/>
 
-                <TextBlock Text="{x:Bind ViewModel.PostData.Score, Mode=OneWay}" 
+                <TextBlock Text="{x:Bind ViewModel.PostData.Score, Mode=OneWay}"
                            HorizontalAlignment="Center" FontWeight="Bold" Foreground="#6A67E1"/>
-                
-                <Button Content="▼" Command="{x:Bind ViewModel.DownvoteCommand, Mode=OneWay}" 
+
+                <Button Content="▼" Command="{x:Bind ViewModel.DownvoteCommand, Mode=OneWay}"
                         Background="Transparent" BorderThickness="0" HorizontalAlignment="Center"/>
             </StackPanel>
 
+         
             <StackPanel Grid.Column="1" Margin="15,0">
+
+               
                 <Grid Margin="0,0,0,10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    
+
                     <StackPanel>
                         <TextBlock Text="{x:Bind ViewModel.CommunityName, Mode=OneWay}" FontWeight="Bold" FontSize="14"/>
                         <TextBlock Text="{x:Bind ViewModel.AuthorUsername, Mode=OneWay}" FontSize="12" Foreground="Gray"/>
                     </StackPanel>
 
-                    <TextBlock Grid.Column="1" 
-                               Text="{x:Bind ViewModel.FormattedDate, Mode=OneWay}" 
+                    <TextBlock Grid.Column="1"
+                               Text="{x:Bind ViewModel.FormattedDate, Mode=OneWay}"
                                FontSize="11" Foreground="Silver" VerticalAlignment="Top"/>
                 </Grid>
 
-                <TextBlock Text="{x:Bind ViewModel.PostData.Title, Mode=OneWay}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,5" TextWrapping="Wrap"/>
-                
-                <TextBlock Text="{x:Bind ViewModel.DescriptionSnippet, Mode=OneWay}" TextWrapping="Wrap" Foreground="#444"/>
+                <TextBlock Text="{x:Bind ViewModel.PostData.Title, Mode=OneWay}"
+                           FontSize="18" FontWeight="SemiBold" Margin="0,0,0,5" TextWrapping="Wrap"/>
+
+                <TextBlock Text="{x:Bind ViewModel.DescriptionSnippet, Mode=OneWay}"
+                           TextWrapping="Wrap" Foreground="#444"/>
+
+                <Image Source="{x:Bind ViewModel.PostImageSource, Mode=OneWay}"
+                       Visibility="{x:Bind ViewModel.PostImageVisibility, Mode=OneWay}"
+                       MaxHeight="200"
+                       Stretch="Uniform"
+                       HorizontalAlignment="Stretch"
+                       Margin="0,10,0,0"/>
+
             </StackPanel>
 
             <StackPanel Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Center">
@@ -72,6 +85,7 @@
                     </StackPanel>
                 </Border>
             </StackPanel>
+
         </Grid>
     </Button>
 </UserControl>
