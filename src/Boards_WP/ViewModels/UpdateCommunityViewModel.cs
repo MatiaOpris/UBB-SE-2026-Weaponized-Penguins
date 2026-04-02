@@ -7,12 +7,16 @@ using Boards_WP.Views.Pages;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Boards_WP.ViewModels
 {
     public partial class UpdateCommunityViewModel : ObservableObject
     {
         private readonly ICommunitiesService _communitiesService;
         private readonly INavigationService _navigationService;
+        private readonly MainViewModel _mainViewModel;
+        private readonly UserSession _userSession;
 
         private Community _community = null!;
 
@@ -35,10 +39,12 @@ namespace Boards_WP.ViewModels
 
         public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
 
-        public UpdateCommunityViewModel(ICommunitiesService communitiesService, INavigationService navigationService)
+        public UpdateCommunityViewModel()
         {
-            _communitiesService = communitiesService;
-            _navigationService = navigationService;
+            _mainViewModel = App.Services?.GetService<MainViewModel>();
+            _communitiesService = App.Services?.GetService<ICommunitiesService>();
+            _navigationService = App.Services?.GetService<INavigationService>();
+            _userSession = App.Services?.GetService<UserSession>();
         }
 
         public void Initialize(Community community)
