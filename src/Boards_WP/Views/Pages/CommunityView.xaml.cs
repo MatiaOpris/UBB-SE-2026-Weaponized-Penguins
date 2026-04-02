@@ -1,9 +1,7 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 
-using Boards_WP.Data.Services.Interfaces;
 using Boards_WP.ViewModels;
-using Boards_WP.Views.Pages;
 
 namespace Boards_WP.Views.Pages
 {
@@ -13,10 +11,14 @@ namespace Boards_WP.Views.Pages
 
         public CommunityView()
         {
+            this.InitializeComponent();
+
             var postsService = App.GetService<IPostsService>();
+
             ViewModel = new CommunityViewModel(
                 navigateToCreatePost: community => Frame.Navigate(typeof(CreatePostView), community));
-            this.InitializeComponent();
+
+            this.DataContext = ViewModel;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
