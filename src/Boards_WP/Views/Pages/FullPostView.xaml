@@ -71,8 +71,6 @@
                             <ComboBox ItemsSource="{x:Bind ViewModel.HardcodedChats}"
                                       SelectedItem="{x:Bind ViewModel.SelectedChatName, Mode=TwoWay}"
                                       PlaceholderText="Select a chat..." Width="200"/>
-                            <TextBox Text="{x:Bind ViewModel.SelectedChatName, Mode=OneWay}" 
-                                     IsReadOnly="True" PlaceholderText="Selected recipient" Width="150" BorderThickness="0" Background="#F0F0F0"/>
                         </StackPanel>
                         <Button Grid.Column="1" Content="Send" Command="{x:Bind ViewModel.SendShareCommand}"
                                 Background="#6A67E1" Foreground="White" CornerRadius="8" Width="80"/>

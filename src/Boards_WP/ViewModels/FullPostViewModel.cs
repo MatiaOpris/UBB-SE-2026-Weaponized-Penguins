@@ -164,6 +164,7 @@ namespace Boards_WP.ViewModels
                 NewCommentText = string.Empty;
                 IsCommentAreaVisible = false;
 
+                _postsService.IncreaseCommentsNumber(CurrentPost.PostID);
                 OnPropertyChanged(nameof(CurrentPost));
             }
             catch (Exception ex)
@@ -171,7 +172,5 @@ namespace Boards_WP.ViewModels
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
         }
-
-
     }
 }
