@@ -4,7 +4,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Boards_WP.Views.Pages"
     xmlns:views="using:Boards_WP.Views"
-    xmlns:viewmodels="using:Boards_WP.ViewModels"
     xmlns:models="using:Boards_WP.Data.Models"
     Background="Transparent">
 
@@ -18,11 +17,8 @@
                         <TextBlock Text=" Back to Feed" VerticalAlignment="Center" Margin="5,0,0,0"/>
                     </StackPanel>
                 </Button>
-                
 
-                
-
-               <Border Background="White" CornerRadius="12" Padding="15" Margin="0,0,0,20" BorderBrush="#E0E0FF" BorderThickness="1">
+                <Border Background="White" CornerRadius="12" Padding="15" Margin="0,0,0,20" BorderBrush="#E0E0FF" BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="50"/>
@@ -65,6 +61,16 @@
 
                             <Image x:Name="PostImage" MaxHeight="400" Stretch="Uniform" Margin="0,0,0,10"
                                    Visibility="{x:Bind local:FullPostView.NullToVisibility(ViewModel.CurrentPost.Image), Mode=OneWay}"/>
+
+                            <Button x:Name="ShowCommentBtn" 
+                                    Command="{x:Bind ViewModel.ShowCommentAreaCommand}"
+                                    Visibility="{x:Bind BooleanToInverseVisibility(ViewModel.IsCommentAreaVisible), Mode=OneWay}"
+                                    Background="Transparent" BorderThickness="0" Padding="0">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon Glyph="&#xE8BD;" FontSize="16" Foreground="#6A67E1"/>
+                                    <TextBlock Text="Write Comment" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#6A67E1"/>
+                                </StackPanel>
+                            </Button>
                         </StackPanel>
 
                         <StackPanel Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Center">
@@ -79,16 +85,22 @@
                     </Grid>
                 </Border>
 
-                
-                <Border Background="White" CornerRadius="12" Margin="0,0,0,20" Padding="15" BorderBrush="#E0E0E0" BorderThickness="1">
+                <Border Background="White" CornerRadius="12" Margin="0,0,0,20" Padding="15" 
+                        BorderBrush="#6A67E1" BorderThickness="2"
+                        Visibility="{x:Bind BooleanToVisibility(ViewModel.IsCommentAreaVisible), Mode=OneWay}">
                     <Grid ColumnDefinitions="*, Auto">
-                        <TextBox PlaceholderText="Write a comment...." 
+                        <TextBox x:Name="CommentInput" 
+                                 PlaceholderText="Write a comment...." 
                                  Text="{x:Bind ViewModel.NewCommentText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 AcceptsReturn="True" TextWrapping="Wrap" BorderThickness="0" Background="Transparent" MinHeight="40"/>
+                                 AcceptsReturn="True" TextWrapping="Wrap" BorderThickness="0" 
+                                 Background="Transparent" MinHeight="60"/>
                         
-                        <Button Grid.Column="1" Content="Post Comment" 
-                                Command="{x:Bind ViewModel.PostCommentCommand}"
-                                Background="#6A67E1" Foreground="White" CornerRadius="8" VerticalAlignment="Bottom" Margin="10,0,0,0"/>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="10" Margin="10,0,0,0">
+                            <Button Content="Cancel" Command="{x:Bind ViewModel.CancelCommentCommand}" 
+                                    Background="Transparent" BorderThickness="0"/>
+                            <Button Content="Post Comment" Command="{x:Bind ViewModel.PostCommentCommand}"
+                                    Background="#6A67E1" Foreground="White" CornerRadius="8"/>
+                        </StackPanel>
                     </Grid>
                 </Border>
 

@@ -1,16 +1,15 @@
 using System.Collections.ObjectModel;
-
 using Boards_WP.Data.Models;
-using Boards_WP.Data.Services; // Ensure this matches your namespace
-
+using Boards_WP.Data.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System;
 
 namespace Boards_WP.ViewModels
 {
     public partial class FullPostViewModel : ObservableObject
     {
-        // Dependencies
+        
         private readonly IPostsService _postsService;
         private readonly ICommentsService _commentsService;
         private readonly MainViewModel _mainViewModel;
@@ -22,9 +21,11 @@ namespace Boards_WP.ViewModels
         [ObservableProperty]
         private string _newCommentText;
 
+        [ObservableProperty]
+        private bool _isCommentAreaVisible;
+
         public ObservableCollection<Comment> PostComments { get; } = new();
 
-        // 1. Constructor Injection (Strict MVVM)
         public FullPostViewModel(
             IPostsService postsService,
             ICommentsService commentsService,
@@ -37,13 +38,9 @@ namespace Boards_WP.ViewModels
             _userSession = userSession;
         }
 
-        // 2. Initialization Method (Called by the View when navigated to)
         public void Initialize(Post post)
         {
-            // Don't just trust the passed object; fetch the full data including 
-            // Community and Owner details from the service.
             var fullPost = _postsService.GetPostByPostID(post.PostID);
-
             CurrentPost = fullPost ?? post;
             LoadComments();
         }
@@ -54,8 +51,6 @@ namespace Boards_WP.ViewModels
             if (CurrentPost == null) return;
 
             var userId = _userSession.CurrentUser?.UserID ?? 0;
-
-            // Fetch real data from the database
             var comments = _commentsService.GetCommentsByPost(CurrentPost.PostID, userId);
 
             foreach (var c in comments)
@@ -71,20 +66,17 @@ namespace Boards_WP.ViewModels
             var userId = _userSession.CurrentUser?.UserID ?? 0;
             if (userId == 0) return;
 
-            // 1. Tell the service to execute its logic
             _postsService.IncreaseScore(CurrentPost.PostID);
             _postsService.UpdateUserInterests(userId, CurrentPost, VoteType.Like, false);
 
-            // 2. Fetch the true, calculated score back from the database
             var updatedPost = _postsService.GetPostByPostID(CurrentPost.PostID);
             if (updatedPost != null)
             {
                 CurrentPost.Score = updatedPost.Score;
-                OnPropertyChanged(nameof(CurrentPost)); // Instantly update UI
+                OnPropertyChanged(nameof(CurrentPost));
             }
 
-            // 3. Update the theme
-            var newThemeColor = _postsService.DetermineThemeForASinglePost(updatedPost);
+            var newThemeColor = _postsService.DetermineFeedThemeColorByLastLikes();
             _mainViewModel.ApplyNewTheme(newThemeColor);
         }
 
@@ -95,53 +87,61 @@ namespace Boards_WP.ViewModels
             var userId = _userSession.CurrentUser?.UserID ?? 0;
             if (userId == 0) return;
 
-            // 1. Tell the service to execute its logic
             _postsService.DecreaseScore(CurrentPost.PostID);
             _postsService.UpdateUserInterests(userId, CurrentPost, VoteType.Dislike, false);
 
-            // 2. Fetch the true, calculated score back from the database
             var updatedPost = _postsService.GetPostByPostID(CurrentPost.PostID);
             if (updatedPost != null)
             {
                 CurrentPost.Score = updatedPost.Score;
-                OnPropertyChanged(nameof(CurrentPost)); // Instantly update UI
+                OnPropertyChanged(nameof(CurrentPost));
             }
 
-            // 3. Update the theme
             var newThemeColor = _postsService.DetermineFeedThemeColorByLastLikes();
             _mainViewModel.ApplyNewTheme(newThemeColor);
         }
 
         [RelayCommand]
+        private void ShowCommentArea()
+        {
+            IsCommentAreaVisible = true;
+        }
+
+        [RelayCommand]
+        private void CancelComment()
+        {
+            IsCommentAreaVisible = false;
+            NewCommentText = string.Empty;
+        }
+
+        
+        [RelayCommand]
         private void PostComment()
         {
             if (string.IsNullOrWhiteSpace(NewCommentText) || CurrentPost == null) return;
 
-            var currentUser = _userSession.CurrentUser;
-            if (currentUser == null) return;
-
-            // 1. Create the Comment object here in the ViewModel
             var newComment = new Comment
             {
-                ParentPost = CurrentPost,    // Required for Notifications
-                Owner = currentUser,         // Required for Notifications
-                Description = NewCommentText
-                // Note: Do NOT set the Indentation or CreationTime here. 
-                // Your Service is already handling that perfectly!
+                ParentPost = CurrentPost,
+                Owner = _userSession.CurrentUser,
+                Description = NewCommentText,
+                CreationTime = DateTime.Now
             };
 
-            // 2. Pass the object to the service 
-            _commentsService.AddComment(newComment);
+            try
+            {
+                _commentsService.AddComment(newComment);
+                PostComments.Insert(0, newComment);
+                CurrentPost.CommentsNumber++;
+                NewCommentText = string.Empty;
+                IsCommentAreaVisible = false;
 
-            // 3. Update the UI
-            PostComments.Insert(0, newComment);
-
-            CurrentPost.CommentsNumber++;
-            _postsService.IncreaseCommentsNumber(CurrentPost.PostID);
-            OnPropertyChanged(nameof(CurrentPost));
-
-            // 4. Clear the textbox
-            NewCommentText = string.Empty;
+                OnPropertyChanged(nameof(CurrentPost));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
         }
     }
 }
