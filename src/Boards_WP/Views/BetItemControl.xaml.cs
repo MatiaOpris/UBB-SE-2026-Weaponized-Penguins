@@ -7,8 +7,13 @@ namespace Boards_WP.Views
 {
     public sealed partial class BetItemControl : UserControl
     {
+        // DependencyProperty allows the XAML to bind to this property from the outside
         public static readonly DependencyProperty BetDataProperty =
-            DependencyProperty.Register("BetData", typeof(Bet), typeof(BetItemControl), new PropertyMetadata(null));
+            DependencyProperty.Register(
+                nameof(BetData),
+                typeof(Bet),
+                typeof(BetItemControl),
+                new PropertyMetadata(null));
 
         public Bet BetData
         {

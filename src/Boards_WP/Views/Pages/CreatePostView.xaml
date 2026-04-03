@@ -17,7 +17,7 @@
             <TextBlock Text="Create Post" 
                        FontSize="32" 
                        FontWeight="Bold" 
-                       Foreground="#6A67E1" 
+                       Foreground="white" 
                        Margin="0,0,0,10"/>
 
             <TextBox x:Name="TitleInput" 
@@ -58,7 +58,7 @@
 
                 <Button Content="Upload Post" 
                         Command="{x:Bind ViewModel.UploadPostCommand}" 
-                        Background="#6A67E1" 
+                        Background="{x:Bind ViewModel.MainViewModel.VividThemeBrush, Mode=OneWay}" 
                         Foreground="White" 
                         FontWeight="Bold"
                         Padding="40,12" 

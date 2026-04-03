@@ -31,9 +31,12 @@
                         <!-- Left Column: Voting -->
                         <StackPanel Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Center"
                                     Background="#F8F8FF" CornerRadius="8" Padding="4" BorderBrush="#E0E0FF" BorderThickness="1">
-                            <Button Content="▲" Command="{x:Bind ViewModel.UpvoteCommand}" Background="Transparent" BorderThickness="0"/>
-                            <TextBlock Text="{x:Bind ViewModel.CurrentPost.Score, Mode=OneWay}" HorizontalAlignment="Center" FontWeight="Bold" Foreground="#6A67E1"/>
-                            <Button Content="▼" Command="{x:Bind ViewModel.DownvoteCommand}" Background="Transparent" BorderThickness="0"/>
+                            <Button Content="▲" Command="{x:Bind ViewModel.UpvoteCommand}"
+                                    Background="Transparent" BorderThickness="0" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{x:Bind ViewModel.CurrentPost.Score, Mode=OneWay}"
+                                       HorizontalAlignment="Center" FontWeight="Bold" Foreground="{x:Bind ViewModel.MainViewModel.VividThemeBrush, Mode=OneWay}"/>
+                            <Button Content="▼" Command="{x:Bind ViewModel.DownvoteCommand}"
+                                    Background="Transparent" BorderThickness="0" HorizontalAlignment="Center"/>
                         </StackPanel>
 
                         <!-- Middle Column: Content -->
@@ -71,9 +74,9 @@
 
                         <!-- Right Column: Comment Count -->
                         <StackPanel Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Center">
-                            <Border BorderBrush="#E0E0FF" BorderThickness="1" CornerRadius="5" Padding="5">
+                            <Border BorderBrush="{x:Bind ViewModel.MainViewModel.VividThemeBrush, Mode=OneWay}" BorderThickness="1" CornerRadius="5" Padding="5">
                                 <StackPanel>
-                                    <FontIcon Glyph="&#xE8BD;" FontSize="18" Foreground="#6A67E1"/>
+                                    <FontIcon Glyph="&#xE8BD;" FontSize="18" Foreground="{x:Bind ViewModel.MainViewModel.VividThemeBrush, Mode=OneWay}"/>
                                     <TextBlock Text="{x:Bind ViewModel.CurrentPost.CommentsNumber, Mode=OneWay}"
                                                HorizontalAlignment="Center" FontSize="10"/>
                                 </StackPanel>
@@ -107,7 +110,9 @@
                                  AcceptsReturn="True" TextWrapping="Wrap" BorderThickness="0" MinHeight="60"/>
                         <StackPanel Grid.Column="1" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="10" Margin="10,0,0,0">
                             <Button Content="Cancel" Command="{x:Bind ViewModel.CancelCommentCommand}" Background="Transparent"/>
-                            <Button Content="Post Comment" Command="{x:Bind ViewModel.PostCommentCommand}" Background="#6A67E1" Foreground="White" CornerRadius="8"/>
+                           <Button Grid.Column="1" Content="Post Comment" 
+                                Command="{x:Bind ViewModel.PostCommentCommand}"
+                                Background="{x:Bind ViewModel.MainViewModel.VividThemeBrush, Mode=OneWay}" Foreground="White" CornerRadius="8" VerticalAlignment="Bottom" Margin="10,0,0,0"/>
                         </StackPanel>
                     </Grid>
                 </Border>

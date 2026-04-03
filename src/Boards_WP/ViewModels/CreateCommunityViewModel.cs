@@ -14,6 +14,9 @@ namespace Boards_WP.ViewModels
         private readonly ICommunitiesService _communitiesService;
         private readonly INavigationService _navigationService;
         private readonly UserSession _userSession;
+        private readonly MainViewModel _mainViewModel;
+
+        public MainViewModel MainViewModel => _mainViewModel;
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(CreateCommunityCommand))]

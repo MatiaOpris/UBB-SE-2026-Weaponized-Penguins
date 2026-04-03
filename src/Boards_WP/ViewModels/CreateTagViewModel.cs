@@ -24,6 +24,7 @@ public partial class CreateTagViewModel : ObservableObject
 
     public ObservableCollection<Category> AvailableCategories { get; } = new();
 
+    
     public event Action<Tag>? TagCreated;
     public event Action? Cancelled;
 

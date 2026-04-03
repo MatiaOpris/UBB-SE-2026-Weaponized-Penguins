@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Boards_WP.Views"
     xmlns:models="using:Boards_WP.Data.Models"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="Transparent">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -49,7 +49,7 @@
                     Margin="0,0,20,0"
                     VerticalAlignment="Center"
                     Style="{StaticResource AccentButtonStyle}"
-                    Background="#6A67E1"
+                    Background="{x:Bind ViewModel.MainViewModel.VividThemeBrush, Mode=OneWay}"
                     Command="{x:Bind ViewModel.CreateBetCommand, Mode=OneWay}"/>
         </Grid>
 

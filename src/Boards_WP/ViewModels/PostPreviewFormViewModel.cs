@@ -17,6 +17,8 @@ namespace Boards_WP.ViewModels
         private readonly UserSession _userSession;
         private readonly MainViewModel _mainViewModel;
 
+        public MainViewModel MainViewModel => _mainViewModel;
+
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(FormattedDate))]
         [NotifyPropertyChangedFor(nameof(DescriptionSnippet))]

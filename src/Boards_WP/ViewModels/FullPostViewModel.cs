@@ -1,3 +1,4 @@
+
 using System.Collections.ObjectModel;
 using Boards_WP.Data.Models;
 using Boards_WP.Data.Services;
@@ -22,6 +23,8 @@ namespace Boards_WP.ViewModels
         private readonly ICommentsService _commentsService;
         private readonly MainViewModel _mainViewModel;
         private readonly UserSession _userSession;
+
+        public MainViewModel MainViewModel => _mainViewModel;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(PostImageSource))]
@@ -67,6 +70,7 @@ namespace Boards_WP.ViewModels
 
         public ObservableCollection<Comment> PostComments { get; } = new();
 
+        
         public FullPostViewModel(
             IPostsService postsService,
             ICommentsService commentsService,
@@ -79,8 +83,10 @@ namespace Boards_WP.ViewModels
             _userSession = userSession;
         }
 
+        
         public void Initialize(Post post)
         {
+            
             var fullPost = _postsService.GetPostByPostID(post.PostID);
             CurrentPost = fullPost ?? post;
             LoadComments();
@@ -92,6 +98,8 @@ namespace Boards_WP.ViewModels
             if (CurrentPost == null) return;
 
             var userId = _userSession.CurrentUser?.UserID ?? 0;
+
+            
             var comments = _commentsService.GetCommentsByPost(CurrentPost.PostID, userId);
 
             foreach (var c in comments)
@@ -114,17 +122,20 @@ namespace Boards_WP.ViewModels
             var userId = _userSession.CurrentUser?.UserID ?? 0;
             if (userId == 0) return;
 
+            
             _postsService.IncreaseScore(CurrentPost.PostID);
             _postsService.UpdateUserInterests(userId, CurrentPost, VoteType.Like, false);
 
+           
             var updatedPost = _postsService.GetPostByPostID(CurrentPost.PostID);
             if (updatedPost != null)
             {
                 CurrentPost.Score = updatedPost.Score;
-                OnPropertyChanged(nameof(CurrentPost));
+                OnPropertyChanged(nameof(CurrentPost)); 
             }
 
-            var newThemeColor = _postsService.DetermineFeedThemeColorByLastLikes();
+            
+            var newThemeColor = _postsService.DetermineThemeForASinglePost(updatedPost);
             _mainViewModel.ApplyNewTheme(newThemeColor);
         }
 
@@ -135,16 +146,19 @@ namespace Boards_WP.ViewModels
             var userId = _userSession.CurrentUser?.UserID ?? 0;
             if (userId == 0) return;
 
+            
             _postsService.DecreaseScore(CurrentPost.PostID);
             _postsService.UpdateUserInterests(userId, CurrentPost, VoteType.Dislike, false);
 
+           
             var updatedPost = _postsService.GetPostByPostID(CurrentPost.PostID);
             if (updatedPost != null)
             {
                 CurrentPost.Score = updatedPost.Score;
-                OnPropertyChanged(nameof(CurrentPost));
+                OnPropertyChanged(nameof(CurrentPost)); 
             }
 
+           
             var newThemeColor = _postsService.DetermineFeedThemeColorByLastLikes();
             _mainViewModel.ApplyNewTheme(newThemeColor);
         }

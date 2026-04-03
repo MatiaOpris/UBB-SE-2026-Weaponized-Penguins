@@ -9,7 +9,7 @@
             <TextBlock Text="Start a Community" 
                        FontSize="32" 
                        FontWeight="Bold" 
-                       Foreground="#6A67E1"/>
+                       Foreground="{x:Bind ViewModel.MainViewModel.VividThemeBrush, Mode=OneWay}"/>
 
         
             <Grid Height="160" CornerRadius="12" Background="#E0E0E0">
@@ -77,7 +77,7 @@
 
                 <Button Content="Create the community" 
                         Command="{x:Bind ViewModel.CreateCommunityCommand}"
-                        Background="#6A67E1" 
+                        Background="{x:Bind ViewModel.MainViewModel.VividThemeBrush, Mode=OneWay}" 
                         Foreground="White" 
                         FontWeight="Bold"
                         Padding="30,12" 

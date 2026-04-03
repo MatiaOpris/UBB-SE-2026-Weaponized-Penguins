@@ -60,6 +60,10 @@ namespace Boards_WP.Views
                     try
                     {
                         commentsService.AddComment(newReply);
+                        postsService.IncreaseCommentsNumber(postPage.ViewModel.CurrentPost.PostID);
+
+
+                       
                         postPage.ViewModel.Initialize(postPage.ViewModel.CurrentPost);
                     }
                     catch (Exception ex)

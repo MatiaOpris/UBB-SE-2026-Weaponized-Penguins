@@ -10,7 +10,9 @@ namespace Boards_WP.ViewModels
         
         public ObservableCollection<Bet> FilteredBets { get; set; } = new();
 
-        
+        private MainViewModel _mainViewModel;
+        public MainViewModel MainViewModel => _mainViewModel;
+
         public double HomeTabOpacity => 1.0;
         public double UserBetsTabOpacity => 0.6;
 
@@ -21,6 +23,8 @@ namespace Boards_WP.ViewModels
 
         public BetsViewModel()
         {
+            _mainViewModel = App.GetService<MainViewModel>();
+
             FilteredBets.Add(new Bet
             {
                 Expression = "Mock Bet for UI Testing",

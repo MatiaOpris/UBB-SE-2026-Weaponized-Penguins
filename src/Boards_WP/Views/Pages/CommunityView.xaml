@@ -11,7 +11,7 @@
         <ScrollViewer>
             <StackPanel Spacing="10">
                 <Grid Height="250">
-                    <Border Height="200" VerticalAlignment="Top" CornerRadius="0,0,15,15" Background="#AFAFFF">
+                    <Border Height="200" VerticalAlignment="Top" CornerRadius="0,0,15,15" Background="#FFFFFF">
                         <Image Source="{x:Bind ViewModel.BannerImage, Mode=OneWay}" Stretch="UniformToFill"/>
                     </Border>
 
@@ -30,17 +30,17 @@
 
                                 <Button Content="Join Community"
                                         Command="{x:Bind ViewModel.JoinCommand}"
-                                        Background="#6A67E1" Foreground="White" CornerRadius="8"
+                                        Background="{x:Bind ViewModel.MainViewModel.VividThemeBrush, Mode=OneWay}" Foreground="White" CornerRadius="8"
                                         Visibility="{x:Bind ViewModel.JoinButtonVisibility, Mode=OneWay}"/>
 
                                 <StackPanel Orientation="Horizontal" Spacing="8"
                                             Visibility="{x:Bind ViewModel.MemberActionsVisibility, Mode=OneWay}">
                                     <Button Content="Create Post"
                                             Command="{x:Bind ViewModel.CreatePostCommand}"
-                                            Background="White" BorderBrush="#6A67E1" BorderThickness="1" CornerRadius="8"/>
+                                            Background="White" BorderBrush="{x:Bind ViewModel.MainViewModel.VividThemeBrush, Mode=OneWay}" BorderThickness="1" CornerRadius="8"/>
                                     <Button Content="Edit Community"
                                             Command="{x:Bind ViewModel.EditCommunityCommand}"
-                                            Background="#EEF0FF" Foreground="#6A67E1" BorderBrush="#6A67E1" BorderThickness="1" CornerRadius="8"
+                                            Background="White" BorderBrush="{x:Bind ViewModel.MainViewModel.VividThemeBrush, Mode=OneWay}" BorderThickness="1" CornerRadius="8"
                                             Visibility="{x:Bind ViewModel.EditButtonVisibility, Mode=OneWay}"/>
                                     <Button Content="Leave Community"
                                             Command="{x:Bind ViewModel.LeaveCommand}"

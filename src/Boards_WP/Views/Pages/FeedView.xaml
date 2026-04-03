@@ -20,7 +20,7 @@
             <!-- PostPreviewForm PostData="{x:Bind}" specifies that the current Post object should be parsed through PostPreviewForm (how the post should look like)-->
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="viewmodels:PostPreviewViewModel">
-                    <views:PostPreviewForm/>
+                    <views:PostPreviewForm Margin="0,0,0,15"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
             

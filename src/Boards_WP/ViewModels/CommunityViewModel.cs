@@ -13,6 +13,10 @@ namespace Boards_WP.ViewModels
         private readonly IPostsService _postsService;
         private readonly ICommunitiesService _communitiesService;
         private readonly UserSession _userSession;
+        private readonly MainViewModel _mainViewModel;
+
+        public MainViewModel MainViewModel => _mainViewModel;
+
         private readonly Action<Community> _navigateToCreatePost;
         private readonly Action<Community> _navigateToEditCommunity;
 
@@ -55,6 +59,7 @@ public ObservableCollection<PostPreviewViewModel> CommunityPosts { get; } = new(
             _postsService = App.Services?.GetService<IPostsService>();
             _communitiesService = App.Services?.GetService<ICommunitiesService>();
             _userSession = App.Services?.GetService<UserSession>();
+            _mainViewModel = App.Services?.GetService<MainViewModel>();
             _navigateToCreatePost = navigateToCreatePost;
             _navigateToEditCommunity = navigateToEditCommunity;
         }

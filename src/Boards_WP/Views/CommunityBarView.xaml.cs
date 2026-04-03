@@ -1,3 +1,6 @@
+using Boards_WP.ViewModels; 
+
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
@@ -12,7 +15,6 @@ namespace Boards_WP.Views
         public CommunityBarView()
         {
             this.ViewModel = App.GetService<CommunityBarViewModel>();
-            //to do - load communities from service
             this.InitializeComponent();
             this.Loaded += CommunityBarView_Loaded;
         }
@@ -30,6 +32,7 @@ namespace Boards_WP.Views
                 ViewModel.NavigateToCommunityCommand.Execute(selected);
             }
         }
+
         private void HomeNavigation_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
             ViewModel.NavigateHomeCommand.Execute(null);

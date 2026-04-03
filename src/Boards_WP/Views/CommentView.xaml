@@ -10,7 +10,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Border Grid.Column="0" Width="2" Background="#6A67E1" Margin="0,5,15,5"
+        <Border Grid.Column="0" Width="2" Background="white" Margin="0,5,15,5"
                 Visibility="{x:Bind GetLineVisibility(CommentData.Indentation), Mode=OneWay}" CornerRadius="1"/>
 
         <StackPanel Grid.Column="1">
@@ -29,8 +29,8 @@
 
                         <Button Command="{x:Bind ViewModel.ToggleReplyCommand}" Background="Transparent" BorderThickness="0" Padding="0">
                             <StackPanel Orientation="Horizontal" Spacing="5">
-                                <FontIcon Glyph="&#xE8BD;" FontSize="14" Foreground="#6A67E1"/>
-                                <TextBlock Text="reply" FontSize="12" Foreground="#6A67E1"/>
+                                <FontIcon Glyph="&#xE8BD;" FontSize="14" Foreground="white"/>
+                                <TextBlock Text="reply" FontSize="12" Foreground="white"/>
                             </StackPanel>
                         </Button>
                     </StackPanel>
@@ -52,11 +52,11 @@
                 </Grid>
             </Border>
 
-            <StackPanel Visibility="{x:Bind ViewModel.IsReplyAreaVisible, Mode=OneWay}" Margin="20,10,0,0" Spacing="8">
+            <StackPanel Visibility="{x:Bind ViewModel.IsReplyAreaVisible, Mode=OneWay}" Margin="40,10,0,0" Spacing="8">
                 <TextBox Text="{x:Bind ViewModel.ReplyText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                         PlaceholderText="Write a reply..." AcceptsReturn="True" CornerRadius="8"/>
+                         PlaceholderText="Write a reply..." AcceptsReturn="True"/>
                 <Button Content="Post Reply" Command="{x:Bind ViewModel.SubmitReplyCommand}" 
-                        HorizontalAlignment="Right" Background="#6A67E1" Foreground="White" CornerRadius="8"/>
+                        HorizontalAlignment="Right" Background="white" Foreground="White" CornerRadius="8"/>
             </StackPanel>
         </StackPanel>
     </Grid>

@@ -36,9 +36,11 @@ public partial class FeedViewModel : ObservableObject
         
         Posts.Clear();
 
+        
         var userId = _userSession.CurrentUser?.UserID ?? 0;
         var data = _postsService.GetPostsForHomePage(userId);
 
+        
         foreach (var post in data)
         {
             var previewVm = new PostPreviewViewModel(post, _postsService, _userSession, _mainViewModel);

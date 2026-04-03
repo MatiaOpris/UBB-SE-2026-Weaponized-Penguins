@@ -80,6 +80,7 @@ public partial class NotificationItemViewModel : ObservableObject
             }
             else if (Microsoft.UI.Xaml.Application.Current is App myApp && myApp.m_window is MainWindow mainWindow)
             {
+                // just in case
                 mainWindow.NavigateToPage(typeof(Views.Pages.FullPostView), NotificationData.RelatedPost);
             }
         }

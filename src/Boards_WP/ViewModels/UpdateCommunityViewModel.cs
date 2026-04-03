@@ -20,6 +20,8 @@ namespace Boards_WP.ViewModels
 
         private Community _community = null!;
 
+        public MainViewModel MainViewModel => _mainViewModel;
+
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(UpdateCommunityCommand))]
         private string _communityName = string.Empty;

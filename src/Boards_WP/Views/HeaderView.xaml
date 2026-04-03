@@ -44,7 +44,7 @@
                IsLightDismissEnabled="True">
                 <Border Background="White" 
                     CornerRadius="0,0,15,15" 
-                    BorderBrush="#6A67E1" 
+                    BorderBrush="white" 
                     BorderThickness="1">   
                     <ListView x:Name="ResultsList" 
                       SelectionMode="None" 
@@ -83,7 +83,7 @@
                        FontWeight="Bold" 
                        VerticalAlignment="Center"/>
             <TextBlock Text="Tokens" 
-                       Foreground="#6A67E1" 
+                       Foreground="white" 
                        VerticalAlignment="Center" 
                        Margin="0,4,0,0" 
                        FontSize="14"/>
