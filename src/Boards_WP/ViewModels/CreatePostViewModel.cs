@@ -30,6 +30,9 @@ namespace Boards_WP.ViewModels
         private string _tagsInput = string.Empty;
 
         [ObservableProperty]
+        private string _currentTagText = string.Empty;
+
+        [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(UploadPostCommand))]
         private Category? _selectedCategory;
 
@@ -37,6 +40,7 @@ namespace Boards_WP.ViewModels
         private byte[]? _postImage;
 
         public ObservableCollection<Category> AvailableCategories { get; } = new();
+        public ObservableCollection<Tag> AddedTags { get; } = new();
 
         public Community OriginCommunity { get; set; } = null!;
 
@@ -55,6 +59,21 @@ namespace Boards_WP.ViewModels
             AvailableCategories.Clear();
             var categories = _tagsRepository.GetAllCategories();
             foreach (var c in categories) AvailableCategories.Add(c);
+        }
+
+        [RelayCommand]
+        private void AddTag()
+        {
+            if (string.IsNullOrWhiteSpace(CurrentTagText) || SelectedCategory == null) return;
+            var tag = new Tag { TagName = CurrentTagText.Trim(), CategoryBelongingTo = SelectedCategory };
+            if (!AddedTags.Contains(tag)) AddedTags.Add(tag);
+            CurrentTagText = string.Empty;
+        }
+
+        [RelayCommand]
+        private void RemoveTag(Tag tag)
+        {
+            if (tag != null && AddedTags.Contains(tag)) AddedTags.Remove(tag);
         }
 
         [RelayCommand(CanExecute = nameof(CanUploadPost))]

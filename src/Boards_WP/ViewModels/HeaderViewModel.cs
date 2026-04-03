@@ -51,7 +51,7 @@ namespace Boards_WP.ViewModels
         
         partial void OnSearchTextChanged(string searchedValue)
         {
-            if (string.IsNullOrWhiteSpace(searchedValue) || searchedValue.Length < 2)
+            if (string.IsNullOrWhiteSpace(searchedValue))
             {
                 SearchResults.Clear();
                 NoResultsToggle = false;
@@ -67,7 +67,12 @@ namespace Boards_WP.ViewModels
                 SearchResults.Add(community);
             }
 
-            NoResultsToggle = (SearchResults.Count == 0);
+            if (SearchResults.Count == 0)
+            {
+                SearchResults.Add(new Community { CommunityID = -1, Name = "no results are found" });
+            }
+
+            NoResultsToggle = (matches.Count == 0);
         }
 
         [RelayCommand]

@@ -1,8 +1,11 @@
 <Page
     x:Class="Boards_WP.Views.Pages.CreatePostView"
+    x:Name="CreatePostPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Background="Transparent">
+xmlns:models="using:Boards_WP.Data.Models"
+xmlns:helpers="using:Boards_WP.Helpers"
+Background="Transparent">
 
     <Grid Padding="40">
         <Grid.ColumnDefinitions>
@@ -35,18 +38,46 @@
                      TextWrapping="Wrap" 
                      CornerRadius="8"/>
 
-            <ComboBox x:Name="CategorySelector" 
-                      ItemsSource="{x:Bind ViewModel.AvailableCategories, Mode=OneWay}"
-                      SelectedItem="{x:Bind ViewModel.SelectedCategory, Mode=TwoWay}"
-                      DisplayMemberPath="CategoryName"
-                      PlaceholderText="Select Category" 
-                      Width="300" 
-                      CornerRadius="8"/>
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <ComboBox x:Name="CategorySelector" 
+                          ItemsSource="{x:Bind ViewModel.AvailableCategories, Mode=OneWay}"
+                          SelectedItem="{x:Bind ViewModel.SelectedCategory, Mode=TwoWay}"
+                          DisplayMemberPath="CategoryName"
+                          PlaceholderText="Select Category" 
+                          Width="200" 
+                          CornerRadius="8"/>
 
-            <TextBox x:Name="TagsInput" 
-                     Text="{x:Bind ViewModel.TagsInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                     PlaceholderText="Add tags (e.g. tech, ubb, fun)" 
-                     CornerRadius="8"/>
+                <TextBox x:Name="TagsInput" 
+                         Text="{x:Bind ViewModel.CurrentTagText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         PlaceholderText="Write a tag name" 
+                         Width="200"
+                         CornerRadius="8"/>
+
+                <Button Content="Add Tag"
+                        Command="{x:Bind ViewModel.AddTagCommand}"
+                        Background="#6A67E1" Foreground="White" CornerRadius="8"/>
+            </StackPanel>
+
+            <ItemsControl ItemsSource="{x:Bind ViewModel.AddedTags, Mode=OneWay}" Margin="0,5,0,5">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" Spacing="8"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="models:Tag">
+                        <Border CornerRadius="12" Padding="8,4" Background="{x:Bind helpers:ColorHelper.GetBrushForCategory(CategoryBelongingTo.CategoryID), Mode=OneWay}">
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                <TextBlock Text="{x:Bind TagName, Mode=OneWay}" FontSize="12" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
+                                <Button Content="✕" 
+                                        Command="{Binding ViewModel.RemoveTagCommand, ElementName=CreatePostPage}"
+                                        CommandParameter="{x:Bind}"
+                                        Background="Transparent" BorderThickness="0" Foreground="White" Padding="2" FontSize="10" MinWidth="15" MinHeight="15"/>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
 
             <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right" Margin="0,10,0,0">
                 <Button Content="Cancel" 

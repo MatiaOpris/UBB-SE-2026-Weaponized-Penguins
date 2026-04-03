@@ -42,12 +42,21 @@ namespace Boards_WP.Views
                     ViewModel.UserTokens += 5;
                     NavigateToPage(typeof(Pages.BetsView), null);
 
-                    ResultsPopup.IsOpen = false;
                     return;
                 }
 
                 ViewModel.SearchText = sender.Text;
-                ResultsPopup.IsOpen = (ViewModel.SearchResults.Count > 0);
+            }
+        }
+
+        private void CommunitySearchBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+        {
+            if (args.SelectedItem is Community selectedCommunity && ViewModel != null)
+            {
+                if (selectedCommunity.CommunityID == -1) return;
+
+                ViewModel.SelectCommunityCommand.Execute(selectedCommunity);
+                sender.Text = string.Empty; 
             }
         }
 
@@ -61,19 +70,14 @@ namespace Boards_WP.Views
             rootFrame?.Navigate(pageType, parameter);
         }
 
-        private void ResultsList_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            if (e.ClickedItem is Community selectedCommunity && ViewModel != null)
-            {
-                ViewModel.SelectCommunityCommand.Execute(selectedCommunity);
-
-                ResultsPopup.IsOpen = false;
-            }
-        }
-
         public Visibility GetVisibility(bool showText)
         {
             return showText ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public static Visibility GetVisibilityFromId(int id)
+        {
+            return id == -1 ? Visibility.Collapsed : Visibility.Visible;
         }
     }
 }

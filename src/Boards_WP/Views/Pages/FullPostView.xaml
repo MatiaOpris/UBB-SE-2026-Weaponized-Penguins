@@ -5,6 +5,7 @@
     xmlns:local="using:Boards_WP.Views.Pages"
     xmlns:views="using:Boards_WP.Views"
     xmlns:models="using:Boards_WP.Data.Models"
+    xmlns:helpers="using:Boards_WP.Helpers"
     Background="Transparent">
 
     <Grid>
@@ -41,6 +42,23 @@
 
                         <!-- Middle Column: Content -->
                         <StackPanel Grid.Column="1" Margin="15,0">
+                            <StackPanel Margin="0,0,0,8">
+                                <TextBlock Text="{x:Bind ViewModel.AuthorUsername, Mode=OneWay}" FontSize="12" Foreground="Gray" Margin="0,0,0,6"/>
+                                <ItemsControl ItemsSource="{x:Bind ViewModel.CurrentPostTags, Mode=OneWay}" Margin="0,0,0,6">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" Spacing="8"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="models:Tag">
+                                            <Border CornerRadius="12" Padding="8,4" Background="{x:Bind helpers:ColorHelper.GetBrushForCategory(CategoryBelongingTo.CategoryID), Mode=OneWay}">
+                                                <TextBlock Text="{x:Bind TagName, Mode=OneWay}" FontSize="12" FontWeight="SemiBold" Foreground="White"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
                             <TextBlock Text="{x:Bind ViewModel.CurrentPost.Title, Mode=OneWay}" FontSize="22" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,0,0,10"/>
                             <TextBlock Text="{x:Bind ViewModel.CurrentPost.Description, Mode=OneWay}" TextWrapping="Wrap" Foreground="#444" Margin="0,0,0,15"/>
 

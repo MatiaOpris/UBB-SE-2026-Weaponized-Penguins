@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:Boards_WP.Data.Models"
+    xmlns:helpers="using:Boards_WP.Helpers"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -59,7 +60,12 @@
     
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="models:Community">
-                        <TextBlock Text="{x:Bind Name}" Margin="10,5" Foreground="White"/>
+                        <StackPanel Orientation="Horizontal" Spacing="10" Margin="5">
+                            <PersonPicture ProfilePicture="{x:Bind helpers:ImageHelper.ConvertToBitmap(Picture), Mode=OneWay}"
+                                           DisplayName="{x:Bind Name}" 
+                                           Height="32" Width="32" />
+                            <TextBlock Text="{x:Bind Name}" Margin="0,0" Foreground="White" VerticalAlignment="Center"/>
+                        </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
