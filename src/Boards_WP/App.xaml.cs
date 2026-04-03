@@ -44,13 +44,7 @@ public partial class App : Application
     private static IServiceProvider ConfigureServices()
     {
         var services = new ServiceCollection();
-
-        //string connectionString = @"Server=ALEX\ALEXSQLEXPRESS;Database=Communities;Initial Catalog=Communities;Integrated Security=True;Encrypt=False;TrustServerCertificate=True;";
-        string connectionString = @"Server=(localdb)\MSSQLLocalDB;Database=Communities;Trusted_Connection=True;TrustServerCertificate=True;";
-        //string connectionString = @"Data Source=DESKTOP\SQLEXPRESS;Initial Catalog=Communities;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
-        //string connectionString = @"Server=IONUT\SQLEXPRESS;Database=Communities;Trusted_Connection=True;TrustServerCertificate=True;";
-        //services.AddSingleton<string>("Data Source=DESKTOP-GFA6UNJ\\SQLEXPRESS;Initial Catalog=Communities;Integrated Security=True;Encrypt=False;TrustServerCertificate=True");
-        //string connectionString = @"Data Source = DESKTOP\SQLEXPRESS;Database=Communities;Initial Catalog=Communities;Integrated Security=True;Encrypt=False;TrustServerCertificate=True;";
+        string connectionString = @"Data Source = DESKTOP\SQLEXPRESS;Database=Communities;Initial Catalog=Communities;Integrated Security=True;Encrypt=False;TrustServerCertificate=True;";
 
         services.AddSingleton(connectionString);
 

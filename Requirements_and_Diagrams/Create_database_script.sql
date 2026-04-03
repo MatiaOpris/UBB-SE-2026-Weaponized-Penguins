@@ -155,7 +155,7 @@ CREATE TABLE Comments (
     indentation INT DEFAULT 0,
     isDeleted BIT DEFAULT 0,
     CONSTRAINT FK_Comments_Posts FOREIGN KEY (postID) REFERENCES Posts(postID) ON DELETE CASCADE,
-    CONSTRAINT FK_Comments_Parent FOREIGN KEY (parentID) REFERENCES Comments(commentID) NO ACTION,
+    CONSTRAINT FK_Comments_Parent FOREIGN KEY (parentID) REFERENCES Comments(commentID) ON DELETE NO ACTION,
     CONSTRAINT FK_Comments_Users FOREIGN KEY (ownerID) REFERENCES Users(userID),
     CONSTRAINT CHK_Indentation CHECK (indentation BETWEEN 0 AND 7)
 );
