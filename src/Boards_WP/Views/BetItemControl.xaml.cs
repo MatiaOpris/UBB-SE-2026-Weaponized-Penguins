@@ -1,24 +1,21 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
-using Boards_WP.Data.Models;
+using Boards_WP.ViewModels;
 
 namespace Boards_WP.Views
 {
     public sealed partial class BetItemControl : UserControl
     {
-        // DependencyProperty allows the XAML to bind to this property from the outside
-        public static readonly DependencyProperty BetDataProperty =
-            DependencyProperty.Register(
-                nameof(BetData),
-                typeof(Bet),
-                typeof(BetItemControl),
-                new PropertyMetadata(null));
+        public static readonly DependencyProperty ViewModelProperty =
+            DependencyProperty.Register("ViewModel", typeof(BetItemViewModel), typeof(BetItemControl), new PropertyMetadata(null));
 
-        public Bet BetData
+        
+
+        public BetItemViewModel ViewModel
         {
-            get => (Bet)GetValue(BetDataProperty);
-            set => SetValue(BetDataProperty, value);
+            get => (BetItemViewModel)GetValue(ViewModelProperty);
+            set => SetValue(ViewModelProperty, value);
         }
 
         public BetItemControl()

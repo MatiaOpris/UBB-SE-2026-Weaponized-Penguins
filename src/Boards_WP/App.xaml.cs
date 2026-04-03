@@ -51,6 +51,7 @@ public partial class App : Application
         //string connectionString = @"Server=IONUT\SQLEXPRESS;Database=Communities;Trusted_Connection=True;TrustServerCertificate=True;";
         //services.AddSingleton<string>("Data Source=DESKTOP-GFA6UNJ\\SQLEXPRESS;Initial Catalog=Communities;Integrated Security=True;Encrypt=False;TrustServerCertificate=True");
         //string connectionString = @"Data Source = DESKTOP\SQLEXPRESS;Database=Communities;Initial Catalog=Communities;Integrated Security=True;Encrypt=False;TrustServerCertificate=True;";
+
         services.AddSingleton(connectionString);
 
 
@@ -97,6 +98,10 @@ public partial class App : Application
         services.AddTransient<HeaderViewModel>();
         services.AddSingleton<CommunityBarViewModel>(); //--this must be signelton
         services.AddTransient<BetsViewModel>();
+
+        services.AddTransient<BetItemViewModel>();
+        services.AddTransient<CreateBetViewModel>();
+        services.AddTransient<PlaceBetViewModel>();
 
         return services.BuildServiceProvider();
     }

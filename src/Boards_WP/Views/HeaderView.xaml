@@ -37,6 +37,7 @@
                                 Padding="15,9,15,0"
                                 Margin="0,5,0,0"
                                 TextChanged="CommunitySearchBox_TextChanged"
+                                QuerySubmitted="CommunitySearchBox_QuerySubmitted"
                                 ItemsSource="{x:Bind ViewModel.SearchResults, Mode=OneWay}"
                                 UpdateTextOnSelect="False"
                                 SuggestionChosen="CommunitySearchBox_SuggestionChosen">
@@ -68,7 +69,7 @@
                     Visibility="Collapsed">
             <FontIcon Glyph="&#xEB1B;" Foreground="Gold" VerticalAlignment="Center" FontSize="20"/>
             <TextBlock x:Name="TokenCountText" 
-                       Text="1250" 
+                       Text="{x:Bind ViewModel.UserTokens, Mode=OneWay}" 
                        FontSize="20" 
                        FontWeight="Bold" 
                        VerticalAlignment="Center"/>

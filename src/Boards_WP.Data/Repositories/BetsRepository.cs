@@ -17,9 +17,9 @@ public class BetsRepository : IBetsRepository
     public int AddBet(Bet b)
     {
         const string query = @"
-                INSERT INTO Bets (communityID, betType, startingTime, endingTime, expression, yesAmount, noAmount)
+                INSERT INTO Bets (communityID, betType, startingTime, endingTime, expression, yesAmount, notAmount)
                 OUTPUT INSERTED.betID
-                VALUES (@communityID, @betType, @startingTime, @endingTime, @expression, @yesAmount, @noAmount)";
+                VALUES (@communityID, @betType, @startingTime, @endingTime, @expression, @yesAmount, @notAmount)";
 
         using var connection = new SqlConnection(_connectionString);
         using var command = new SqlCommand(query, connection);
@@ -30,7 +30,7 @@ public class BetsRepository : IBetsRepository
         command.Parameters.Add("@endingTime", SqlDbType.DateTime).Value = b.EndingTime;
         command.Parameters.Add("@expression", SqlDbType.NVarChar).Value = b.Expression;
         command.Parameters.Add("@yesAmount", SqlDbType.Int).Value = b.YesAmount;
-        command.Parameters.Add("@noAmount", SqlDbType.Int).Value = b.NoAmount;
+        command.Parameters.Add("@notAmount", SqlDbType.Int).Value = b.NoAmount;
 
         connection.Open();
         return (int)command.ExecuteScalar()!;
@@ -78,7 +78,7 @@ public class BetsRepository : IBetsRepository
 
         const string query = @"
     SELECT 
-        b.betID, b.communityID, b.betType, b.startingTime, b.endingTime, b.expression, b.yesAmount, b.noAmount,
+        b.betID, b.communityID, b.betType, b.startingTime, b.endingTime, b.expression, b.yesAmount, b.notAmount,
         c.communityID AS communityID, c.name AS communityName, c.description, c.picture, c.banner, c.membersNumber,
         u.userID AS adminUserID, u.username AS adminUsername, u.email AS adminEmail,
         u.passwordHash AS adminPasswordHash, u.avatarUrl AS adminAvatarUrl, u.bio AS adminBio, u.status AS adminStatus
@@ -126,7 +126,7 @@ public class BetsRepository : IBetsRepository
                 EndingTime = (DateTime)reader["endingTime"],
                 Expression = reader["expression"].ToString(),
                 YesAmount = (int)reader["yesAmount"],
-                NoAmount = (int)reader["noAmount"]
+                NoAmount = (int)reader["notAmount"]
             };
 
             bets.Add(bet);
@@ -139,7 +139,7 @@ public class BetsRepository : IBetsRepository
     {
         const string query = @"
     SELECT 
-        b.betID, b.communityID, b.betType, b.startingTime, b.endingTime, b.expression, b.yesAmount, b.noAmount,
+        b.betID, b.communityID, b.betType, b.startingTime, b.endingTime, b.expression, b.yesAmount, b.notAmount,
         c.communityID AS communityID, c.name AS communityName, c.description, c.picture, c.banner, c.membersNumber,
         u.userID AS adminUserID, u.username AS adminUsername, u.email AS adminEmail,
         u.passwordHash AS adminPasswordHash, u.avatarUrl AS adminAvatarUrl, u.bio AS adminBio, u.status AS adminStatus
@@ -189,7 +189,7 @@ public class BetsRepository : IBetsRepository
                 EndingTime = (DateTime)reader["endingTime"],
                 Expression = reader["expression"].ToString(),
                 YesAmount = (int)reader["yesAmount"],
-                NoAmount = (int)reader["noAmount"]
+                NoAmount = (int)reader["notAmount"]
             };
         }
 
@@ -205,7 +205,7 @@ public class BetsRepository : IBetsRepository
 
         const string query = @"
     SELECT 
-        b.betID, b.communityID, b.betType, b.startingTime, b.endingTime, b.expression, b.yesAmount, b.noAmount,
+        b.betID, b.communityID, b.betType, b.startingTime, b.endingTime, b.expression, b.yesAmount, b.notAmount,
         c.communityID AS communityID, c.name AS communityName, c.description, c.picture, c.banner, c.membersNumber,
         u.userID AS adminUserID, u.username AS adminUsername, u.email AS adminEmail,
         u.passwordHash AS adminPasswordHash, u.avatarUrl AS adminAvatarUrl, u.bio AS adminBio, u.status AS adminStatus
@@ -255,7 +255,7 @@ public class BetsRepository : IBetsRepository
                 EndingTime = (DateTime)reader["endingTime"],
                 Expression = reader["expression"].ToString(),
                 YesAmount = (int)reader["yesAmount"],
-                NoAmount = (int)reader["noAmount"]
+                NoAmount = (int)reader["notAmount"]
             });
         }
 
@@ -271,7 +271,7 @@ public class BetsRepository : IBetsRepository
         bu.userID AS betUserID, bu.username AS betUsername, bu.email AS betEmail,
         bu.passwordHash AS betPasswordHash, bu.avatarUrl AS betAvatarUrl, bu.bio AS betBio, bu.status AS betStatus,
 
-        b.betID, b.betType, b.startingTime, b.endingTime, b.expression, b.yesAmount, b.noAmount,
+        b.betID, b.betType, b.startingTime, b.endingTime, b.expression, b.yesAmount, b.notAmount,
 
         c.communityID, c.name AS communityName, c.description, c.picture, c.banner, c.membersNumber,
 
@@ -329,7 +329,7 @@ public class BetsRepository : IBetsRepository
                 EndingTime = (DateTime)reader["endingTime"],
                 Expression = reader["expression"].ToString(),
                 YesAmount = (int)reader["yesAmount"],
-                NoAmount = (int)reader["noAmount"]
+                NoAmount = (int)reader["notAmount"]
             };
 
             var user = new User
@@ -367,7 +367,7 @@ public class BetsRepository : IBetsRepository
         bu.userID AS betUserID, bu.username AS betUsername, bu.email AS betEmail,
         bu.passwordHash AS betPasswordHash, bu.avatarUrl AS betAvatarUrl, bu.bio AS betBio, bu.status AS betStatus,
 
-        b.betID, b.betType, b.startingTime, b.endingTime, b.expression, b.yesAmount, b.noAmount,
+        b.betID, b.betType, b.startingTime, b.endingTime, b.expression, b.yesAmount, b.notAmount,
 
         c.communityID, c.name AS communityName, c.description, c.picture, c.banner, c.membersNumber,
 
@@ -425,7 +425,7 @@ public class BetsRepository : IBetsRepository
                 EndingTime = (DateTime)reader["endingTime"],
                 Expression = reader["expression"].ToString(),
                 YesAmount = (int)reader["yesAmount"],
-                NoAmount = (int)reader["noAmount"]
+                NoAmount = (int)reader["notAmount"]
             };
 
             var user = new User
@@ -463,7 +463,7 @@ public class BetsRepository : IBetsRepository
         bu.userID AS betUserID, bu.username AS betUsername, bu.email AS betEmail,
         bu.passwordHash AS betPasswordHash, bu.avatarUrl AS betAvatarUrl, bu.bio AS betBio, bu.status AS betStatus,
 
-        b.betID, b.betType, b.startingTime, b.endingTime, b.expression, b.yesAmount, b.noAmount,
+        b.betID, b.betType, b.startingTime, b.endingTime, b.expression, b.yesAmount, b.notAmount,
 
         c.communityID, c.name AS communityName, c.description, c.picture, c.banner, c.membersNumber,
 
@@ -520,7 +520,7 @@ public class BetsRepository : IBetsRepository
                 EndingTime = (DateTime)reader["endingTime"],
                 Expression = reader["expression"].ToString(),
                 YesAmount = (int)reader["yesAmount"],
-                NoAmount = (int)reader["noAmount"]
+                NoAmount = (int)reader["notAmount"]
             };
 
             var user = new User
@@ -610,7 +610,7 @@ public class BetsRepository : IBetsRepository
     {
         const string query = @"
         UPDATE Bets 
-        SET yesAmount = @yes, noAmount = @no 
+        SET yesAmount = @yes, notAmount = @no 
         WHERE betID = @betID";
 
         using var connection = new SqlConnection(_connectionString);

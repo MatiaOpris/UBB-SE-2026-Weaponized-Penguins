@@ -57,7 +57,7 @@ public class BetsService : IBetsService
 
         List<Post> AllPosts = _postsService.GetPostsByCommunityIDs(new[] { b.BetCommunity.CommunityID }, 0, int.MaxValue);
 
-        foreach(Post post in AllPosts)
+        foreach (Post post in AllPosts)
         {
             if (post.CreationTime >= b.StartingTime && post.CreationTime <= b.EndingTime)
                 PostsFromInterval.Add(post);
@@ -74,10 +74,10 @@ public class BetsService : IBetsService
             Bet BetToCheck = _betsRepository.GetBetByID(BetID);
             String Expression = BetToCheck.Expression;
 
-            
+
             List<Post> PostsFromBetInterval = GetPostsFromBetInterval(BetToCheck);
 
-            if(BetToCheck.Type == BetType.Post)
+            if (BetToCheck.Type == BetType.Post)
             {
                 foreach (Post p in PostsFromBetInterval)
                     if (p.Title.Contains(Expression) || p.Description.Contains(Expression))
@@ -88,8 +88,8 @@ public class BetsService : IBetsService
                 foreach (Post p in PostsFromBetInterval)
                 {
 
-                   List<Comment> CommentsOfPost = _commentsService.GetCommentsByPost(p.PostID, p.Owner.UserID); //ID of owner because for this thing I don't care about which user is asking for the comments, I just want all the comments of the post
-                   foreach (Comment c in CommentsOfPost)
+                    List<Comment> CommentsOfPost = _commentsService.GetCommentsByPost(p.PostID, p.Owner.UserID);
+                    foreach (Comment c in CommentsOfPost)
                         if (c.Description.Contains(Expression))
                             return BetVote.YES;
                 }
@@ -101,7 +101,7 @@ public class BetsService : IBetsService
         {
             throw new Exception("Failed to check bet.");
         }
-        
+
     }
 
     public void CreateBet(Bet CreatedBet, int CreatorID)
@@ -111,9 +111,9 @@ public class BetsService : IBetsService
             CreatedBet.BetID = _betsRepository.AddBet(CreatedBet);
             _betsRepository.UpdateUserTokens(CreatorID, _betsRepository.GetUserTokens(CreatorID).TokensNumber - 5);
         }
-        catch
+        catch (SqlException ex)
         {
-            throw new Exception("Failed to create bet.");
+            System.Diagnostics.Debug.WriteLine($"SQL Error: {ex.Message}");
         }
     }
 
@@ -143,9 +143,49 @@ public class BetsService : IBetsService
         int firstSpaceIndex = input.IndexOf(' ');
 
         if (firstSpaceIndex == -1)
-            return string.Empty; 
+            return string.Empty;
 
         return input.Substring(firstSpaceIndex + 1).Trim();
+    }
+
+    public int RegisterSecretAreaVisitAndGetTokens(int UserID)
+    {
+        try
+        {
+            if (!_betsRepository.UserTokensExist(UserID))
+            {
+                var user = _usersService.GetUserByID(UserID);
+                if (user == null)
+                    throw new Exception("User not found.");
+
+                var tokens = new UsersTokens
+                {
+                    CurrentUser = user,
+                    TokensNumber = 5,
+                    LastSeen = DateTime.Now
+                };
+
+                _betsRepository.AddUserTokens(tokens);
+                return tokens.TokensNumber;
+            }
+
+            var existing = _betsRepository.GetUserTokens(UserID);
+            var now = DateTime.Now;
+            var daysToAward = (now.Date - existing.LastSeen.Date).Days;
+
+            if (daysToAward > 0)
+            {
+                var updatedAmount = existing.TokensNumber + daysToAward;
+                _betsRepository.UpdateUserTokens(UserID, updatedAmount);
+                return updatedAmount;
+            }
+
+            return existing.TokensNumber;
+        }
+        catch
+        {
+            throw new Exception("Failed to update user tokens for secret area.");
+        }
     }
 
     public List<Bet> GetAllBets()
@@ -158,6 +198,83 @@ public class BetsService : IBetsService
         catch
         {
             throw new Exception("Failed to retrieve bets.");
+        }
+    }
+
+    public List<Bet> GetBetsOfUser(int UserID)
+    {
+        try
+        {
+            var userBets = _betsRepository.GetUserBetsByUser(UserID);
+            var bets = new List<Bet>();
+
+            foreach (var userBet in userBets)
+            {
+                if (userBet.SelectedBet != null)
+                {
+                    bets.Add(userBet.SelectedBet);
+                }
+            }
+
+            return bets;
+        }
+        catch
+        {
+            throw new Exception("Failed to retrieve user bets.");
+        }
+    }
+
+    public List<UsersBets> GetPlacedBetsOfUser(int UserID)
+    {
+        try
+        {
+            return _betsRepository.GetUserBetsByUser(UserID);
+        }
+        catch
+        {
+            throw new Exception("Failed to retrieve placed bets of user.");
+        }
+    }
+
+    public List<UsersBets> GetOngoingPlacedBetsOfUser(int UserID)
+    {
+        try
+        {
+            var allBets = _betsRepository.GetUserBetsByUser(UserID);
+            var ongoingBets = new List<UsersBets>();
+
+            foreach (var userBet in allBets)
+            {
+                if (userBet.SelectedBet.EndingTime >= DateTime.Now)
+                    ongoingBets.Add(userBet);
+            }
+
+            return ongoingBets;
+        }
+        catch
+        {
+            throw new Exception("Failed to retrieve ongoing bets of user.");
+        }
+    }
+
+    public List<UsersBets> GetExpiredPlacedBetsOfUser(int UserID)
+    {
+        try
+        {
+            var allBets = _betsRepository.GetUserBetsByUser(UserID);
+            var expiredBets = new List<UsersBets>();
+
+            foreach (var userBet in allBets)
+            {
+                if (userBet.SelectedBet.EndingTime < DateTime.Now)
+                    expiredBets.Add(userBet);
+            }
+
+            return expiredBets;
+        }
+        catch
+        {
+            throw new Exception("Failed to retrieve expired bets of user.");
         }
     }
 
@@ -181,7 +298,7 @@ public class BetsService : IBetsService
         List<UsersBets> AllBetsOfUser = _betsRepository.GetUserBetsByUser(UserID);
         foreach (UsersBets bet in AllBetsOfUser)
         {
-            if(bet.SelectedBet.EndingTime < DateTime.Now)
+            if (bet.SelectedBet.EndingTime < DateTime.Now)
                 ExpiredBets.Add(bet.SelectedBet);
         }
 
@@ -229,6 +346,8 @@ public class BetsService : IBetsService
     {
         try
         {
+            ValidatePlaceUserBet(UserID, Amount);
+
             UsersBets PlacedBet = new UsersBets
             {
                 BettingUser = _usersService.GetUserByID(UserID),
@@ -239,6 +358,9 @@ public class BetsService : IBetsService
             };
 
             _betsRepository.AddUserBet(PlacedBet);
+
+            int currentTokens = _betsRepository.GetUserTokens(UserID).TokensNumber;
+            _betsRepository.UpdateUserTokens(UserID, currentTokens - Amount);
         }
         catch
         {
@@ -303,7 +425,7 @@ public class BetsService : IBetsService
                 throw new Exception("Bet amount must be greater than 0.");
             if (UserTokens < Amount)
                 throw new Exception("User does not have enough tokens to place this bet.");
-            if(Amount > 1000)
+            if (Amount > 1000)
                 throw new Exception("Bet amount must be less than or equal to 1000 tokens.");
 
             return true;

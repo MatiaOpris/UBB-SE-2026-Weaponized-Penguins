@@ -9,13 +9,13 @@ Background="Transparent">
 
     <Grid Padding="40">
         <Grid.ColumnDefinitions>
-            <!-- Left side (form) -->
+          
             <ColumnDefinition Width="*" />
-            <!-- Right side (image picker) -->
+           
             <ColumnDefinition Width="300" />
         </Grid.ColumnDefinitions>
 
-        <!-- LEFT: FORM -->
+        
         <StackPanel Grid.Column="0" Spacing="15" MaxWidth="600">
             <TextBlock Text="Create Post" 
                        FontSize="32" 
@@ -97,7 +97,7 @@ Background="Transparent">
             </StackPanel>
         </StackPanel>
 
-        <!-- RIGHT: IMAGE PICKER -->
+       
         <Grid Grid.Column="1" Margin="20,50,0,0">
             <Grid Height="200" CornerRadius="12" Background="#E0E0E0">
                 <Border CornerRadius="12">

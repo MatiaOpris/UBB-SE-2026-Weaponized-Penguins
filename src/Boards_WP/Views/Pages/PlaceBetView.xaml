@@ -1,0 +1,54 @@
+<Page
+    x:Class="Boards_WP.Views.Pages.PlaceBetView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="#F3F2FF">
+
+    <Grid Padding="40">
+        <Border Background="White" CornerRadius="12" Padding="24" BorderBrush="#E0E0FF" BorderThickness="1" MaxWidth="600" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <StackPanel Spacing="14">
+                <TextBlock Text="Place Bet" FontSize="28" FontWeight="Bold" Foreground="#1A1A2E"/>
+
+                <TextBlock TextWrapping="Wrap" Foreground="#444">
+                    <Run Text="You are betting "/>
+                    <Run Text="{x:Bind ViewModel.SelectedVote, Mode=OneWay}" FontWeight="Bold"/>
+                    <Run Text=" for this outcome at odd "/>
+                    <Run Text="{x:Bind ViewModel.SelectedOddText, Mode=OneWay}" FontWeight="Bold"/>
+                    <Run Text="x."/>
+                </TextBlock>
+
+                <TextBox Header="Amount to bet" Text="{x:Bind ViewModel.BetAmount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" InputScope="Number" PlaceholderText="Enter integer amount"/>
+
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="Potential win:" FontWeight="SemiBold"/>
+                    <TextBlock Text="{x:Bind ViewModel.PotentialWin, Mode=OneWay}" Foreground="#6A67E1" FontWeight="Bold"/>
+                    <TextBlock Text="tokens" Foreground="#6A67E1" FontWeight="Bold"/>
+                </StackPanel>
+
+                <TextBlock Text="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}" Foreground="Red" TextWrapping="Wrap"/>
+                <TextBlock Text="{x:Bind ViewModel.SuccessMessage, Mode=OneWay}" Foreground="Green" TextWrapping="Wrap"/>
+
+                <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,10,0,0">
+                    <Button Content="Place Bet" Command="{x:Bind ViewModel.PlaceBetCommand}" Background="#6A67E1" Foreground="White"/>
+                    <Button Content="Cancel" Command="{x:Bind ViewModel.CancelCommand}"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <Border x:Name="LuckPopup"
+                Background="#CC1A1A2E"
+                CornerRadius="8"
+                Padding="16,10"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Visibility="Collapsed">
+            <TextBlock Text="May the luck be with you!"
+                       Foreground="White"
+                       FontSize="16"
+                       FontWeight="SemiBold"/>
+        </Border>
+    </Grid>
+</Page>
