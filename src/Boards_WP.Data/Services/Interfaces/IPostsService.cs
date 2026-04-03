@@ -17,5 +17,6 @@ public interface IPostsService
     public List<Post> GetPostsByCommunityIDs(int[] communityIds, int offset, int limit);
     public ThemeColor DetermineFeedThemeColorByLastLikes();
     public ThemeColor DetermineThemeForASinglePost(Post post);
+    public ThemeColor CalculateDominantColor(IEnumerable<Post> posts);
     public void UpdateUserInterests(int userId, Post post, VoteType vote, bool hasCommented);
 }

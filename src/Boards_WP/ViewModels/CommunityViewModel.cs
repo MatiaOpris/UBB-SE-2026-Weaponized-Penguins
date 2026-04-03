@@ -15,6 +15,8 @@ namespace Boards_WP.ViewModels
         private readonly UserSession _userSession;
         private readonly MainViewModel _mainViewModel;
 
+        [ObservableProperty]
+        private ThemeColor _communityTheme;
         public MainViewModel MainViewModel => _mainViewModel;
 
         private readonly Action<Community> _navigateToCreatePost;
@@ -118,6 +120,8 @@ namespace Boards_WP.ViewModels
                 var refreshedCommunity = _communitiesService.GetCommunityByID(community.CommunityID);
                 CurrentCommunity = refreshedCommunity ?? community;
 
+                UpdateCommunityTheme();
+
                 _currentOffset = 0;
                 HasMorePosts = true;
                 CommunityPosts.Clear();
@@ -128,6 +132,15 @@ namespace Boards_WP.ViewModels
 
                 IsMember = IsOwner || _communitiesService.IsPartOfCommunity(userId, CurrentCommunity.CommunityID);
             }  
+        }
+
+        private void UpdateCommunityTheme()
+        {
+            if (CurrentCommunity != null)
+            {
+                
+                _communityTheme = _communitiesService.DetermineCommunityThemeColor(CurrentCommunity.CommunityID);
+            }
         }
 
         [RelayCommand]

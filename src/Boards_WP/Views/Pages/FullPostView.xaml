@@ -81,12 +81,25 @@
                                     </StackPanel>
                                 </Button>
 
-                                <Button Grid.Column="1" Command="{x:Bind ViewModel.ToggleShareAreaCommand}" Background="Transparent" BorderThickness="0">
-                                    <StackPanel Orientation="Horizontal" Spacing="5">
-                                        <FontIcon Glyph="&#xE72D;" FontSize="14" Foreground="#6A67E1"/>
-                                        <TextBlock Text="share" FontSize="12" Foreground="#6A67E1"/>
-                                    </StackPanel>
-                                </Button>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+        
+                                    <Button Command="{x:Bind ViewModel.DeletePostCommand}" 
+                                            Visibility="{x:Bind BooleanToVisibility(ViewModel.CanDeletePost), Mode=OneWay}"
+                                            Background="Transparent" BorderThickness="0">
+                                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                            <FontIcon Glyph="&#xE74D;" FontSize="14" Foreground="Red"/>
+                                            <TextBlock Text="delete" FontSize="12" Foreground="Red"/>
+                                        </StackPanel>
+                                    </Button>
+
+                                    <Button Command="{x:Bind ViewModel.ToggleShareAreaCommand}" Background="Transparent" BorderThickness="0">
+                                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                            <FontIcon Glyph="&#xE72D;" FontSize="14" Foreground="#6A67E1"/>
+                                            <TextBlock Text="share" FontSize="12" Foreground="#6A67E1"/>
+                                        </StackPanel>
+                                    </Button>
+        
+                                </StackPanel>
                             </Grid>
                         </StackPanel>
 

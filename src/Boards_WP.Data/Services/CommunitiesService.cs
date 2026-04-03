@@ -8,9 +8,11 @@ namespace Boards_WP.Data.Services;
 public class CommunitiesService : ICommunitiesService
 {
     private readonly ICommunitiesRepository _communitiesRepo;
-    public CommunitiesService(ICommunitiesRepository communitiesRepo)
+    private readonly IPostsService _postsService;
+    public CommunitiesService(ICommunitiesRepository communitiesRepo, IPostsService postsService)
     {
         _communitiesRepo = communitiesRepo;
+        _postsService = postsService;
     }
     public void AddCommunity(Community AddedCommunity)
     {
@@ -53,9 +55,16 @@ public class CommunitiesService : ICommunitiesService
         }
     }
 
-    public ThemeColor DetermineCommunityThemeColor(int CommunityID)
+    public ThemeColor DetermineCommunityThemeColor(int communityId)
     {
-        throw new NotImplementedException();
+
+        var recentPosts = _postsService.GetPostsByCommunityIDs(new[] { communityId }, 0, 15).OrderByDescending(post => post.CreationTime).ToList(); ;
+
+        if (recentPosts == null || !recentPosts.Any())
+        {
+            return ThemeColor.Default;
+        }
+        return _postsService.CalculateDominantColor(recentPosts);
     }
 
     public List<Community> GetCommunitiesUserIsPartOf(int UserID)

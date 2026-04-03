@@ -1,12 +1,14 @@
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
+using System;
 
 using Boards_WP.Data.Models;
 using Boards_WP.Data.Services.Interfaces;
 
-using System;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 
 namespace Boards_WP.ViewModels
@@ -28,10 +30,39 @@ namespace Boards_WP.ViewModels
         [ObservableProperty]
         private string _selectedChatName;
 
+        public string CommentText => CommentData?.Description;
+
+        private int _communityAdminId;
+
+        public Visibility ActionButtonsVisibility =>
+    (CommentData == null || CommentData.IsDeleted) ? Visibility.Collapsed : Visibility.Visible;
+
         public ObservableCollection<string> HardcodedChats { get; } = new()
         {
             "General Chat", "Sports Fans", "Tech Talk", "Weaponized Penguins Team"
         };
+
+
+        public Visibility DeleteButtonVisibility
+        {
+            get
+            {
+                if (CommentData == null || _userSession?.CurrentUser == null) return Visibility.Collapsed;
+
+                
+                if (CommentData.IsDeleted) return Visibility.Collapsed;
+
+                int currentUserId = _userSession.CurrentUser.UserID;
+
+                bool isOwner = CommentData.Owner?.UserID == currentUserId;
+                bool isAdmin = _communityAdminId == currentUserId;
+
+                return (isOwner || isAdmin) ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+        public IRelayCommand DeleteCommentCommand { get; }
+
 
         [RelayCommand]
         private void ToggleShare()
@@ -70,9 +101,10 @@ namespace Boards_WP.ViewModels
             ? new SolidColorBrush(Colors.CornflowerBlue) 
             : new SolidColorBrush(Colors.Gray);
 
-        public CommentViewModel(Comment comment)
+        public CommentViewModel(Comment comment, int communityAdminId)
         {
             CommentData = comment;
+            _communityAdminId = communityAdminId;
             _commentsService = App.Services?.GetService<ICommentsService>();
             _userSession = App.Services?.GetService<UserSession>();
 
@@ -105,6 +137,20 @@ namespace Boards_WP.ViewModels
                     ReplySubmitted?.Invoke(CommentData, ReplyText);
                     ReplyText = string.Empty;
                     IsReplyAreaVisible = false;
+                }
+            });
+
+
+            DeleteCommentCommand = new RelayCommand(() =>
+            {
+                if (_commentsService != null && _userSession != null && !CommentData.IsDeleted)
+                {
+                    _commentsService.SoftDeleteComment(CommentData, _userSession.CurrentUser.UserID);
+
+                    
+                    OnPropertyChanged(nameof(CommentText));
+                    OnPropertyChanged(nameof(DeleteButtonVisibility));
+                    OnPropertyChanged(nameof(ActionButtonsVisibility));
                 }
             });
         }

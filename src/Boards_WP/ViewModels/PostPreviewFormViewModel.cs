@@ -35,7 +35,24 @@ namespace Boards_WP.ViewModels
         public BitmapImage PostImageSource => ConvertToBitmap(PostData?.Image);
         public Visibility PostImageVisibility => PostData?.Image?.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
 
-        public string FormattedDate => PostData?.CreationTime.ToString("dd/MM/yyyy") ?? "";
+        public string FormattedDate
+        {
+            get
+            {
+                if (PostData == null) return "";
+
+                var elapsed = DateTime.Now - PostData.CreationTime;
+
+                if (elapsed.TotalMinutes < 1)
+                    return "just now";
+                if (elapsed.TotalHours < 1)
+                    return $"{(int)elapsed.TotalMinutes}m ago";
+                if (elapsed.TotalHours < 24)
+                    return $"{(int)elapsed.TotalHours}h ago";
+
+                return PostData.CreationTime.ToString("dd/MM/yyyy");
+            }
+        }
 
         public string DescriptionSnippet
         {

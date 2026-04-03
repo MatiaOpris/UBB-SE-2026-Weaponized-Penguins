@@ -29,7 +29,20 @@ namespace Boards_WP.Views
         {
             if (d is CommentView control && e.NewValue is Comment comment)
             {
-                control.ViewModel = new CommentViewModel(comment);
+                int adminId = 0;
+
+                
+                if (App.Current is App myApp && myApp.m_window.Content is FrameworkElement root)
+                {
+                    var frame = root.FindName("ContentFrame") as Frame;
+                    if (frame?.Content is Pages.FullPostView postPage)
+                    { 
+                        adminId = postPage.ViewModel.CurrentPost?.ParentCommunity?.Admin?.UserID ?? 0;
+                    }
+                }
+
+                
+                control.ViewModel = new CommentViewModel(comment, adminId);
                 control.ViewModel.ReplySubmitted = control.HandleReplySubmission;
                 control.Bindings.Update();
             }

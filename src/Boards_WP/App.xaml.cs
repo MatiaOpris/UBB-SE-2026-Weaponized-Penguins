@@ -89,7 +89,7 @@ public partial class App : Application
         services.AddTransient<CommunityBarViewModel>();
         services.AddTransient<CreateCommunityViewModel>();
         services.AddTransient<UpdateCommunityViewModel>();
-        services.AddTransient<CommunityViewModel>();
+        services.AddSingleton<CommunityViewModel>();
         services.AddTransient<CreateTagViewModel>();
         services.AddTransient<CommentViewModel>();
         services.AddTransient<FullPostViewModel>();
