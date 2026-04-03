@@ -210,5 +210,7 @@ namespace Boards_WP.ViewModels
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
         }
+
+
     }
 }

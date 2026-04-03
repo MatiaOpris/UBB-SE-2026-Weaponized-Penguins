@@ -100,6 +100,8 @@
                                 </StackPanel>
                             </Border>
                         </StackPanel>
+                        <Button Grid.Column="1" Content="Send" Command="{x:Bind ViewModel.SendShareCommand}"
+                                Background="#6A67E1" Foreground="White" CornerRadius="8" Width="80"/>
                     </Grid>
                 </Border>
 

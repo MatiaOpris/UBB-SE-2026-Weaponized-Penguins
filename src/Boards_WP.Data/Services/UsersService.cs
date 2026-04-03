@@ -52,7 +52,7 @@ namespace Boards_WP.Data.Services
                 if (user.PasswordHash != hashedPasswordInput)
                 {
                     throw new Exception("Invalid email or password.");
-                }
+                }   
 
                 return user; 
             }
