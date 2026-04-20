@@ -1,5 +1,6 @@
 ﻿using Microsoft.UI.Xaml.Controls;
-﻿using System;
+
+using System;
 namespace Boards_WP.Data.Services;
 
 public class NavigationService : INavigationService
@@ -15,14 +16,12 @@ public class NavigationService : INavigationService
 
     public void NavigateTo(Type pageType, object? parameter = null)
     {
-        if (_frame != null)
+        if (_frame == null)
         {
-            _frame.Navigate(pageType, parameter);
+            throw new InvalidOperationException("NavigationService is not initialized. Call Initialize with a Frame before navigating.");
         }
-        else
-        {
-            _frame.Navigate(pageType);
-        }
+
+        _frame.Navigate(pageType, parameter);
     }
     public void GoBack()
     {

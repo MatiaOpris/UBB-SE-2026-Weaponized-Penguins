@@ -7,7 +7,7 @@
     xmlns:local="using:Boards_WP.Views.Pages"
     mc:Ignorable="d">
 
-    
+
 
     <Grid>
         <Grid.Background>
@@ -23,10 +23,11 @@
                        HorizontalAlignment="Center" CharacterSpacing="100"/>
 
             <Border Background="White" CornerRadius="15" Padding="30" 
-                    BorderBrush="#E0E0FF" BorderThickness="1">
+                    BorderBrush="#E0E0FF" BorderThickness="1"
+                    RequestedTheme="Light">
                 <StackPanel Spacing="15">
                     <TextBlock Text="Welcome Back" FontSize="20" FontWeight="SemiBold" Foreground="#333"/>
-                    
+
                     <TextBox PlaceholderText="Email Address" 
                              Text="{x:Bind ViewModel.Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              Header="Email"/>

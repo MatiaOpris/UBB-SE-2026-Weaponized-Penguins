@@ -9,8 +9,8 @@ namespace Boards_WP.Data
         {
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
 
-           
-            optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-GFA6UNJ\\SQLEXPRESS;Initial Catalog=Communities;Integrated Security=True;Encrypt=False;TrustServerCertificate=True");
+
+            optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=Communities;Trusted_Connection=True;TrustServerCertificate=True;");
 
             return new AppDbContext(optionsBuilder.Options);
         }
