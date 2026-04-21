@@ -59,8 +59,8 @@ namespace Boards_WP.ViewModels
             get
             {
                 if (string.IsNullOrEmpty(PostData?.Description)) return string.Empty;
-                return PostData.Description.Length > 150
-                    ? PostData.Description.Substring(0, 150) + "..."
+                return PostData.Description.Length > 300
+                    ? PostData.Description.Substring(0, 300) + "..."
                     : PostData.Description;
             }
         }
