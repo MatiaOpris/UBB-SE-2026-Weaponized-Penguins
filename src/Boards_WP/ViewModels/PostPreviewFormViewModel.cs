@@ -87,12 +87,12 @@ namespace Boards_WP.ViewModels
             UserSession userSession,
             MainViewModel mainViewModel)
         {
-            postData = post;
-            postsService = postsService;
-            userSession = userSession;
-            mainViewModel = mainViewModel;
-            communityName = post.ParentCommunity?.Name ?? "Unknown";
-            authorUsername = post.Owner?.Username ?? "Unknown";
+            PostData = post;
+            this.postsService = postsService;
+            this.userSession = userSession;
+            this.mainViewModel = mainViewModel;
+            CommunityName = post.ParentCommunity?.Name ?? "Unknown";
+            AuthorUsername = post.Owner?.Username ?? "Unknown";
 
             // Load initial vote status
             if (userSession.CurrentUser != null)

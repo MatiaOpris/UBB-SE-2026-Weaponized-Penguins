@@ -8,6 +8,9 @@ using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace Boards_WP.ViewModels
 {
+    /// <summary>
+    /// View model that manages community data, membership actions and posts for a community view.
+    /// </summary>
     public partial class CommunityViewModel : ObservableObject
     {
         private readonly IPostsService postsService;
@@ -164,7 +167,7 @@ namespace Boards_WP.ViewModels
                 currentOffset += posts.Count;
             }
 
-            HasMorePosts = (posts?.Count == PageSize);
+            HasMorePosts = posts?.Count == PageSize;
         }
 
         private static BitmapImage ConvertToBitmap(byte[] data)

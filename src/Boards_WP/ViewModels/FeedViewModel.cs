@@ -3,6 +3,9 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Boards_WP.ViewModels;
 
+/// <summary>
+/// View model that provides post feed data and pagination (home or discovery).
+/// </summary>
 public partial class FeedViewModel : ObservableObject
 {
     private readonly IPostsService postsService;
@@ -64,7 +67,7 @@ public partial class FeedViewModel : ObservableObject
             currentOffset += data.Count;
         }
 
-        HasMorePosts = (data?.Count == PageSize);
+        HasMorePosts = data?.Count == PageSize;
     }
 
     public void LoadHome()

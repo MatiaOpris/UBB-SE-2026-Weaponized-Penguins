@@ -7,13 +7,16 @@ using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace Boards_WP.ViewModels
 {
+    /// <summary>
+    /// View model for displaying a full post, its comments and actions such as voting,
+    /// commenting, sharing and deletion.
+    /// </summary>
     public partial class FullPostViewModel : ObservableObject
     {
-        
-        private readonly IPostsService _postsService;
-        private readonly ICommentsService _commentsService;
-        private readonly MainViewModel _mainViewModel;
-        private readonly UserSession _userSession;
+        private readonly IPostsService postsService;
+        private readonly ICommentsService commentsService;
+        private readonly MainViewModel mainViewModel;
+        private readonly UserSession userSession;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(PostImageSource))]
@@ -39,6 +42,8 @@ namespace Boards_WP.ViewModels
 
         private VoteType finalVote = VoteType.None;
         private bool hasCommented = false;
+
+        public MainViewModel MainViewModel => mainViewModel;
 
         public ObservableCollection<string> HardcodedChats { get; } = new ()
         {
