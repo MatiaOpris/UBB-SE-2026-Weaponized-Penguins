@@ -6,7 +6,6 @@ using Microsoft.UI.Xaml.Media.Imaging;
 
 using Boards_WP.Data.Models;
 using Boards_WP.Data.Services.Interfaces;
-using System.ComponentModel.Design;
 
 namespace Boards_WP.ViewModels
 {
@@ -17,8 +16,6 @@ namespace Boards_WP.ViewModels
         private readonly MainViewModel mainViewModel;
 
         public MainViewModel MainViewModel => mainViewModel;
-
-        // Add these to PostPreviewViewModel.cs
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(FormattedDate))]
@@ -34,7 +31,7 @@ namespace Boards_WP.ViewModels
         private string authorUsername;
 
         [ObservableProperty]
-        private string _voteStatusText = "";
+        private string voteStatusText = string.Empty;
 
         public BitmapImage PostImageSource => ConvertToBitmap(PostData?.Image);
         public Visibility PostImageVisibility => PostData?.Image?.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -90,20 +87,29 @@ namespace Boards_WP.ViewModels
             UserSession userSession,
             MainViewModel mainViewModel)
         {
-            _postData = post;
-            _postsService = postsService;
-            _userSession = userSession;
-            _mainViewModel = mainViewModel;
-            _communityName = post.ParentCommunity?.Name ?? "Unknown";
-            _authorUsername = post.Owner?.Username ?? "Unknown";
+            postData = post;
+            postsService = postsService;
+            userSession = userSession;
+            mainViewModel = mainViewModel;
+            communityName = post.ParentCommunity?.Name ?? "Unknown";
+            authorUsername = post.Owner?.Username ?? "Unknown";
 
             // Load initial vote status
-            if (_userSession.CurrentUser != null)
+            if (userSession.CurrentUser != null)
             {
-                var vote = _postsService.GetUserVoteForPost(_userSession.CurrentUser.UserID, post.PostID);
-                if (vote == VoteType.Like) VoteStatusText = "Liked";
-                else if (vote == VoteType.Dislike) VoteStatusText = "Disliked";
-                else VoteStatusText = "";
+                var vote = postsService.GetUserVoteForPost(userSession.CurrentUser.UserID, post.PostID);
+                if (vote == VoteType.Like)
+                {
+                    VoteStatusText = "Liked";
+                }
+                else if (vote == VoteType.Dislike)
+                {
+                    VoteStatusText = "Disliked";
+                }
+                else
+                {
+                    VoteStatusText = string.Empty;
+                }
             }
         }
 
@@ -146,15 +152,21 @@ namespace Boards_WP.ViewModels
                 OnPropertyChanged(nameof(PostData));
             }
 
-            var newThemeColor = _postsService.DetermineFeedThemeColorByLastLikes();
-            _mainViewModel.ApplyNewTheme(newThemeColor);
+            var newThemeColor = postsService.DetermineFeedThemeColorByLastLikes();
+            mainViewModel.ApplyNewTheme(newThemeColor);
 
-            if (_postsService.GetUserVoteForPost(userId, PostData.PostID) == VoteType.Dislike)
+            if (postsService.GetUserVoteForPost(userId, PostData.PostID) == VoteType.Dislike)
+            {
                 VoteStatusText = "Disliked";
-            else if (_postsService.GetUserVoteForPost(userId, PostData.PostID) == VoteType.Like)
+            }
+            else if (postsService.GetUserVoteForPost(userId, PostData.PostID) == VoteType.Like)
+            {
                 VoteStatusText = "Liked";
+            }
             else
-                VoteStatusText = "";
+            {
+                VoteStatusText = string.Empty;
+            }
         }
 
         // Update your Downvote method
@@ -183,15 +195,21 @@ namespace Boards_WP.ViewModels
                 OnPropertyChanged(nameof(PostData));
             }
 
-            var newThemeColor = _postsService.DetermineFeedThemeColorByLastLikes();
-            _mainViewModel.ApplyNewTheme(newThemeColor);
+            var newThemeColor = postsService.DetermineFeedThemeColorByLastLikes();
+            mainViewModel.ApplyNewTheme(newThemeColor);
 
-            if (_postsService.GetUserVoteForPost(userId, PostData.PostID) == VoteType.Dislike)
+            if (postsService.GetUserVoteForPost(userId, PostData.PostID) == VoteType.Dislike)
+            {
                 VoteStatusText = "Disliked";
-            else if (_postsService.GetUserVoteForPost(userId, PostData.PostID) == VoteType.Like)
+            }
+            else if (postsService.GetUserVoteForPost(userId, PostData.PostID) == VoteType.Like)
+            {
                 VoteStatusText = "Liked";
+            }
             else
-                VoteStatusText = "";
+            {
+                VoteStatusText = string.Empty;
+            }
         }
 
         [RelayCommand]
