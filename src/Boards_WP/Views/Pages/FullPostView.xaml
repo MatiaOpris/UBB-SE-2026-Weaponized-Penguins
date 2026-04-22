@@ -144,17 +144,36 @@
                 </Border>
 
                 <!-- Share Area -->
-                <Border Background="White" CornerRadius="12" Margin="0,0,0,20" Padding="15" 
-                        BorderBrush="#6A67E1" BorderThickness="2"
-                        Visibility="{x:Bind BooleanToVisibility(ViewModel.IsShareAreaVisible), Mode=OneWay}">
-                    <Grid ColumnDefinitions="*, Auto">
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <ComboBox ItemsSource="{x:Bind ViewModel.HardcodedChats}"
-                                      SelectedItem="{x:Bind ViewModel.SelectedChatName, Mode=TwoWay}"
-                                      PlaceholderText="Select a chat..." Width="200"/>
-                        </StackPanel>
-                        <Button Grid.Column="1" Content="Send" Command="{x:Bind ViewModel.SendShareCommand}"
-                                Background="#6A67E1" Foreground="White" CornerRadius="8" Width="80"/>
+                <Border Background="White" CornerRadius="12" Margin="0,0,0,20" Padding="6" 
+                    BorderBrush="#6A67E1" BorderThickness="2"
+                    Visibility="{x:Bind BooleanToVisibility(ViewModel.IsShareAreaVisible), Mode=OneWay}">
+                    <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
+
+                        <ComboBox Grid.Column="0"
+                            ItemsSource="{x:Bind ViewModel.HardcodedChats}"
+                            SelectedItem="{x:Bind ViewModel.SelectedChatName, Mode=TwoWay}"
+                            PlaceholderText="Select a chat..." 
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Background="Gray"
+                            BorderThickness="0"
+                            Margin="10,0,0,0">
+                            <ComboBox.Resources>
+                                <SolidColorBrush x:Key="ComboBoxBackgroundPointerOver" Color="#4D4D4D" />
+                                <SolidColorBrush x:Key="ComboBoxBackgroundPressed" Color="#383838" />
+                                <SolidColorBrush x:Key="ComboBoxBackgroundFocused" Color="Gray" />
+                            </ComboBox.Resources>
+                        </ComboBox>
+
+                        <Button Grid.Column="1" 
+                            Content="Send" 
+                            Command="{x:Bind ViewModel.SendShareCommand}"
+                            Background="#6A67E1" 
+                            Foreground="White" 
+                            CornerRadius="8" 
+                            Width="80" 
+                            Height="36"
+                            VerticalAlignment="Center"/>
                     </Grid>
                 </Border>
 
