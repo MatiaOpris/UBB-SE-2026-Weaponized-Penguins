@@ -8,7 +8,7 @@ public interface IPostsService
 {
     public List<Post> GetPostsForHomePage(int userId, int offset, int limit);
     public List<Post> GetPostsForDiscoveryPage(int userId, int offset, int limit);
-    public void AddPost(Post post);
+    public void CreatePost(Post post);
     public void DeletePost(int postId);
     public void IncreaseCommentsNumber(int postId);
     public void IncreaseScore(int postId);

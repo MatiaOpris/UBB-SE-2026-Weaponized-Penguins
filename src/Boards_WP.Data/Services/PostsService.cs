@@ -38,10 +38,9 @@ public class PostsService : IPostsService
     }
 
 
-    public void AddPost(Post post)
+    public void CreatePost(Post post)
     {
         ValidatePost(post);
-
         _postsRepo.CreatePost(post);
     }
 
