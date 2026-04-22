@@ -17,6 +17,8 @@ namespace Boards_WP.ViewModels
         private readonly ICommentsService commentsService;
         private readonly MainViewModel mainViewModel;
         private readonly UserSession userSession;
+        public MainViewModel MainViewModel => mainViewModel;
+
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(PostImageSource))]

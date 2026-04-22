@@ -83,16 +83,18 @@ namespace Boards_WP.ViewModels
 
         public PostPreviewViewModel(
             Post post,
-            IPostsService postsService,
-            UserSession userSession,
-            MainViewModel mainViewModel)
+            IPostsService posts_Service,
+            UserSession user_Session,
+            MainViewModel main_ViewModel)
         {
-            PostData = post;
-            this.postsService = postsService;
-            this.userSession = userSession;
-            this.mainViewModel = mainViewModel;
-            CommunityName = post.ParentCommunity?.Name ?? "Unknown";
-            AuthorUsername = post.Owner?.Username ?? "Unknown";
+
+            postData = post;
+            postsService = posts_Service;
+            userSession = user_Session;
+            mainViewModel = main_ViewModel;
+            communityName = post.ParentCommunity?.Name ?? "Unknown";
+            authorUsername = post.Owner?.Username ?? "Unknown";
+
 
             // Load initial vote status
             if (userSession.CurrentUser != null)
