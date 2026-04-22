@@ -1,40 +1,44 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
+using System;
+using System.Collections.ObjectModel;
+
+using Boards_WP.Data.Models;
+using Boards_WP.Data.Repositories.Interfaces;
+
 namespace Boards_WP.ViewModels;
 
 public partial class CreateTagViewModel : ObservableObject
 {
-    private readonly ITagsRepository tagsRepository;
+    private readonly ITagsRepository _tagsRepository;
 
     [ObservableProperty]
-    private string tagName = string.Empty;
+    private string _tagName = string.Empty;
 
     [ObservableProperty]
-    private Category? selectedCategory;
+    private Category? _selectedCategory;
 
     [ObservableProperty]
-    private string errorMessage = string.Empty;
+    private string _errorMessage = string.Empty;
 
-    public ObservableCollection<Category> AvailableCategories { get; } = new ();
+    public ObservableCollection<Category> AvailableCategories { get; } = new();
 
+    
     public event Action<Tag>? TagCreated;
     public event Action? Cancelled;
 
     public CreateTagViewModel(ITagsRepository tagsRepository)
     {
-        this.tagsRepository = tagsRepository;
+        _tagsRepository = tagsRepository;
         LoadCategories();
     }
 
     private void LoadCategories()
     {
         AvailableCategories.Clear();
-        var categories = tagsRepository.GetAllCategories();
-        foreach (var c in categories)
-        {
-            AvailableCategories.Add(c);
-        }
+        var categories = _tagsRepository.GetAllCategories();
+        foreach (var category in categories) AvailableCategories.Add(category);
     }
 
     [RelayCommand]
@@ -62,7 +66,7 @@ public partial class CreateTagViewModel : ObservableObject
 
         try
         {
-            tagsRepository.AddTag(tag);
+            _tagsRepository.AddTag(tag);
             TagCreated?.Invoke(tag);
         }
         catch (Exception ex)

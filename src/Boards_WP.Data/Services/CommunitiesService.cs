@@ -73,9 +73,9 @@ public class CommunitiesService : ICommunitiesService
         {
             return _communitiesRepo.GetCommunitiesUserIsPartOf(UserID);
         }
-        catch(Exception ex)
+        catch
         {
-            throw new Exception("Failed to get communities user is part of.",ex);
+            throw new Exception("Failed to get communities user is part of.");
         }
     }
 
@@ -139,15 +139,17 @@ public class CommunitiesService : ICommunitiesService
         }
     }
 
+    private const int MaxCommunityNameLength = 200;
+    private const int MaxCommunityDescriptionLength = 500;
     private void validateCommunity(Community community)
     {
         if (string.IsNullOrEmpty(community.Name))
             throw new Exception("Community name cannot be empty.");
-        if (community.Name.Length > 200)
+        if (community.Name.Length > MaxCommunityNameLength)
             throw new Exception("Community name cannot exceed 200 characters.");
         if (string.IsNullOrEmpty(community.Description))
             throw new Exception("Community description cannot be empty.");
-        if (community.Description.Length > 500)
+        if (community.Description.Length > MaxCommunityDescriptionLength)
             throw new Exception("Community description cannot exceed 500 characters.");
     }
 

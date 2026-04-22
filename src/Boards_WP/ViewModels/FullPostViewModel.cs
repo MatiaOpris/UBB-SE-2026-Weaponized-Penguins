@@ -1,5 +1,16 @@
+using System;
+using System.Collections.ObjectModel;
+using System.IO;
+
+using Boards_WP.Data.Models;
+using Boards_WP.Data.Models;
+using Boards_WP.Data.Services;
+using Boards_WP.Data.Services;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System;
+using System.Collections.Generic;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
@@ -7,44 +18,44 @@ using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace Boards_WP.ViewModels
 {
-    /// <summary>
-    /// View model for displaying a full post, its comments and actions such as voting,
-    /// commenting, sharing and deletion.
-    /// </summary>
     public partial class FullPostViewModel : ObservableObject
     {
-        private readonly IPostsService postsService;
-        private readonly ICommentsService commentsService;
-        private readonly MainViewModel mainViewModel;
-        private readonly UserSession userSession;
-        public MainViewModel MainViewModel => mainViewModel;
+        
+        private readonly IPostsService _postsService;
+        private readonly ICommentsService _commentsService;
+        private readonly MainViewModel _mainViewModel;
+        private readonly UserSession _userSession;
+
+        private const int NoUserId = 0;
+
+        public MainViewModel MainViewModel => _mainViewModel;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(PostImageSource))]
         [NotifyPropertyChangedFor(nameof(PostImageVisibility))]
         [NotifyPropertyChangedFor(nameof(AuthorUsername))]
         [NotifyPropertyChangedFor(nameof(CurrentPostTags))]
-        private Post currentPost;
+        private Post _currentPost;
 
         [ObservableProperty]
-        private string newCommentText;
+        private string _newCommentText;
 
         [ObservableProperty]
-        private bool isCommentAreaVisible;
+        private bool _isCommentAreaVisible;
 
         [ObservableProperty]
-        private bool isShareAreaVisible;
+        private bool _isShareAreaVisible;
 
         [ObservableProperty]
-        private string selectedChatName;
+        private string _selectedChatName;
 
         [ObservableProperty]
-        private bool canDeletePost;
+        private bool _canDeletePost;
 
-        private VoteType finalVote = VoteType.None;
-        private bool hasCommented = false;
+        private VoteType _finalVote = VoteType.None;
+        private bool _hasCommented = false;
 
-        public ObservableCollection<string> HardcodedChats { get; } = new ()
+        public ObservableCollection<string> HardcodedChats { get; } = new()
         {
             "General Chat", "Sports Fans", "Tech Talk", "Weaponized Penguins Team"
         };
@@ -55,7 +66,7 @@ namespace Boards_WP.ViewModels
             IsShareAreaVisible = !IsShareAreaVisible;
             if (IsShareAreaVisible)
             {
-                IsCommentAreaVisible = false;
+                IsCommentAreaVisible = false; 
             }
         }
 
@@ -71,34 +82,38 @@ namespace Boards_WP.ViewModels
         public string AuthorUsername => CurrentPost?.Owner?.Username ?? "Unknown";
         public IEnumerable<Tag> CurrentPostTags => CurrentPost?.Tags ?? new List<Tag>();
 
-        public ObservableCollection<Comment> PostComments { get; } = new ();
+        public ObservableCollection<Comment> PostComments { get; } = new();
 
+        
         public FullPostViewModel(
             IPostsService postsService,
             ICommentsService commentsService,
             MainViewModel mainViewModel,
             UserSession userSession)
         {
-            this.postsService = postsService;
-            this.commentsService = commentsService;
-            this.mainViewModel = mainViewModel;
-            this.userSession = userSession;
+            _postsService = postsService;
+            _commentsService = commentsService;
+            _mainViewModel = mainViewModel;
+            _userSession = userSession;
         }
 
+        
         public void Initialize(Post post)
         {
-            var fullPost = postsService.GetPostByPostID(post.PostID);
+            
+            var fullPost = _postsService.GetPostByPostID(post.PostID);
             CurrentPost = fullPost ?? post;
 
-            if (CurrentPost != null && userSession.CurrentUser != null)
+            if (CurrentPost != null && _userSession.CurrentUser != null)
             {
-                int currentUserId = userSession.CurrentUser.UserID;
+                int currentUserId = _userSession.CurrentUser.UserID;
 
+                
                 bool isOwner = CurrentPost.Owner?.UserID == currentUserId;
 
                 bool isAdmin = CurrentPost.ParentCommunity?.Admin?.UserID == currentUserId;
 
-                canDeletePost = isOwner || isAdmin;
+                _canDeletePost = isOwner || isAdmin;
             }
 
             LoadComments();
@@ -107,20 +122,20 @@ namespace Boards_WP.ViewModels
         [RelayCommand]
         private void DeletePost()
         {
-            if (CurrentPost == null)
-            {
-                return;
-            }
+            if (CurrentPost == null) return;
 
             try
             {
-                postsService.DeletePost(CurrentPost.PostID);
+                
+                _postsService.DeletePost(CurrentPost.PostID);
 
+                
                 var navService = App.Services.GetService<INavigationService>();
                 if (navService != null)
                 {
                     navService.GoBack();
                 }
+                
             }
             catch (Exception ex)
             {
@@ -131,28 +146,20 @@ namespace Boards_WP.ViewModels
         private void LoadComments()
         {
             PostComments.Clear();
-            if (CurrentPost == null)
-            {
-                return;
-            }
+            if (CurrentPost == null) return;
 
-            var userId = userSession.CurrentUser?.UserID ?? 0;
+            var userId = _userSession.CurrentUser?.UserID ?? 0;
 
-            var comments = commentsService.GetCommentsByPost(CurrentPost.PostID, userId);
+            
+            var comments = _commentsService.GetCommentsByPost(CurrentPost.PostID, userId);
 
             foreach (var c in comments)
-            {
                 PostComments.Add(c);
-            }
         }
 
         private static BitmapImage ConvertToBitmap(byte[] data)
         {
-            if (data == null || data.Length == 0)
-            {
-                return null;
-            }
-
+            if (data == null || data.Length == 0) return null;
             var bitmap = new BitmapImage();
             using var ms = new MemoryStream(data);
             bitmap.SetSource(ms.AsRandomAccessStream());
@@ -162,57 +169,51 @@ namespace Boards_WP.ViewModels
         [RelayCommand]
         private void Upvote()
         {
-            if (CurrentPost == null)
-            {
-                return;
-            }
+            if (CurrentPost == null) return;
+            var userId = _userSession.CurrentUser?.UserID ?? NoUserId;
+            if (userId == NoUserId) return;
 
-            var userId = userSession.CurrentUser?.UserID ?? 0;
-            if (userId == 0)
-            {
-                return;
-            }
+            
+            _postsService.IncreaseScore(CurrentPost.PostID);
+            //_postsService.UpdateUserInterests(userId, CurrentPost, VoteType.Like, false);
 
-            postsService.IncreaseScore(CurrentPost.PostID);
-            // _postsService.UpdateUserInterests(userId, CurrentPost, VoteType.Like, false);
-            var updatedPost = postsService.GetPostByPostID(CurrentPost.PostID);
+           
+            var updatedPost = _postsService.GetPostByPostID(CurrentPost.PostID);
             if (updatedPost != null)
             {
                 CurrentPost.Score = updatedPost.Score;
-                OnPropertyChanged(nameof(CurrentPost));
+                OnPropertyChanged(nameof(CurrentPost)); 
             }
 
-            var newThemeColor = postsService.DetermineThemeForASinglePost(updatedPost);
-            mainViewModel.ApplyNewTheme(newThemeColor);
-            finalVote = VoteType.Like;
+            
+            var newThemeColor = _postsService.DetermineThemeForASinglePost(updatedPost);
+            _mainViewModel.ApplyNewTheme(newThemeColor);
+            _finalVote = VoteType.Like;
         }
 
         [RelayCommand]
         private void Downvote()
         {
-            if (CurrentPost == null)
-            {
-                return;
-            }
+            if (CurrentPost == null) return;
+            var userId = _userSession.CurrentUser?.UserID ?? NoUserId;
+            if (userId == NoUserId) return;
 
-            var userId = userSession.CurrentUser?.UserID ?? 0;
-            if (userId == 0)
-            {
-                return;
-            }
+            
+            _postsService.DecreaseScore(CurrentPost.PostID);
+            //_postsService.UpdateUserInterests(userId, CurrentPost, VoteType.Dislike, false);
 
-            postsService.DecreaseScore(CurrentPost.PostID);
-            // _postsService.UpdateUserInterests(userId, CurrentPost, VoteType.Dislike, false);
-            var updatedPost = postsService.GetPostByPostID(CurrentPost.PostID);
+           
+            var updatedPost = _postsService.GetPostByPostID(CurrentPost.PostID);
             if (updatedPost != null)
             {
                 CurrentPost.Score = updatedPost.Score;
-                OnPropertyChanged(nameof(CurrentPost));
+                OnPropertyChanged(nameof(CurrentPost)); 
             }
 
-            var newThemeColor = postsService.DetermineFeedThemeColorByLastLikes();
-            mainViewModel.ApplyNewTheme(newThemeColor);
-            finalVote = VoteType.Dislike;
+           
+            var newThemeColor = _postsService.DetermineFeedThemeColorByLastLikes();
+            _mainViewModel.ApplyNewTheme(newThemeColor);
+            _finalVote = VoteType.Dislike;
         }
 
         [RelayCommand]
@@ -228,33 +229,31 @@ namespace Boards_WP.ViewModels
             NewCommentText = string.Empty;
         }
 
+        
         [RelayCommand]
         private void PostComment()
         {
-            if (string.IsNullOrWhiteSpace(NewCommentText) || CurrentPost == null)
-            {
-                return;
-            }
+            if (string.IsNullOrWhiteSpace(NewCommentText) || CurrentPost == null) return;
 
             var newComment = new Comment
             {
                 ParentPost = CurrentPost,
-                Owner = userSession.CurrentUser,
+                Owner = _userSession.CurrentUser,
                 Description = NewCommentText,
                 CreationTime = DateTime.Now
             };
 
             try
             {
-                commentsService.AddComment(newComment);
+                _commentsService.AddComment(newComment);
                 PostComments.Insert(0, newComment);
                 CurrentPost.CommentsNumber++;
                 NewCommentText = string.Empty;
                 IsCommentAreaVisible = false;
 
-                postsService.IncreaseCommentsNumber(CurrentPost.PostID);
+                _postsService.IncreaseCommentsNumber(CurrentPost.PostID);
                 OnPropertyChanged(nameof(CurrentPost));
-                hasCommented = true;
+                _hasCommented = true;
             }
             catch (Exception ex)
             {
@@ -264,16 +263,14 @@ namespace Boards_WP.ViewModels
 
         public void OnExitView()
         {
-            if (CurrentPost == null || userSession.CurrentUser == null)
-            {
-                return;
-            }
+            if (CurrentPost == null || _userSession.CurrentUser == null) return;
 
-            postsService.UpdateUserInterests(
-                userSession.CurrentUser.UserID,
+            _postsService.UpdateUserInterests(
+                _userSession.CurrentUser.UserID,
                 CurrentPost,
-                finalVote,
-                hasCommented);
+                _finalVote,
+                _hasCommented);
+
         }
     }
 }

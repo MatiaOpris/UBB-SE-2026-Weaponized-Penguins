@@ -106,14 +106,19 @@ public class PostsService : IPostsService
 
         if (currentVote == VoteType.Like)
         {
-            _postsRepo.SetUserVoteForPost(userId, postId, VoteType.Like);
-            return;
+            
+            _postsRepo.SetUserVoteForPost(userId, postId, VoteType.None);
+            _postsRepo.DecreaseScore(postId);
+
+            _lastLikesOfCurrentUser.RemoveAll(p => p.PostID == postId);
+
         }
         else if (currentVote == VoteType.Dislike)
         {
             
-            _postsRepo.SetUserVoteForPost(userId, postId, VoteType.None);
+            _postsRepo.SetUserVoteForPost(userId, postId, VoteType.Like);
 
+            _postsRepo.IncreaseScore(postId);
             _postsRepo.IncreaseScore(postId);
 
             Post likedPost = _postsRepo.GetPostByPostID(postId);
@@ -143,13 +148,17 @@ public class PostsService : IPostsService
 
         if (currentVote == VoteType.Dislike)
         {
-            _postsRepo.SetUserVoteForPost(userId, postId, VoteType.Dislike);
-            return;
+            
+            _postsRepo.SetUserVoteForPost(userId, postId, VoteType.None);
+
+            _postsRepo.IncreaseScore(postId);
         }
         else if (currentVote == VoteType.Like)
         {
-            _postsRepo.SetUserVoteForPost(userId, postId, VoteType.None);
 
+            _postsRepo.SetUserVoteForPost(userId, postId, VoteType.Dislike);
+
+            _postsRepo.DecreaseScore(postId);
             _postsRepo.DecreaseScore(postId);
 
             _lastLikesOfCurrentUser.RemoveAll(post => post.PostID == postId);
@@ -195,6 +204,7 @@ public class PostsService : IPostsService
         return _discoveryBuffer.Skip(offset).Take(limit).ToList();
     }
 
+    private const int PercentBase = 100;
     private void RunDiscoveryAlgorithmCycle(int userId)
     {
         List<Community> communities = _communitiesRepo.GetCommunitiesUserIsPartOf(userId);
@@ -223,7 +233,7 @@ public class PostsService : IPostsService
         .ToList();
 
         int totalCount = rankedPool.Count;
-        int minThreshold = (_initialDiscoveryBatch * _goldenPostsDiscoveryPercent) / 100;
+        int minThreshold = (_initialDiscoveryBatch * _goldenPostsDiscoveryPercent) / PercentBase;
 
         if (totalCount <= minThreshold)
         {
@@ -232,8 +242,8 @@ public class PostsService : IPostsService
             return;
         }
 
-        int topCount = totalCount * _goldenPostsDiscoveryPercent / 100;
-        int middleCount = totalCount * (100 - _goldenPostsDiscoveryPercent - _badPostsDiscoveryPercent) / 100;
+        int topCount = totalCount * _goldenPostsDiscoveryPercent / PercentBase;
+        int middleCount = totalCount * (100 - _goldenPostsDiscoveryPercent - _badPostsDiscoveryPercent) / PercentBase;
 
         _discoveryBuffer.AddRange(rankedPool.Take(topCount));
         var nextKeptPool = rankedPool.Skip(topCount).Take(middleCount).ToList();
@@ -247,8 +257,8 @@ public class PostsService : IPostsService
                 .Select(x => x.Post)
                 .ToList();
 
-            int resetTopCount = (_safetyDiscoveryResetCount * _goldenPostsDiscoveryPercent) / 100;
-            int resetMidCount = (_safetyDiscoveryResetCount * (100 - _goldenPostsDiscoveryPercent - _badPostsDiscoveryPercent)) / 100;
+            int resetTopCount = (_safetyDiscoveryResetCount * _goldenPostsDiscoveryPercent) / PercentBase;
+            int resetMidCount = (_safetyDiscoveryResetCount * (100 - _goldenPostsDiscoveryPercent - _badPostsDiscoveryPercent)) / PercentBase;
 
             _discoveryBuffer = elitePool.Take(resetTopCount).ToList();
             _discoveryKeptPool = elitePool.Skip(resetTopCount).Take(resetMidCount).ToList();
@@ -342,6 +352,9 @@ public class PostsService : IPostsService
 
     }
 
+    private const int MaxTagInfluenceRank = 10;
+    private const int TagWeightStep = 10;
+    private const int InterestScoreTotal = 10000;
     internal Dictionary<int, int> UserInterestsAlgorithm(int userId, Post post, VoteType vote, bool hasCommented, Dictionary<int, int> userScores)
     {
         //--all testable math here
@@ -353,7 +366,7 @@ public class PostsService : IPostsService
         for (int tagIndex = 0; tagIndex < post.Tags.Count; tagIndex++)
         {
             int catId = post.Tags[tagIndex].CategoryBelongingTo.CategoryID;
-            int change = (int)Math.Round(((10 - tagIndex) * 10) * intensity);
+            int change = (int)Math.Round(((MaxTagInfluenceRank - tagIndex) * TagWeightStep) * intensity);
             userScores[catId] += change;
             appliedChange += change;
         }
@@ -394,9 +407,9 @@ public class PostsService : IPostsService
 
         //--final paranoia
         int currentSum = userScores.Values.Sum();
-        if (currentSum != 10000)
+        if (currentSum != InterestScoreTotal)
         {
-            int diff = 10000 - currentSum;
+            int diff = InterestScoreTotal - currentSum;
             int topCat = userScores.OrderByDescending(x => x.Value).First().Key;
             userScores[topCat] += diff;
         }
@@ -404,6 +417,8 @@ public class PostsService : IPostsService
         return userScores;
     }
 
+    private const int MaxTagInfluenceRank = 10;
+    private const int TagWeightStep = 10;
     internal int CalculateManhattanDistance(Dictionary<int, int> userScores, Post post, List<int> allCategoryIds)
     {
         int totalDistance = 0;
@@ -413,7 +428,7 @@ public class PostsService : IPostsService
         {
             int catId = post.Tags[tagIndex].CategoryBelongingTo.CategoryID;
 
-            int baseWeight = (10 - tagIndex) * 10;
+            int baseWeight = (MaxTagInfluenceRank - tagIndex) * TagWeightStep;
             int weightedInfluence = baseWeight * 100;
 
             if (postCategories.ContainsKey(catId)) postCategories[catId] += weightedInfluence;
@@ -431,8 +446,5 @@ public class PostsService : IPostsService
         return totalDistance;
     }
 
-    public VoteType GetUserVoteForPost(int userId, int postId)
-    {
-        return _postsRepo.GetUserVoteForPost(userId, postId);
-    }
+
 }

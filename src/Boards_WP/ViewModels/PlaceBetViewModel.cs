@@ -1,3 +1,8 @@
+using System;
+
+using Boards_WP.Data.Models;
+using Boards_WP.Data.Services;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -5,36 +10,38 @@ namespace Boards_WP.ViewModels
 {
     public partial class PlaceBetViewModel : ObservableObject
     {
-        private readonly IBetsService betsService;
-        private readonly UserSession userSession;
+        private readonly IBetsService _betsService;
+        private readonly UserSession _userSession;
+
+        private const int NoUserId = 0;
 
         [ObservableProperty]
-        private Bet selectedBet;
+        private Bet _selectedBet;
 
         [ObservableProperty]
-        private BetVote selectedVote;
+        private BetVote _selectedVote;
 
         [ObservableProperty]
-        private decimal selectedOdd;
+        private decimal _selectedOdd;
 
         public string SelectedOddText => SelectedOdd.ToString("F2");
 
         [ObservableProperty]
-        private int betAmount;
+        private int _betAmount;
 
         [ObservableProperty]
-        private string errorMessage = string.Empty;
+        private string _errorMessage = string.Empty;
 
         [ObservableProperty]
-        private string successMessage = string.Empty;
+        private string _successMessage = string.Empty;
 
         public string PotentialWin => Math.Ceiling(BetAmount * SelectedOdd).ToString("0");
 
         public PlaceBetViewModel(IBetsService betsService, UserSession userSession)
         {
-            this.betsService = betsService;
-            this.userSession = userSession;
-            selectedBet = null!;
+            _betsService = betsService;
+            _userSession = userSession;
+            _selectedBet = null!;
         }
 
         public void Initialize(BetPlacementNavigationData payload)
@@ -65,16 +72,16 @@ namespace Boards_WP.ViewModels
         {
             try
             {
-                var userId = userSession?.CurrentUser?.UserID ?? 0;
-                if (userId == 0)
+                var userId = _userSession?.CurrentUser?.UserID ?? NoUserId;
+                if (userId == NoUserId)
                 {
                     ErrorMessage = "No current user available.";
                     SuccessMessage = string.Empty;
                     return;
                 }
 
-                betsService.ValidatePlaceUserBet(userId, BetAmount);
-                betsService.PlaceUserBet(userId, SelectedBet.BetID, BetAmount, SelectedVote);
+                _betsService.ValidatePlaceUserBet(userId, BetAmount);
+                _betsService.PlaceUserBet(userId, SelectedBet.BetID, BetAmount, SelectedVote);
 
                 ErrorMessage = string.Empty;
                 SuccessMessage = "May the luck be with you!";

@@ -10,6 +10,12 @@ public class BetsService : IBetsService
     private readonly IUsersService _usersService;
     private readonly ICommentsService _commentsService;
     private readonly IPostsService _postsService;
+
+    private const int MaxBetAmount = 1000;
+    private const decimal MaxDiscountRate = 0.50m;
+    private const decimal DiscountScalingFactor = 0.50m;
+    private const decimal ProbabilityNeutralThreshold = 0.50m;
+    private const string SecretKey = "/weaponizedpenguins";
     public BetsService(IBetsRepository betsRepository, IUsersService usersService, ICommentsService commentsService, IPostsService postsService)
     {
         _betsRepository = betsRepository;
@@ -32,8 +38,8 @@ public class BetsService : IBetsService
             decimal probabilityYes = (yesAmount + BaseSmoothingFactor) / (yesAmount + noAmount + (2 * BaseSmoothingFactor));
             decimal probabilityNo = (noAmount + BaseSmoothingFactor) / (yesAmount + noAmount + (2 * BaseSmoothingFactor));
 
-            decimal M_dynamic_yes = BaseMargin + Math.Max(0, probabilityYes - 0.50m) * 0.2m;
-            decimal M_dynamic_no = BaseMargin + Math.Max(0, probabilityNo - 0.50m) * 0.2m;
+            decimal M_dynamic_yes = BaseMargin + Math.Max(0, probabilityYes - ProbabilityNeutralThreshold) * 0.2m;
+            decimal M_dynamic_no = BaseMargin + Math.Max(0, probabilityNo - ProbabilityNeutralThreshold) * 0.2m;
 
             decimal discount = GetUserTokenFeeDiscount(UserID);
 
@@ -327,7 +333,7 @@ public class BetsService : IBetsService
             decimal Usold = userTokens.TokensNumber;
             const decimal Umax = 10000m;
 
-            decimal discount = Math.Min(0.50m, (Usold / Umax) * 0.50m);
+            decimal discount = Math.Min(MaxDiscountRate, (Usold / Umax) * DiscountScalingFactor);
 
             return discount;
         }
@@ -339,7 +345,7 @@ public class BetsService : IBetsService
 
     public bool IsSecretKey(string Input)
     {
-        return Input.StartsWith("/weaponizedpenguins");
+        return Input.StartsWith(SecretKey);
     }
 
     public void PlaceUserBet(int UserID, int BetID, int Amount, BetVote Vote)
@@ -425,7 +431,7 @@ public class BetsService : IBetsService
                 throw new Exception("Bet amount must be greater than 0.");
             if (UserTokens < Amount)
                 throw new Exception("User does not have enough tokens to place this bet.");
-            if (Amount > 1000)
+            if (Amount > MaxBetAmount)
                 throw new Exception("Bet amount must be less than or equal to 1000 tokens.");
 
             return true;
