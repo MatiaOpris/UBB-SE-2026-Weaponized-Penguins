@@ -1,15 +1,11 @@
-using Boards_WP.ViewModels; 
-
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-
 
 namespace Boards_WP.Views
 {
     public sealed partial class CommunityBarView : UserControl
     {
-        public ObservableCollection<Community> Communities { get; set; } = new();
+        public ObservableCollection<Community> Communities { get; set; } = new ();
         public CommunityBarViewModel ViewModel { get; private set; }
 
         public CommunityBarView()
@@ -32,7 +28,6 @@ namespace Boards_WP.Views
                 ViewModel.NavigateToCommunityCommand.Execute(selected);
             }
         }
-
 
         private void HomeNavigation_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
         {

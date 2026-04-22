@@ -1,38 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-
-using Boards_WP.Data.Models;
-using Boards_WP.Data.Services; 
-using Boards_WP.ViewModels;
+﻿using Boards_WP.ViewModels;
 using Boards_WP.Views.Pages;
-using Boards_WP;
 
 using CommunityToolkit.Mvvm.Input;
 
 public partial class CommunityBarViewModel
 {
-    private readonly INavigationService _navigationService;
-    private readonly ICommunitiesService _communitiesService;
-    private readonly FeedViewModel _feedViewModel; 
-    private readonly MainViewModel _mainViewModel;
-    private readonly UserSession _userSession;
+    private readonly INavigationService navigationService;
+    private readonly ICommunitiesService communitiesService;
+    private readonly FeedViewModel feedViewModel;
+    private readonly MainViewModel mainViewModel;
+    private readonly UserSession userSession;
 
-    public MainViewModel MainViewModel => _mainViewModel;
+    public MainViewModel MainViewModel => mainViewModel;
 
-
-    public ObservableCollection<Community> Communities { get; } = new();
+    public ObservableCollection<Community> Communities { get; } = new ();
 
     public CommunityBarViewModel(
         INavigationService navigationService, ICommunitiesService communitiesService,
         FeedViewModel feedViewModel, UserSession userSession, MainViewModel mainViewModel)
     {
-        _navigationService = navigationService;
-        _communitiesService = communitiesService;
-        _feedViewModel = feedViewModel;
-        _userSession = userSession;
-        _mainViewModel = mainViewModel;
+        this.navigationService = navigationService;
+        this.communitiesService = communitiesService;
+        this.feedViewModel = feedViewModel;
+        this.userSession = userSession;
+        this.mainViewModel = mainViewModel;
 
         LoadCommunities();
     }
@@ -40,32 +31,37 @@ public partial class CommunityBarViewModel
     public void LoadCommunities()
     {
         Communities.Clear();
-        if (_userSession?.CurrentUser == null) return;
+        if (userSession?.CurrentUser == null)
+        {
+            return;
+        }
 
-        foreach (Community community in _communitiesService.GetCommunitiesUserIsPartOf(_userSession.CurrentUser.UserID))
+        foreach (Community community in communitiesService.GetCommunitiesUserIsPartOf(userSession.CurrentUser.UserID))
+        {
             Communities.Add(community);
+        }
     }
 
     [RelayCommand]
     private void NavigateHome()
     {
-        _feedViewModel.IsHome = true;
-        _feedViewModel.LoadHome(); 
-        _navigationService.NavigateTo(typeof(FeedView));
+        feedViewModel.IsHome = true;
+        feedViewModel.LoadHome();
+        navigationService.NavigateTo(typeof(FeedView));
     }
 
     [RelayCommand]
     private void NavigateDiscovery()
     {
-        _feedViewModel.IsHome = false;
-        _feedViewModel.LoadDiscovery();
-        _navigationService.NavigateTo(typeof(FeedView));
+        feedViewModel.IsHome = false;
+        feedViewModel.LoadDiscovery();
+        navigationService.NavigateTo(typeof(FeedView));
     }
 
     [RelayCommand]
     private void NavigateCreateCommunity()
     {
-        _navigationService.NavigateTo(typeof(CreateCommunityView));
+        navigationService.NavigateTo(typeof(CreateCommunityView));
     }
 
     [RelayCommand]
@@ -73,7 +69,7 @@ public partial class CommunityBarViewModel
     {
         if (community != null)
         {
-            _navigationService.NavigateTo(typeof(CommunityView), community);
+            navigationService.NavigateTo(typeof(CommunityView), community);
         }
     }
 }

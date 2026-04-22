@@ -18,6 +18,5 @@ namespace Boards_WP.Views.Pages
 
             ViewModel = App.Services.GetRequiredService<LoginViewModel>();
         }
-
     }
 }

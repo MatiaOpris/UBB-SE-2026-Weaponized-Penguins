@@ -1,5 +1,3 @@
-using System.IO;
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -14,11 +12,11 @@ namespace Boards_WP.ViewModels
 {
     public partial class PostPreviewViewModel : ObservableObject
     {
-        private readonly IPostsService _postsService;
-        private readonly UserSession _userSession;
-        private readonly MainViewModel _mainViewModel;
+        private readonly IPostsService postsService;
+        private readonly UserSession userSession;
+        private readonly MainViewModel mainViewModel;
 
-        public MainViewModel MainViewModel => _mainViewModel;
+        public MainViewModel MainViewModel => mainViewModel;
 
         // Add these to PostPreviewViewModel.cs
 
@@ -27,13 +25,13 @@ namespace Boards_WP.ViewModels
         [NotifyPropertyChangedFor(nameof(DescriptionSnippet))]
         [NotifyPropertyChangedFor(nameof(PostImageSource))]
         [NotifyPropertyChangedFor(nameof(PostImageVisibility))]
-        private Post _postData;
+        private Post postData;
 
         [ObservableProperty]
-        private string _communityName;
+        private string communityName;
 
         [ObservableProperty]
-        private string _authorUsername;
+        private string authorUsername;
 
         [ObservableProperty]
         private string _voteStatusText = "";
@@ -45,16 +43,27 @@ namespace Boards_WP.ViewModels
         {
             get
             {
-                if (PostData == null) return "";
+                if (PostData == null)
+                {
+                    return string.Empty;
+                }
 
                 var elapsed = DateTime.Now - PostData.CreationTime;
 
                 if (elapsed.TotalMinutes < 1)
+                {
                     return "just now";
+                }
+
                 if (elapsed.TotalHours < 1)
+                {
                     return $"{(int)elapsed.TotalMinutes}m ago";
+                }
+
                 if (elapsed.TotalHours < 24)
+                {
                     return $"{(int)elapsed.TotalHours}h ago";
+                }
 
                 return PostData.CreationTime.ToString("dd/MM/yyyy");
             }
@@ -64,9 +73,13 @@ namespace Boards_WP.ViewModels
         {
             get
             {
-                if (string.IsNullOrEmpty(PostData?.Description)) return string.Empty;
-                return PostData.Description.Length > 150
-                    ? PostData.Description.Substring(0, 150) + "..."
+                if (string.IsNullOrEmpty(PostData?.Description))
+                {
+                    return string.Empty;
+                }
+
+                return PostData.Description.Length > 300
+                    ? PostData.Description.Substring(0, 300) + "..."
                     : PostData.Description;
             }
         }
@@ -96,7 +109,11 @@ namespace Boards_WP.ViewModels
 
         private static BitmapImage ConvertToBitmap(byte[] data)
         {
-            if (data == null || data.Length == 0) return null;
+            if (data == null || data.Length == 0)
+            {
+                return null;
+            }
+
             var bitmap = new BitmapImage();
             using var ms = new MemoryStream(data);
             bitmap.SetSource(ms.AsRandomAccessStream());
@@ -107,17 +124,25 @@ namespace Boards_WP.ViewModels
         [RelayCommand]
         private void Upvote()
         {
-            if (PostData == null) return;
-            var userId = _userSession.CurrentUser?.UserID ?? 0;
-            if (userId == 0) return;
+            if (PostData == null)
+            {
+                return;
+            }
 
-            _postsService.IncreaseScore(PostData.PostID);
-            // _postsService.UpdateUserInterests(userId, PostData, VoteType.Like, false); // if you use this over there
+            var userId = userSession.CurrentUser?.UserID ?? 0;
+            if (userId == 0)
+            {
+                return;
+            }
 
-            var updatedPost = _postsService.GetPostByPostID(PostData.PostID);
+            postsService.IncreaseScore(PostData.PostID);
+            postsService.UpdateUserInterests(userId, PostData, VoteType.Like, false);
+
+            var updatedPost = postsService.GetPostByPostID(PostData.PostID);
             if (updatedPost != null)
             {
                 PostData.Score = updatedPost.Score;
+
                 OnPropertyChanged(nameof(PostData));
             }
 
@@ -136,16 +161,25 @@ namespace Boards_WP.ViewModels
         [RelayCommand]
         private void Downvote()
         {
-            if (PostData == null) return;
-            var userId = _userSession.CurrentUser?.UserID ?? 0;
-            if (userId == 0) return;
+            if (PostData == null)
+            {
+                return;
+            }
 
-            _postsService.DecreaseScore(PostData.PostID);
+            var userId = userSession.CurrentUser?.UserID ?? 0;
+            if (userId == 0)
+            {
+                return;
+            }
 
-            var updatedPost = _postsService.GetPostByPostID(PostData.PostID);
+            postsService.DecreaseScore(PostData.PostID);
+            postsService.UpdateUserInterests(userId, PostData, VoteType.Dislike, false);
+
+            var updatedPost = postsService.GetPostByPostID(PostData.PostID);
             if (updatedPost != null)
             {
                 PostData.Score = updatedPost.Score;
+
                 OnPropertyChanged(nameof(PostData));
             }
 
@@ -163,10 +197,15 @@ namespace Boards_WP.ViewModels
         [RelayCommand]
         private void OpenPost()
         {
-            if (PostData == null) return;
+            if (PostData == null)
+            {
+                return;
+            }
 
-            if (App.Current is App myApp && myApp.m_window is MainWindow mainWindow)
+            if (App.Current is App myApp && myApp.M_window is MainWindow mainWindow)
+            {
                 mainWindow.NavigateToPage(typeof(Views.Pages.FullPostView), PostData);
+            }
         }
     }
 }

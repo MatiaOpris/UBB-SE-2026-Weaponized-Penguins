@@ -21,15 +21,21 @@ namespace Boards_WP.Views.Pages
         private void OnBetCancelled()
         {
             if (this.Frame.CanGoBack)
+            {
                 this.Frame.GoBack();
+            }
         }
 
         private void OnBetCreated()
         {
             if (this.Frame.CanGoBack)
+            {
                 this.Frame.GoBack();
+            }
             else
+            {
                 this.Frame.Navigate(typeof(BetsView));
+            }
         }
 
         private void Comment_Checked(object sender, RoutedEventArgs e)
