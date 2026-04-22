@@ -100,7 +100,7 @@ namespace Boards_WP.ViewModels
                 Title = PostTitle,
                 Description = PostDescription,
                 ParentCommunity = OriginCommunity,
-                Owner = userSession.CurrentUser,
+                Owner = userSession.CurrentUser, // Grabbing user correctly via session
                 Score = 0,
                 Image = PostImage,
                 CommentsNumber = 0,
@@ -109,31 +109,37 @@ namespace Boards_WP.ViewModels
 
             if (SelectedCategory != null)
             {
-                var inputTags = TagsInput.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
                 var createdTags = new System.Collections.Generic.List<Tag>();
 
-                foreach (var tagName in inputTags)
+                // We now properly iterate over the actual AddedTags collection
+                foreach (var tag in AddedTags)
                 {
-                    var tag = new Tag
-                    {
-                        TagName = tagName,
-                        CategoryBelongingTo = SelectedCategory
-                    };
                     tagsRepository.AddTag(tag);
                     createdTags.Add(tag);
                 }
 
+                // Make sure at least one default tag exists reflecting their Category preference
                 if (createdTags.Count == 0)
                 {
-                    var tag = new Tag { TagName = SelectedCategory.CategoryName, CategoryBelongingTo = SelectedCategory };
-                    tagsRepository.AddTag(tag);
-                    createdTags.Add(tag);
+                    var defaultCategoryTag = new Tag { TagName = SelectedCategory.CategoryName, CategoryBelongingTo = SelectedCategory };
+                    tagsRepository.AddTag(defaultCategoryTag);
+                    createdTags.Add(defaultCategoryTag);
                 }
 
                 newPost.Tags = createdTags;
             }
 
+            // Properly commit changes to standard repository
             postsService.AddPost(newPost);
+
+            // Cleanup fields after successful post
+            PostTitle = string.Empty;
+            PostDescription = string.Empty;
+            CurrentTagText = string.Empty;
+            TagsInput = string.Empty;
+            AddedTags.Clear();
+            SelectedCategory = null;
+            PostImage = null;
 
             navigationService.NavigateTo(typeof(CommunityView), OriginCommunity);
         }
