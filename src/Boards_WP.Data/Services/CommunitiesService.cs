@@ -73,9 +73,9 @@ public class CommunitiesService : ICommunitiesService
         {
             return _communitiesRepo.GetCommunitiesUserIsPartOf(UserID);
         }
-        catch
+        catch(Exception ex)
         {
-            throw new Exception("Failed to get communities user is part of.");
+            throw new Exception("Failed to get communities user is part of.",ex);
         }
     }
 

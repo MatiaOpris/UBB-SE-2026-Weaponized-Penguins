@@ -32,14 +32,34 @@
             <StackPanel Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Center"
                         Background="#F8F8FF" CornerRadius="8" Padding="4" BorderBrush="#E0E0FF" BorderThickness="1">
 
-                <Button Content="▲" Command="{x:Bind ViewModel.UpvoteCommand, Mode=OneWay}"
-                        Background="Transparent" BorderThickness="0" HorizontalAlignment="Center"/>
+                <Button Content="▲" Command="{x:Bind ViewModel.UpvoteCommand, Mode=OneWay}" Foreground="#6B588C"
+                    Background="Transparent" BorderThickness="0" HorizontalAlignment="Center">
+                    <Button.Resources>
+                        <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#B09AD6"/>
+                        <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#807099"/>
+                    </Button.Resources>
+                </Button>
 
                 <TextBlock Text="{x:Bind ViewModel.PostData.Score, Mode=OneWay}" 
-                           HorizontalAlignment="Center" FontWeight="Bold" Foreground="{x:Bind ViewModel.MainViewModel.VividThemeBrush, Mode=OneWay}"/>
-                
-                <Button Content="▼" Command="{x:Bind ViewModel.DownvoteCommand, Mode=OneWay}" 
-                        Background="Transparent" BorderThickness="0" HorizontalAlignment="Center"/>
+                    HorizontalAlignment="Center" FontWeight="Bold" 
+                    Foreground="{x:Bind ViewModel.MainViewModel.VividThemeBrush, Mode=OneWay}"/>
+
+                <Button Content="▼" Command="{x:Bind ViewModel.DownvoteCommand, Mode=OneWay}"  Foreground="#6B588C"
+                        Background="Transparent" BorderThickness="0" HorizontalAlignment="Center">
+                    <Button.Resources>
+                        <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#B09AD6"/>
+                        <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#807099"/>
+                    </Button.Resources>
+                </Button>
+
+                <TextBlock Text="{x:Bind ViewModel.VoteStatusText, Mode=OneWay}"
+                    FontSize="10"
+                    Foreground="#6B588C"
+                    FontWeight="SemiBold"
+                    HorizontalAlignment="Center"
+                    TextWrapping="Wrap"
+                    TextAlignment="Center"
+                    Margin="0,5,0,0"/>
             </StackPanel>
 
          

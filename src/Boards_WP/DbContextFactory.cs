@@ -9,7 +9,6 @@ namespace Boards_WP.Data
         {
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
 
-
             optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=Communities;Trusted_Connection=True;TrustServerCertificate=True;");
 
             return new AppDbContext(optionsBuilder.Options);

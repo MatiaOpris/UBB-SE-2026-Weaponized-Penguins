@@ -1,4 +1,3 @@
-using Boards_WP.Data.Models;
 using Boards_WP.ViewModels;
 
 using Microsoft.UI.Xaml;

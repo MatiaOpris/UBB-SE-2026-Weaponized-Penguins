@@ -13,7 +13,12 @@
             <StackPanel Margin="0,0,10,20">
 
                 <!-- Back Button -->
-                <Button Click="Back_Click" Background="Transparent" BorderThickness="0" Margin="0,0,0,10" Padding="5">
+                <Button Click="Back_Click" Background="#8D7FB3" BorderThickness="0" Margin="0,0,0,10" Padding="5">
+                    <Button.Resources>
+                        <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#B5A6DE"/>
+                        <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#7A6CA0"/>
+                    </Button.Resources>
+
                     <StackPanel Orientation="Horizontal">
                         <FontIcon Glyph="&#xE72B;" FontSize="16" />
                         <TextBlock Text=" Back to Feed" VerticalAlignment="Center" Margin="5,0,0,0"/>

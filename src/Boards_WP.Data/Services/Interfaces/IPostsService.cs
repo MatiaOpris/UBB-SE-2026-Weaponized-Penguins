@@ -19,4 +19,5 @@ public interface IPostsService
     public ThemeColor DetermineThemeForASinglePost(Post post);
     public ThemeColor CalculateDominantColor(IEnumerable<Post> posts);
     public void UpdateUserInterests(int userId, Post post, VoteType vote, bool hasCommented);
+    public VoteType GetUserVoteForPost(int userId, int postId);
 }

@@ -106,19 +106,14 @@ public class PostsService : IPostsService
 
         if (currentVote == VoteType.Like)
         {
-            
-            _postsRepo.SetUserVoteForPost(userId, postId, VoteType.None);
-            _postsRepo.DecreaseScore(postId);
-
-            _lastLikesOfCurrentUser.RemoveAll(p => p.PostID == postId);
-
+            _postsRepo.SetUserVoteForPost(userId, postId, VoteType.Like);
+            return;
         }
         else if (currentVote == VoteType.Dislike)
         {
             
-            _postsRepo.SetUserVoteForPost(userId, postId, VoteType.Like);
+            _postsRepo.SetUserVoteForPost(userId, postId, VoteType.None);
 
-            _postsRepo.IncreaseScore(postId);
             _postsRepo.IncreaseScore(postId);
 
             Post likedPost = _postsRepo.GetPostByPostID(postId);
@@ -148,17 +143,13 @@ public class PostsService : IPostsService
 
         if (currentVote == VoteType.Dislike)
         {
-            
-            _postsRepo.SetUserVoteForPost(userId, postId, VoteType.None);
-
-            _postsRepo.IncreaseScore(postId);
+            _postsRepo.SetUserVoteForPost(userId, postId, VoteType.Dislike);
+            return;
         }
         else if (currentVote == VoteType.Like)
         {
+            _postsRepo.SetUserVoteForPost(userId, postId, VoteType.None);
 
-            _postsRepo.SetUserVoteForPost(userId, postId, VoteType.Dislike);
-
-            _postsRepo.DecreaseScore(postId);
             _postsRepo.DecreaseScore(postId);
 
             _lastLikesOfCurrentUser.RemoveAll(post => post.PostID == postId);
@@ -440,5 +431,8 @@ public class PostsService : IPostsService
         return totalDistance;
     }
 
-
+    public VoteType GetUserVoteForPost(int userId, int postId)
+    {
+        return _postsRepo.GetUserVoteForPost(userId, postId);
+    }
 }

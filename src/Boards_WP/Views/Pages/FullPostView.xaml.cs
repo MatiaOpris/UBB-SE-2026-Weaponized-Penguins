@@ -1,10 +1,9 @@
+using Boards_WP.ViewModels;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
-
-using Boards_WP.Data.Models;
-using Boards_WP.ViewModels;
 
 namespace Boards_WP.Views.Pages
 {
@@ -47,7 +46,9 @@ namespace Boards_WP.Views.Pages
         private void Back_Click(object sender, RoutedEventArgs e)
         {
             if (this.Frame.CanGoBack)
+            {
                 this.Frame.GoBack();
+            }
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)

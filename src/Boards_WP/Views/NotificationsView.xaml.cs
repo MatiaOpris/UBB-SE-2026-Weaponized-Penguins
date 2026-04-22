@@ -3,9 +3,6 @@ using Boards_WP.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
-using Boards_WP.Data.Models;
-using Boards_WP.Views.Pages; 
-
 namespace Boards_WP.Views
 {
     public sealed partial class NotificationsView : UserControl
@@ -15,7 +12,8 @@ namespace Boards_WP.Views
         public NotificationsView()
         {
             this.InitializeComponent();
-            this.Loaded += (s, e) => {
+            this.Loaded += (s, e) =>
+            {
                 this.ViewModel = App.GetService<NotificationsListViewModel>();
                 this.DataContext = this.ViewModel;
                 this.Bindings.Update(); //--if you see an error here ignore it and just build, the app *should run ok
