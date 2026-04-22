@@ -7,6 +7,10 @@ using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace Boards_WP.ViewModels
 {
+    /// <summary>
+    /// View model for displaying a full post, its comments and actions such as voting,
+    /// commenting, sharing and deletion.
+    /// </summary>
     public partial class FullPostViewModel : ObservableObject
     {
         private readonly IPostsService postsService;
