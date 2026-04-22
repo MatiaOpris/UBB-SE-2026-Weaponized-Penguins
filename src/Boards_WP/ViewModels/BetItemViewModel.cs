@@ -5,18 +5,21 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Boards_WP.ViewModels
 {
+    /// <summary>
+    /// Represents the view model for a single bet item.
+    /// </summary>
     public partial class BetItemViewModel : ObservableObject
     {
-        private readonly Action<BetVote, decimal>? _openBetPlacement;
+        private readonly Action<BetVote, decimal>? openBetPlacement;
 
         [ObservableProperty]
-        private Bet _betData;
+        private Bet betData;
 
         [ObservableProperty]
-        private string _yesOdds;
+        private string yesOdds;
 
         [ObservableProperty]
-        private string _noOdds;
+        private string noOdds;
 
         public decimal YesOddValue { get; }
         public decimal NoOddValue { get; }
@@ -29,7 +32,10 @@ namespace Boards_WP.ViewModels
             get
             {
                 var span = BetData.EndingTime - DateTime.Now;
-                if (span.TotalSeconds <= 0) return "Expired";
+                if (span.TotalSeconds <= 0)
+                {
+                    return "Expired";
+                }
 
                 return span.Days > 0
                     ? $"{span.Days}d {span.Hours:D2}h"
@@ -44,10 +50,10 @@ namespace Boards_WP.ViewModels
             NoOddValue = noOdd;
             YesOdds = $"{yesOdd:F2}x";
             NoOdds = $"{noOdd:F2}x";
-            _openBetPlacement = openBetPlacement;
+            this.openBetPlacement = openBetPlacement;
 
-            BetYesCommand = new RelayCommand(() => _openBetPlacement?.Invoke(BetVote.YES, YesOddValue));
-            BetNoCommand = new RelayCommand(() => _openBetPlacement?.Invoke(BetVote.NO, NoOddValue));
+            BetYesCommand = new RelayCommand(() => this.openBetPlacement?.Invoke(BetVote.YES, YesOddValue));
+            BetNoCommand = new RelayCommand(() => this.openBetPlacement?.Invoke(BetVote.NO, NoOddValue));
         }
     }
 }

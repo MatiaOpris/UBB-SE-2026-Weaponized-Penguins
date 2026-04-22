@@ -5,14 +5,18 @@ using Microsoft.UI.Xaml;
 
 namespace Boards_WP;
 
+/// <summary>
+/// Provides application-specific behavior and service configuration.
+/// </summary>
 public partial class App : Application
 {
-    public Window? m_window;
+    public Window? M_window;
 
     public new static App Current => (App)Application.Current;
     public static IServiceProvider Services { get; private set; } = null!;
 
-    public static T GetService<T>() where T : class
+    public static T GetService<T>()
+        where T : class
         => Services.GetRequiredService<T>();
 
     public App()
@@ -21,23 +25,21 @@ public partial class App : Application
         InitializeComponent();
     }
 
-
     protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
     {
-        m_window = new MainWindow();
+        M_window = new MainWindow();
 
         var navService = Services.GetRequiredService<INavigationService>() as NavigationService;
-        //if (m_window.Content is FrameworkElement root)
-        //{
+        // if (m_window.Content is FrameworkElement root)
+        // {
         //    var frame = root.FindName("ContentFrame") as Frame;
         //    if (frame != null)
         //    {
         //        navService.Initialize(frame);
         //        navService.NavigateTo(typeof(FeedView));
         //    }
-        //}
-
-        m_window.Activate();
+        // }
+        M_window.Activate();
     }
 
     private static IServiceProvider ConfigureServices()
@@ -46,7 +48,6 @@ public partial class App : Application
         string connectionString = "Server=(localdb)\\MSSQLLocalDB;Database=Communities;Trusted_Connection=True;TrustServerCertificate=True;";
 
         services.AddSingleton(connectionString);
-
 
         services.AddSingleton<MainViewModel>();
 
@@ -71,7 +72,6 @@ public partial class App : Application
         services.AddSingleton<INavigationService, NavigationService>();
         services.AddSingleton<IBetsService, BetsService>();
         services.AddTransient<LoginViewModel>();
-
 
         services.AddSingleton<UserSession>();
 

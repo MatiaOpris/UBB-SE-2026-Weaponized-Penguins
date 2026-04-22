@@ -11,15 +11,15 @@ namespace Boards_WP.Views
     public sealed partial class HeaderView : UserControl
     {
         public HeaderViewModel ViewModel { get; private set; }
-        private readonly IBetsService _betsService;
-        private readonly UserSession _userSession;
-        private Frame _contentFrame;
+        private readonly IBetsService betsService;
+        private readonly UserSession userSession;
+        private Frame contentFrame;
 
         public HeaderView()
         {
             this.InitializeComponent();
-            _betsService = App.GetService<IBetsService>();
-            _userSession = App.GetService<UserSession>();
+            betsService = App.GetService<IBetsService>();
+            userSession = App.GetService<UserSession>();
 
             this.Loaded += HeaderView_Loaded;
             this.Unloaded += HeaderView_Unloaded;
@@ -36,15 +36,15 @@ namespace Boards_WP.Views
 
                 TokenEvents.TokensUpdated += OnTokensUpdated;
 
-                _contentFrame = myApp.m_window?.Content is FrameworkElement fe
+                contentFrame = myApp.M_window?.Content is FrameworkElement fe
                     ? fe.FindName("ContentFrame") as Frame
                     : null;
 
-                if (_contentFrame != null)
+                if (contentFrame != null)
                 {
-                    _contentFrame.Navigated -= ContentFrame_Navigated;
-                    _contentFrame.Navigated += ContentFrame_Navigated;
-                    UpdateTokenVisibility(_contentFrame.Content?.GetType());
+                    contentFrame.Navigated -= ContentFrame_Navigated;
+                    contentFrame.Navigated += ContentFrame_Navigated;
+                    UpdateTokenVisibility(contentFrame.Content?.GetType());
                 }
 
                 this.Bindings.Update();
@@ -54,7 +54,9 @@ namespace Boards_WP.Views
         private void HeaderView_Unloaded(object sender, RoutedEventArgs e)
         {
             if (this.ViewModel != null)
+            {
                 this.ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
+            }
 
             TokenEvents.TokensUpdated -= OnTokensUpdated;
         }
@@ -93,14 +95,16 @@ namespace Boards_WP.Views
 
             if (inBetsArea && ViewModel != null)
             {
-                var userId = _userSession?.CurrentUser?.UserID ?? 0;
+                var userId = userSession?.CurrentUser?.UserID ?? 0;
                 if (userId != 0)
                 {
                     try
                     {
-                        ViewModel.UserTokens = _betsService.GetUserTokenCount(userId);
+                        ViewModel.UserTokens = betsService.GetUserTokenCount(userId);
                     }
-                    catch { }
+                    catch
+                    {
+                    }
                 }
             }
         }
@@ -117,7 +121,10 @@ namespace Boards_WP.Views
         {
             if (args.SelectedItem is Community selectedCommunity && ViewModel != null)
             {
-                if (selectedCommunity.CommunityID == -1) return;
+                if (selectedCommunity.CommunityID == -1)
+                {
+                    return;
+                }
 
                 ViewModel.SelectCommunityCommand.Execute(selectedCommunity);
                 sender.Text = string.Empty;
@@ -126,21 +133,24 @@ namespace Boards_WP.Views
 
         private void CommunitySearchBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
-            if (ViewModel == null) return;
+            if (ViewModel == null)
+            {
+                return;
+            }
 
             string query = sender.Text.ToLower().Trim();
 
-            if (_betsService.IsSecretKey(query))
+            if (betsService.IsSecretKey(query))
             {
-                var userId = _userSession?.CurrentUser?.UserID ?? 0;
+                var userId = userSession?.CurrentUser?.UserID ?? 0;
                 if (userId != 0)
                 {
-                    var tokens = _betsService.RegisterSecretAreaVisitAndGetTokens(userId);
+                    var tokens = betsService.RegisterSecretAreaVisitAndGetTokens(userId);
                     ViewModel.UserTokens = tokens;
                 }
 
                 TokenDisplay.Visibility = Visibility.Visible;
-                var keywords = _betsService.ExtractBetKeywords(query);
+                var keywords = betsService.ExtractBetKeywords(query);
 
                 NavigateToPage(typeof(Pages.BetsView), keywords);
 
@@ -157,8 +167,8 @@ namespace Boards_WP.Views
 
         private void NavigateToPage(Type pageType, object parameter)
         {
-            var rootFrame = (App.Current as App)?.m_window?.Content as Frame;
-            if (rootFrame == null && (App.Current as App)?.m_window?.Content is FrameworkElement fe)
+            var rootFrame = (App.Current as App)?.M_window?.Content as Frame;
+            if (rootFrame == null && (App.Current as App)?.M_window?.Content is FrameworkElement fe)
             {
                 rootFrame = fe.FindName("ContentFrame") as Frame;
             }
@@ -170,7 +180,7 @@ namespace Boards_WP.Views
             if (e.ClickedItem is Community selectedCommunity && ViewModel != null)
             {
                 ViewModel.SelectCommunityCommand.Execute(selectedCommunity);
-                //ResultsPopup.IsOpen = false;
+                // ResultsPopup.IsOpen = false;
             }
         }
 

@@ -28,8 +28,7 @@ namespace Boards_WP.Views
             {
                 int adminId = 0;
 
-
-                if (App.Current is App myApp && myApp.m_window.Content is FrameworkElement root)
+                if (App.Current is App myApp && myApp.M_window.Content is FrameworkElement root)
                 {
                     var frame = root.FindName("ContentFrame") as Frame;
                     if (frame?.Content is Pages.FullPostView postPage)
@@ -37,7 +36,6 @@ namespace Boards_WP.Views
                         adminId = postPage.ViewModel.CurrentPost?.ParentCommunity?.Admin?.UserID ?? 0;
                     }
                 }
-
 
                 control.ViewModel = new CommentViewModel(comment, adminId);
                 control.ViewModel.ReplySubmitted = control.HandleReplySubmission;
@@ -47,7 +45,7 @@ namespace Boards_WP.Views
 
         private void HandleReplySubmission(Comment parent, string text)
         {
-            if (App.Current is App myApp && myApp.m_window.Content is FrameworkElement root)
+            if (App.Current is App myApp && myApp.M_window.Content is FrameworkElement root)
             {
                 var frame = root.FindName("ContentFrame") as Frame;
 
@@ -71,8 +69,6 @@ namespace Boards_WP.Views
                     {
                         commentsService.AddComment(newReply);
                         postsService.IncreaseCommentsNumber(postPage.ViewModel.CurrentPost.PostID);
-
-
 
                         postPage.ViewModel.Initialize(postPage.ViewModel.CurrentPost);
                     }

@@ -9,19 +9,19 @@ namespace Boards_WP.ViewModels;
 
 public partial class NotificationItemViewModel : ObservableObject
 {
-    private readonly INotificationsService _notificationsService = App.GetService<INotificationsService>();
-    private readonly INavigationService _navigationService = App.GetService<INavigationService>();
+    private readonly INotificationsService notificationsService = App.GetService<INotificationsService>();
+    private readonly INavigationService navigationService = App.GetService<INavigationService>();
 
     public Notification NotificationData { get; }
 
     [ObservableProperty]
-    private string _message;
+    private string message;
 
     [ObservableProperty]
-    private string _time;
+    private string time;
 
     [ObservableProperty]
-    private bool _isUnread;
+    private bool isUnread;
 
     public FontWeight MessageFontWeight => IsUnread ? FontWeights.Bold : FontWeights.Normal;
 
@@ -29,10 +29,9 @@ public partial class NotificationItemViewModel : ObservableObject
     {
         NotificationData = notification;
 
-
-        if (_notificationsService != null)
+        if (notificationsService != null)
         {
-            Message = _notificationsService.GetNotificationMessage(notification);
+            Message = notificationsService.GetNotificationMessage(notification);
         }
         else
         {
@@ -48,8 +47,8 @@ public partial class NotificationItemViewModel : ObservableObject
             };
         }
 
-        _time = notification.CreationTime.ToString("HH:mm");
-        _isUnread = !notification.IsRead;
+        time = notification.CreationTime.ToString("HH:mm");
+        isUnread = !notification.IsRead;
     }
 
     protected override void OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs e)
@@ -66,9 +65,9 @@ public partial class NotificationItemViewModel : ObservableObject
     {
         if (IsUnread)
         {
-            if (_notificationsService != null)
+            if (notificationsService != null)
             {
-                _notificationsService.ReadNotification(NotificationData);
+                notificationsService.ReadNotification(NotificationData);
             }
             NotificationData.IsRead = true;
             IsUnread = false;
@@ -76,11 +75,11 @@ public partial class NotificationItemViewModel : ObservableObject
 
         if (NotificationData.RelatedPost != null && NotificationData.ActionType != NotificationType.PostDeleted)
         {
-            if (_navigationService != null)
+            if (navigationService != null)
             {
-                _navigationService.NavigateTo(typeof(Views.Pages.FullPostView), NotificationData.RelatedPost);
+                navigationService.NavigateTo(typeof(Views.Pages.FullPostView), NotificationData.RelatedPost);
             }
-            else if (Microsoft.UI.Xaml.Application.Current is App myApp && myApp.m_window is MainWindow mainWindow)
+            else if (Microsoft.UI.Xaml.Application.Current is App myApp && myApp.M_window is MainWindow mainWindow)
             {
                 mainWindow.NavigateToPage(typeof(Views.Pages.FullPostView), NotificationData.RelatedPost);
             }
@@ -90,39 +89,38 @@ public partial class NotificationItemViewModel : ObservableObject
 
 public partial class NotificationsListViewModel : ObservableObject
 {
-    private readonly INotificationsService _notificationsService = App.GetService<INotificationsService>();
-    private readonly MainViewModel _mainViewModel;
-    private readonly UserSession _userSession = App.GetService<UserSession>();
+    private readonly INotificationsService notificationsService = App.GetService<INotificationsService>();
+    private readonly MainViewModel mainViewModel;
+    private readonly UserSession userSession = App.GetService<UserSession>();
 
-    private int _currentOffset = 0;
+    private int currentOffset = 0;
     private const int PageSize = 100; //--PAGINATION
 
     [ObservableProperty]
-    private bool _hasMore = true;
+    private bool hasMore = true;
 
-    public ObservableCollection<NotificationItemViewModel> Notifications { get; } = new();
+    public ObservableCollection<NotificationItemViewModel> Notifications { get; } = new ();
 
-    public MainViewModel MainViewModel => _mainViewModel;
+    public MainViewModel MainViewModel => mainViewModel;
 
     public NotificationsListViewModel(MainViewModel mainViewModel)
     {
-        _mainViewModel = mainViewModel;
-        LoadInitial(_userSession.CurrentUser.UserID);
+        this.mainViewModel = mainViewModel;
+        LoadInitial(userSession.CurrentUser.UserID);
     }
 
     public void LoadInitial(int userId)
     {
-        _currentOffset = 0;
+        currentOffset = 0;
         Notifications.Clear();
         LoadBatch();
     }
 
-
     [RelayCommand]
     public void LoadBatch()
     {
-        var userId = _userSession.CurrentUser.UserID;
-        var data = _notificationsService.GetNotificationsByUserId(userId, _currentOffset, PageSize);
+        var userId = userSession.CurrentUser.UserID;
+        var data = notificationsService.GetNotificationsByUserId(userId, currentOffset, PageSize);
 
         if (data != null && data.Count > 0)
         {
@@ -130,7 +128,7 @@ public partial class NotificationsListViewModel : ObservableObject
             {
                 Notifications.Add(new NotificationItemViewModel(n));
             }
-            _currentOffset += data.Count;
+            currentOffset += data.Count;
         }
 
         HasMore = (data?.Count == PageSize);

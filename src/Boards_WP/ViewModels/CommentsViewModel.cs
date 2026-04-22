@@ -11,53 +11,56 @@ namespace Boards_WP.ViewModels
     public partial class CommentViewModel : ObservableObject
     {
         [ObservableProperty]
-        private Comment _commentData;
+        private Comment commentData;
 
         [ObservableProperty]
-        private bool _isReplyAreaVisible = false;
+        private bool isReplyAreaVisible = false;
 
         [ObservableProperty]
-        private string _replyText = string.Empty;
+        private string replyText = string.Empty;
 
         [ObservableProperty]
-        private bool _isShareVisible;
+        private bool isShareVisible;
 
         [ObservableProperty]
-        private string _selectedChatName;
+        private string selectedChatName;
 
         public string CommentText => CommentData?.Description;
 
-        private int _communityAdminId;
+        private int communityAdminId;
 
         public Visibility ActionButtonsVisibility =>
     (CommentData == null || CommentData.IsDeleted) ? Visibility.Collapsed : Visibility.Visible;
 
-        public ObservableCollection<string> HardcodedChats { get; } = new()
+        public ObservableCollection<string> HardcodedChats { get; } = new ()
         {
             "General Chat", "Sports Fans", "Tech Talk", "Weaponized Penguins Team"
         };
-
 
         public Visibility DeleteButtonVisibility
         {
             get
             {
-                if (CommentData == null || _userSession?.CurrentUser == null) return Visibility.Collapsed;
+                if (CommentData == null || userSession?.CurrentUser == null)
+                {
+                    return Visibility.Collapsed;
+                }
 
+                if (CommentData.IsDeleted)
+                {
+                    return Visibility.Collapsed;
+                }
 
-                if (CommentData.IsDeleted) return Visibility.Collapsed;
-
-                int currentUserId = _userSession.CurrentUser.UserID;
+                int currentUserId = userSession.CurrentUser.UserID;
 
                 bool isOwner = CommentData.Owner?.UserID == currentUserId;
-                bool isAdmin = _communityAdminId == currentUserId;
+                bool isAdmin = communityAdminId == currentUserId;
 
                 return (isOwner || isAdmin) ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
         public IRelayCommand DeleteCommentCommand { get; }
-
 
         [RelayCommand]
         private void ToggleShare()
@@ -85,8 +88,8 @@ namespace Boards_WP.ViewModels
         public IRelayCommand ToggleReplyCommand { get; }
         public IRelayCommand SubmitReplyCommand { get; }
 
-        private readonly ICommentsService _commentsService;
-        private readonly UserSession _userSession;
+        private readonly ICommentsService commentsService;
+        private readonly UserSession userSession;
 
         public SolidColorBrush UpvoteColor => CommentData?.UserCurrentVote == VoteType.Like
             ? new SolidColorBrush(Colors.OrangeRed)
@@ -99,15 +102,15 @@ namespace Boards_WP.ViewModels
         public CommentViewModel(Comment comment, int communityAdminId)
         {
             CommentData = comment;
-            _communityAdminId = communityAdminId;
-            _commentsService = App.Services?.GetService<ICommentsService>();
-            _userSession = App.Services?.GetService<UserSession>();
+            this.communityAdminId = communityAdminId;
+            commentsService = App.Services?.GetService<ICommentsService>();
+            userSession = App.Services?.GetService<UserSession>();
 
             UpvoteCommand = new RelayCommand(() =>
             {
-                if (_commentsService != null && _userSession != null)
+                if (commentsService != null && userSession != null)
                 {
-                    _commentsService.IncreaseScore(CommentData, _userSession.CurrentUser.UserID);
+                    commentsService.IncreaseScore(CommentData, userSession.CurrentUser.UserID);
                     OnPropertyChanged(nameof(CommentData));
                     OnPropertyChanged(nameof(UpvoteColor));
                     OnPropertyChanged(nameof(DownvoteColor));
@@ -116,9 +119,9 @@ namespace Boards_WP.ViewModels
 
             DownvoteCommand = new RelayCommand(() =>
             {
-                if (_commentsService != null && _userSession != null)
+                if (commentsService != null && userSession != null)
                 {
-                    _commentsService.DecreaseScore(CommentData, _userSession.CurrentUser.UserID);
+                    commentsService.DecreaseScore(CommentData, userSession.CurrentUser.UserID);
                     OnPropertyChanged(nameof(CommentData));
                     OnPropertyChanged(nameof(UpvoteColor));
                     OnPropertyChanged(nameof(DownvoteColor));
@@ -137,13 +140,11 @@ namespace Boards_WP.ViewModels
                 }
             });
 
-
             DeleteCommentCommand = new RelayCommand(() =>
             {
-                if (_commentsService != null && _userSession != null && !CommentData.IsDeleted)
+                if (commentsService != null && userSession != null && !CommentData.IsDeleted)
                 {
-                    _commentsService.SoftDeleteComment(CommentData, _userSession.CurrentUser.UserID);
-
+                    commentsService.SoftDeleteComment(CommentData, userSession.CurrentUser.UserID);
 
                     OnPropertyChanged(nameof(CommentText));
                     OnPropertyChanged(nameof(DeleteButtonVisibility));

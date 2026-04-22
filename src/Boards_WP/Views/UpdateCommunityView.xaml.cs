@@ -60,8 +60,11 @@ namespace Boards_WP.Views.Pages
 
         private async void PicturePicker_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         {
-            byte[]? bytes = await PickImageBytesAsync();
-            if (bytes is null) return;
+            byte[] bytes = await PickImageBytesAsync();
+            if (bytes is null)
+            {
+                return;
+            }
 
             ViewModel.CommunityPicture = bytes;
 
@@ -75,8 +78,11 @@ namespace Boards_WP.Views.Pages
 
         private async void BannerPicker_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         {
-            byte[]? bytes = await PickImageBytesAsync();
-            if (bytes is null) return;
+            byte[] bytes = await PickImageBytesAsync();
+            if (bytes is null)
+            {
+                return;
+            }
 
             ViewModel.CommunityBanner = bytes;
 
@@ -86,7 +92,7 @@ namespace Boards_WP.Views.Pages
             BannerPreview.Source = bmp;
         }
 
-        private async Task<byte[]?> PickImageBytesAsync()
+        private async Task<byte[]> PickImageBytesAsync()
         {
             var picker = new FileOpenPicker
             {
@@ -101,7 +107,10 @@ namespace Boards_WP.Views.Pages
             InitializeWithWindow.Initialize(picker, GetActiveWindow());
 
             StorageFile? file = await picker.PickSingleFileAsync();
-            if (file is null) return null;
+            if (file is null)
+            {
+                return null;
+            }
 
             using var stream = await file.OpenReadAsync();
             using var ms = new MemoryStream();

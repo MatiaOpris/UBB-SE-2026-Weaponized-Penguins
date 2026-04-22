@@ -10,8 +10,6 @@ namespace Boards_WP.Views
         public static readonly DependencyProperty ViewModelProperty =
             DependencyProperty.Register("ViewModel", typeof(BetItemViewModel), typeof(BetItemControl), new PropertyMetadata(null));
 
-
-
         public BetItemViewModel ViewModel
         {
             get => (BetItemViewModel)GetValue(ViewModelProperty);

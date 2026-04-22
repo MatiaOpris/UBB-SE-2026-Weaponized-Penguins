@@ -5,25 +5,23 @@ namespace Boards_WP.ViewModels
 {
     public partial class CreateBetViewModel : ObservableObject
     {
-        private readonly IBetsService _betsService;
-        private readonly ICommunitiesService _communitiesService;
-        private readonly UserSession _userSession;
+        private readonly IBetsService betsService;
+        private readonly ICommunitiesService communitiesService;
+        private readonly UserSession userSession;
 
         public CreateBetViewModel(IBetsService betsService)
         {
-            _betsService = betsService;
-            _communitiesService = App.GetService<ICommunitiesService>();
-            _userSession = App.GetService<UserSession>();
+            this.betsService = betsService;
+            communitiesService = App.GetService<ICommunitiesService>();
+            userSession = App.GetService<UserSession>();
 
             Communities = new ObservableCollection<Community>();
 
             LoadCommunities();
         }
 
-
         [ObservableProperty]
         private string expression;
-
 
         [ObservableProperty]
         private bool isPost = true;
@@ -34,11 +32,10 @@ namespace Boards_WP.ViewModels
         [ObservableProperty]
         private TimeSpan endTime = DateTime.Now.TimeOfDay;
 
-
         public ObservableCollection<Community> Communities { get; }
 
         [ObservableProperty]
-        private Community _selectedCommunity;
+        private Community selectedCommunity;
 
         [ObservableProperty]
         private string errorMessage;
@@ -47,7 +44,7 @@ namespace Boards_WP.ViewModels
         {
             try
             {
-                var communities = _communitiesService.GetCommunitiesUserIsPartOf(_userSession.CurrentUser.UserID);
+                var communities = communitiesService.GetCommunitiesUserIsPartOf(userSession.CurrentUser.UserID);
 
                 Communities.Clear();
 
@@ -64,13 +61,12 @@ namespace Boards_WP.ViewModels
             }
         }
 
-
         [RelayCommand]
         private void CreateBet()
         {
             try
             {
-                int currentUserId = _userSession.CurrentUser.UserID;
+                int currentUserId = userSession.CurrentUser.UserID;
 
                 int communityId = SelectedCommunity.CommunityID;
 
@@ -85,11 +81,10 @@ namespace Boards_WP.ViewModels
                     BetCommunity = SelectedCommunity
                 };
 
-                _betsService.ValidateCreateBet(currentUserId, newBet);
-                _betsService.CreateBet(newBet, currentUserId);
+                betsService.ValidateCreateBet(currentUserId, newBet);
+                betsService.CreateBet(newBet, currentUserId);
 
                 ErrorMessage = null;
-
 
                 BetCreated?.Invoke();
             }

@@ -26,7 +26,6 @@ namespace Boards_WP.Views.Pages
             ViewModel.ApplyNavigationParameter(e.Parameter);
         }
 
-
         public Visibility GetVisibility(bool visible) => visible ? Visibility.Visible : Visibility.Collapsed;
     }
 }

@@ -6,54 +6,53 @@ namespace Boards_WP.ViewModels
 {
     public partial class MainViewModel : ObservableObject
     {
-        private readonly INavigationService _navigationService;
+        private readonly INavigationService navigationService;
 
         [ObservableProperty]
-        private Windows.UI.Color _vividThemeColor;
+        private Windows.UI.Color vividThemeColor;
 
         [ObservableProperty]
-        private Brush _appThemeBrush;
+        private Brush appThemeBrush;
 
         [ObservableProperty]
-        private Brush _vividThemeBrush;
+        private Brush vividThemeBrush;
 
         [ObservableProperty]
-        private Brush _midThemeBrush;
+        private Brush midThemeBrush;
 
         [ObservableProperty]
-        private bool _isLoggedIn = false;
+        private bool isLoggedIn = false;
 
-        private readonly Windows.UI.Color _defaultColor = Windows.UI.Color.FromArgb(255, 230, 226, 255);
-        private readonly Windows.UI.Color _defaultVividColor = Windows.UI.Color.FromArgb(255, 120, 90, 200);
-        private readonly Windows.UI.Color _defaultMidColor = Windows.UI.Color.FromArgb(255, 175, 150, 230);
+        private readonly Windows.UI.Color defaultColor = Windows.UI.Color.FromArgb(255, 230, 226, 255);
+        private readonly Windows.UI.Color defaultVividColor = Windows.UI.Color.FromArgb(255, 120, 90, 200);
+        private readonly Windows.UI.Color defaultMidColor = Windows.UI.Color.FromArgb(255, 175, 150, 230);
 
         public MainViewModel(INavigationService navigationService)
         {
-            _navigationService = navigationService;
+            this.navigationService = navigationService;
 
-            VividThemeColor = _defaultColor;
-            AppThemeBrush = new SolidColorBrush(_defaultColor);
-            VividThemeBrush = new SolidColorBrush(_defaultVividColor);
-            MidThemeBrush = new SolidColorBrush(_defaultMidColor);
+            VividThemeColor = defaultColor;
+            AppThemeBrush = new SolidColorBrush(defaultColor);
+            VividThemeBrush = new SolidColorBrush(defaultVividColor);
+            MidThemeBrush = new SolidColorBrush(defaultMidColor);
         }
 
         public void InitializeNavigation(object frame)
         {
-            _navigationService.Initialize(frame);
-            _navigationService.NavigateTo(typeof(Views.Pages.FeedView));
+            navigationService.Initialize(frame);
+            navigationService.NavigateTo(typeof(Views.Pages.FeedView));
         }
 
         public void ApplyNewTheme(ThemeColor newTheme)
         {
             if (newTheme == ThemeColor.Default)
             {
-                VividThemeColor = _defaultColor;
-                AppThemeBrush = new SolidColorBrush(_defaultColor);
-                VividThemeBrush = new SolidColorBrush(_defaultVividColor);
-                MidThemeBrush = new SolidColorBrush(_defaultMidColor);
+                VividThemeColor = defaultColor;
+                AppThemeBrush = new SolidColorBrush(defaultColor);
+                VividThemeBrush = new SolidColorBrush(defaultVividColor);
+                MidThemeBrush = new SolidColorBrush(defaultMidColor);
                 return;
             }
-
 
             Windows.UI.Color actualColor = MapEnumToUiColor(newTheme);
             var gradientBrush = new LinearGradientBrush
@@ -64,10 +63,9 @@ namespace Boards_WP.ViewModels
 
             gradientBrush.GradientStops.Add(new GradientStop { Color = actualColor, Offset = 0.0 });
             gradientBrush.GradientStops.Add(new GradientStop { Color = actualColor, Offset = 0.3 });
-            gradientBrush.GradientStops.Add(new GradientStop { Color = _defaultColor, Offset = 1.0 });
+            gradientBrush.GradientStops.Add(new GradientStop { Color = defaultColor, Offset = 1.0 });
 
             AppThemeBrush = gradientBrush;
-
 
             Windows.UI.Color actualVividColor = MapEnumToVividColor(newTheme);
             VividThemeColor = actualVividColor;
@@ -79,10 +77,9 @@ namespace Boards_WP.ViewModels
 
             gradientBrushVivid.GradientStops.Add(new GradientStop { Color = actualVividColor, Offset = 0.0 });
             gradientBrushVivid.GradientStops.Add(new GradientStop { Color = actualVividColor, Offset = 0.7 });
-            gradientBrushVivid.GradientStops.Add(new GradientStop { Color = _defaultVividColor, Offset = 1.0 });
+            gradientBrushVivid.GradientStops.Add(new GradientStop { Color = defaultVividColor, Offset = 1.0 });
 
             VividThemeBrush = gradientBrushVivid;
-
 
             Windows.UI.Color actualMidColor = MapEnumToMidColor(newTheme);
             var gradientBrushMid = new LinearGradientBrush
@@ -93,7 +90,7 @@ namespace Boards_WP.ViewModels
 
             gradientBrushMid.GradientStops.Add(new GradientStop { Color = actualMidColor, Offset = 0.0 });
             gradientBrushMid.GradientStops.Add(new GradientStop { Color = actualMidColor, Offset = 0.7 });
-            gradientBrushMid.GradientStops.Add(new GradientStop { Color = _defaultMidColor, Offset = 1.0 });
+            gradientBrushMid.GradientStops.Add(new GradientStop { Color = defaultMidColor, Offset = 1.0 });
 
             MidThemeBrush = gradientBrushMid;
         }
@@ -110,7 +107,7 @@ namespace Boards_WP.ViewModels
                 ThemeColor.Green => Windows.UI.Color.FromArgb(255, 144, 238, 144),
                 ThemeColor.Red => Windows.UI.Color.FromArgb(255, 255, 182, 193),
                 ThemeColor.Purple => Windows.UI.Color.FromArgb(255, 216, 191, 216),
-                _ => _defaultColor
+                _ => defaultColor
             };
         }
 
@@ -126,7 +123,7 @@ namespace Boards_WP.ViewModels
                 ThemeColor.Green => Windows.UI.Color.FromArgb(255, 0, 128, 0),
                 ThemeColor.Red => Windows.UI.Color.FromArgb(255, 220, 20, 60),
                 ThemeColor.Purple => Windows.UI.Color.FromArgb(255, 128, 0, 128),
-                _ => _defaultVividColor
+                _ => defaultVividColor
             };
         }
 
@@ -142,7 +139,7 @@ namespace Boards_WP.ViewModels
                 ThemeColor.Green => Windows.UI.Color.FromArgb(255, 60, 179, 113),
                 ThemeColor.Red => Windows.UI.Color.FromArgb(255, 205, 92, 92),
                 ThemeColor.Purple => Windows.UI.Color.FromArgb(255, 186, 85, 211),
-                _ => _defaultMidColor
+                _ => defaultMidColor
             };
         }
     }

@@ -8,24 +8,24 @@ namespace Boards_WP.ViewModels
 {
     public partial class LoginViewModel : ObservableObject
     {
-        private readonly IUsersService _usersService;
-        private readonly UserSession _userSession;
-        private readonly INavigationService _navigationService;
+        private readonly IUsersService usersService;
+        private readonly UserSession userSession;
+        private readonly INavigationService navigationService;
 
         [ObservableProperty]
-        private string _email;
+        private string email;
 
         [ObservableProperty]
-        private string _password;
+        private string password;
 
         [ObservableProperty]
-        private string _errorMessage;
+        private string errorMessage;
 
         public LoginViewModel(IUsersService usersService, UserSession userSession, INavigationService navigationService)
         {
-            _usersService = usersService;
-            _userSession = userSession;
-            _navigationService = navigationService;
+            this.usersService = usersService;
+            this.userSession = userSession;
+            this.navigationService = navigationService;
         }
 
         [RelayCommand]
@@ -45,18 +45,18 @@ namespace Boards_WP.ViewModels
 
             try
             {
-                var user = _usersService.Login(Email, password);
+                var user = usersService.Login(Email, password);
 
                 if (user != null)
                 {
-                    _userSession.CurrentUser = user;
+                    userSession.CurrentUser = user;
                     var mainVM = App.Services.GetRequiredService<MainViewModel>();
                     mainVM.IsLoggedIn = true;
 
-                    if (((App)App.Current).m_window is MainWindow mainWindow)
+                    if (((App)App.Current).M_window is MainWindow mainWindow)
                     {
-                        _navigationService.Initialize(mainWindow.ContentFrame);
-                        _navigationService.NavigateTo(typeof(Views.Pages.FeedView));
+                        navigationService.Initialize(mainWindow.ContentFrame);
+                        navigationService.NavigateTo(typeof(Views.Pages.FeedView));
                         mainWindow.LoginFrame.Visibility = Visibility.Collapsed;
                     }
                 }
