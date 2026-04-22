@@ -20,7 +20,7 @@ namespace Boards_WP.ViewModels
 {
     public partial class FullPostViewModel : ObservableObject
     {
-        
+
         private readonly IPostsService _postsService;
         private readonly ICommentsService _commentsService;
         private readonly MainViewModel _mainViewModel;

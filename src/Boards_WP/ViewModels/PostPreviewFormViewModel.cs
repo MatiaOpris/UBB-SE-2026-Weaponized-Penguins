@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 
 using Boards_WP.Data.Models;
 using Boards_WP.Data.Services.Interfaces;
+using System.ComponentModel.Design;
 
 namespace Boards_WP.ViewModels
 {
@@ -18,6 +19,8 @@ namespace Boards_WP.ViewModels
         private readonly MainViewModel _mainViewModel;
 
         public MainViewModel MainViewModel => _mainViewModel;
+
+        // Add these to PostPreviewViewModel.cs
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(FormattedDate))]
@@ -31,6 +34,9 @@ namespace Boards_WP.ViewModels
 
         [ObservableProperty]
         private string _authorUsername;
+
+        [ObservableProperty]
+        private string _voteStatusText = "";
 
         public BitmapImage PostImageSource => ConvertToBitmap(PostData?.Image);
         public Visibility PostImageVisibility => PostData?.Image?.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -77,6 +83,15 @@ namespace Boards_WP.ViewModels
             _mainViewModel = mainViewModel;
             _communityName = post.ParentCommunity?.Name ?? "Unknown";
             _authorUsername = post.Owner?.Username ?? "Unknown";
+
+            // Load initial vote status
+            if (_userSession.CurrentUser != null)
+            {
+                var vote = _postsService.GetUserVoteForPost(_userSession.CurrentUser.UserID, post.PostID);
+                if (vote == VoteType.Like) VoteStatusText = "Liked";
+                else if (vote == VoteType.Dislike) VoteStatusText = "Disliked";
+                else VoteStatusText = "";
+            }
         }
 
         private static BitmapImage ConvertToBitmap(byte[] data)
@@ -88,6 +103,7 @@ namespace Boards_WP.ViewModels
             return bitmap;
         }
 
+        // Update your Upvote method
         [RelayCommand]
         private void Upvote()
         {
@@ -96,20 +112,27 @@ namespace Boards_WP.ViewModels
             if (userId == 0) return;
 
             _postsService.IncreaseScore(PostData.PostID);
-            _postsService.UpdateUserInterests(userId, PostData, VoteType.Like, false);
+            // _postsService.UpdateUserInterests(userId, PostData, VoteType.Like, false); // if you use this over there
 
             var updatedPost = _postsService.GetPostByPostID(PostData.PostID);
             if (updatedPost != null)
             {
                 PostData.Score = updatedPost.Score;
-
-                OnPropertyChanged(nameof(PostData)); 
+                OnPropertyChanged(nameof(PostData));
             }
 
             var newThemeColor = _postsService.DetermineFeedThemeColorByLastLikes();
             _mainViewModel.ApplyNewTheme(newThemeColor);
+
+            if (_postsService.GetUserVoteForPost(userId, PostData.PostID) == VoteType.Dislike)
+                VoteStatusText = "Disliked";
+            else if (_postsService.GetUserVoteForPost(userId, PostData.PostID) == VoteType.Like)
+                VoteStatusText = "Liked";
+            else
+                VoteStatusText = "";
         }
 
+        // Update your Downvote method
         [RelayCommand]
         private void Downvote()
         {
@@ -118,18 +141,23 @@ namespace Boards_WP.ViewModels
             if (userId == 0) return;
 
             _postsService.DecreaseScore(PostData.PostID);
-            _postsService.UpdateUserInterests(userId, PostData, VoteType.Dislike, false);
 
             var updatedPost = _postsService.GetPostByPostID(PostData.PostID);
             if (updatedPost != null)
             {
                 PostData.Score = updatedPost.Score;
-
-                OnPropertyChanged(nameof(PostData)); 
+                OnPropertyChanged(nameof(PostData));
             }
 
             var newThemeColor = _postsService.DetermineFeedThemeColorByLastLikes();
             _mainViewModel.ApplyNewTheme(newThemeColor);
+
+            if (_postsService.GetUserVoteForPost(userId, PostData.PostID) == VoteType.Dislike)
+                VoteStatusText = "Disliked";
+            else if (_postsService.GetUserVoteForPost(userId, PostData.PostID) == VoteType.Like)
+                VoteStatusText = "Liked";
+            else
+                VoteStatusText = "";
         }
 
         [RelayCommand]
