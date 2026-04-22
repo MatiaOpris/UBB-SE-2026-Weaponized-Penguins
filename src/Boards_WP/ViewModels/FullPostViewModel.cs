@@ -9,11 +9,11 @@ namespace Boards_WP.ViewModels
 {
     public partial class FullPostViewModel : ObservableObject
     {
-        
-        private readonly IPostsService _postsService;
-        private readonly ICommentsService _commentsService;
-        private readonly MainViewModel _mainViewModel;
-        private readonly UserSession _userSession;
+        private readonly IPostsService postsService;
+        private readonly ICommentsService commentsService;
+        private readonly MainViewModel mainViewModel;
+        private readonly UserSession userSession;
+        public MainViewModel MainViewModel => mainViewModel;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(PostImageSource))]
