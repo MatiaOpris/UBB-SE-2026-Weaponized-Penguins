@@ -4,14 +4,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Background="Transparent">
 
-    <Grid Padding="40">
-        <StackPanel Spacing="20" MaxWidth="800" HorizontalAlignment="Left">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="20" MaxWidth="800" HorizontalAlignment="Left" Padding="40">
             <TextBlock Text="Start a Community" 
                        FontSize="32" 
                        FontWeight="Bold" 
                        Foreground="{x:Bind ViewModel.MainViewModel.VividThemeBrush, Mode=OneWay}"/>
 
-        
             <Grid Height="160" CornerRadius="12" Background="#E0E0E0">
                 <Border CornerRadius="12">
                     <Image x:Name="BannerPreview" Stretch="UniformToFill"/>
@@ -29,7 +28,6 @@
                 </Button>
             </Grid>
 
-         
             <StackPanel Orientation="Horizontal" Spacing="15">
                 <Grid Width="60" Height="60">
                     <Ellipse Width="60" Height="60" Fill="#CBCBCB"/>
@@ -84,5 +82,5 @@
                         CornerRadius="10"/>
             </StackPanel>
         </StackPanel>
-    </Grid>
+    </ScrollViewer>
 </Page>
