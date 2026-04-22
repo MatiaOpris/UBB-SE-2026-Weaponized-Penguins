@@ -7,6 +7,9 @@ using Windows.UI.Text;
 
 namespace Boards_WP.ViewModels;
 
+/// <summary>
+/// ViewModel representing a single notification item for display.
+/// </summary>
 public partial class NotificationItemViewModel : ObservableObject
 {
     private readonly INotificationsService notificationsService = App.GetService<INotificationsService>();
@@ -87,6 +90,10 @@ public partial class NotificationItemViewModel : ObservableObject
     }
 }
 
+/// <summary>
+/// ViewModel that manages the list of notifications for the current user (partial).
+/// Handles loading/pagination and exposes the collection of notification item view models.
+/// </summary>
 public partial class NotificationsListViewModel : ObservableObject
 {
     private readonly INotificationsService notificationsService = App.GetService<INotificationsService>();
@@ -131,6 +138,6 @@ public partial class NotificationsListViewModel : ObservableObject
             currentOffset += data.Count;
         }
 
-        HasMore = (data?.Count == PageSize);
+        HasMore = data?.Count == PageSize;
     }
 }

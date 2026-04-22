@@ -9,6 +9,11 @@ using Boards_WP.Data.Services.Interfaces;
 
 namespace Boards_WP.ViewModels
 {
+    /// <summary>
+    /// View model representing a preview of a post shown in lists/feeds.
+    /// Contains display helpers (formatted date, image conversion, vote commands) and
+    /// interacts with the posts service and main view model for theme and navigation.
+    /// </summary>
     public partial class PostPreviewViewModel : ObservableObject
     {
         private readonly IPostsService postsService;
@@ -93,7 +98,6 @@ namespace Boards_WP.ViewModels
             mainViewModel = main_ViewModel;
             communityName = post.ParentCommunity?.Name ?? "Unknown";
             authorUsername = post.Owner?.Username ?? "Unknown";
-
             // Load initial vote status
             if (userSession.CurrentUser != null)
             {
