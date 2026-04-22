@@ -19,6 +19,7 @@ namespace Boards_WP.ViewModels
         private string _communityName = string.Empty;
 
         [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(CreateCommunityCommand))]
         private string _communityDescription = string.Empty;
 
         [ObservableProperty]
@@ -38,11 +39,13 @@ namespace Boards_WP.ViewModels
         public CreateCommunityViewModel(
             ICommunitiesService communitiesService,
             INavigationService navigationService,
-            UserSession userSession)
+            UserSession userSession,
+            MainViewModel mainViewModel)
         {
             _communitiesService = communitiesService;
             _navigationService = navigationService;
             _userSession = userSession;
+            _mainViewModel = mainViewModel;
         }
 
         [RelayCommand(CanExecute = nameof(CanCreateCommunity))]
@@ -73,6 +76,8 @@ namespace Boards_WP.ViewModels
         [RelayCommand]
         private void Cancel() => _navigationService.GoBack();
 
-        private bool CanCreateCommunity() => !string.IsNullOrWhiteSpace(CommunityName);
+        private bool CanCreateCommunity() =>
+            !string.IsNullOrWhiteSpace(CommunityName) &&
+            !string.IsNullOrWhiteSpace(CommunityDescription);
     }
 }

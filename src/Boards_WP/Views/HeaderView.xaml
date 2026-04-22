@@ -26,7 +26,7 @@
                Margin="40,0,0,5"/>
               
         <Grid Grid.Column="1" VerticalAlignment="Center" MaxWidth="800" HorizontalAlignment="Stretch">
-            <Border x:Name="SearchBoxBorder" Background="White" CornerRadius="20" Height="40">
+            <Border x:Name="SearchBoxBorder" Background="Transparent" CornerRadius="20" Height="40">
                 <AutoSuggestBox x:Name="CommunitySearchBox"
                                 PlaceholderText="Search communities..."
                                 QueryIcon="Find"
@@ -35,12 +35,18 @@
                                 VerticalAlignment="Center" 
                                 HorizontalAlignment="Stretch"
                                 Padding="15,9,15,0"
-                                Margin="0,5,0,0"
+                                Margin="0,0,0,0"
                                 TextChanged="CommunitySearchBox_TextChanged"
                                 QuerySubmitted="CommunitySearchBox_QuerySubmitted"
                                 ItemsSource="{x:Bind ViewModel.SearchResults, Mode=OneWay}"
                                 UpdateTextOnSelect="False"
                                 SuggestionChosen="CommunitySearchBox_SuggestionChosen">
+
+                    <AutoSuggestBox.Resources>
+                        <SolidColorBrush x:Key="TextControlBackgroundFocused" Color="#5F5870"/>
+                        <SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="#5F5870"/>
+                    </AutoSuggestBox.Resources>
+
                     <AutoSuggestBox.ItemTemplate>
                         <DataTemplate x:DataType="models:Community">
                             <StackPanel Orientation="Horizontal" Padding="10">
