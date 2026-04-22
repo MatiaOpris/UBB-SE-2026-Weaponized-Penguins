@@ -8,7 +8,7 @@ namespace Boards_WP.Data.Repositories.Interfaces;
 
 public interface IPostsRepository
 {
-    public void AddPost(Post p);
+    public void CreatePost(Post post);
     public void DeletePost(int postID);
     public void IncreaseScore(int postID);
     public void DecreaseScore(int postID);

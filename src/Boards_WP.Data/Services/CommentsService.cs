@@ -21,21 +21,21 @@ public class CommentsService : ICommentsService
         this.notificationsRepo = notificationsRepo;
     }
 
-    public void AddComment(Comment c)
+    public void AddComment(Comment comment)
     {
-        ValidateComment(c);
-        c.CreationTime = DateTime.Now;
-        c.IsDeleted = false;
-        commentsRepo.AddComment(c);
+        ValidateComment(comment);
+        comment.CreationTime = DateTime.Now;
+        comment.IsDeleted = false;
+        commentsRepo.AddComment(comment);
 
-        if (c.ParentPost != null && c.Owner != null)
+        if (comment.ParentPost != null && comment.Owner != null)
         {
             var notification = new Notification
             {
-                RelatedPost = c.ParentPost,
-                Receiver = c.ParentPost.Owner,
-                Actor = c.Owner,
-                ActionType = c.ParentComment == null ? NotificationType.CommentOnPost : NotificationType.ReplyToComment
+                RelatedPost = comment.ParentPost,
+                Receiver = comment.ParentPost.Owner,
+                Actor = comment.Owner,
+                ActionType = comment.ParentComment == null ? NotificationType.CommentOnPost : NotificationType.ReplyToComment
             };
             if (notification.Receiver != null && notification.Receiver.UserID != notification.Actor.UserID)
             {
@@ -44,60 +44,60 @@ public class CommentsService : ICommentsService
         }
     }
 
-    public void SoftDeleteComment(Comment c, int userID)
+    public void SoftDeleteComment(Comment comment, int userID)
     {
-        c.Description = "[deleted]";
-        c.IsDeleted= true;
-        commentsRepo.SoftDeleteComment(c.CommentID);
+        comment.Description = "[deleted]";
+        comment.IsDeleted= true;
+        commentsRepo.SoftDeleteComment(comment.CommentID);
     }
-    public void IncreaseScore(Comment c, int currentUserID)
+    public void IncreaseScore(Comment comment, int currentUserID)
     {
-        if (c.IsDeleted)
+        if (comment.IsDeleted)
             throw new InvalidOperationException("Cannot vote on a deleted comment.");
 
-        if (c.UserCurrentVote == VoteType.Like)
+        if (comment.UserCurrentVote == VoteType.Like)
         {
-            commentsRepo.DecreaseScore(c);
-            commentsRepo.UpsertUserCommentVote(c.CommentID, currentUserID, VoteType.None);
-            c.UserCurrentVote = VoteType.None;
+            commentsRepo.DecrementCommentScore(comment);
+            commentsRepo.UpsertUserCommentVote(comment.CommentID, currentUserID, VoteType.None);
+            comment.UserCurrentVote = VoteType.None;
         }
-        else if (c.UserCurrentVote == VoteType.Dislike)
+        else if (comment.UserCurrentVote == VoteType.Dislike)
         {
-            commentsRepo.IncreaseScore(c);
-            commentsRepo.IncreaseScore(c);
-            commentsRepo.UpsertUserCommentVote(c.CommentID, currentUserID, VoteType.Like);
-            c.UserCurrentVote = VoteType.Like;
+            commentsRepo.IncreaseScore(comment);
+            commentsRepo.IncreaseScore(comment);
+            commentsRepo.UpsertUserCommentVote(comment.CommentID, currentUserID, VoteType.Like);
+            comment.UserCurrentVote = VoteType.Like;
         }
         else
         {
-            commentsRepo.IncreaseScore(c);
-            commentsRepo.UpsertUserCommentVote(c.CommentID, currentUserID, VoteType.Like);
-            c.UserCurrentVote = VoteType.Like;
+            commentsRepo.IncreaseScore(comment);
+            commentsRepo.UpsertUserCommentVote(comment.CommentID, currentUserID, VoteType.Like);
+            comment.UserCurrentVote = VoteType.Like;
         }
     }
-    public void DecreaseScore(Comment c, int currentUserID)
+    public void DecreaseScore(Comment comment, int currentUserID)
     {
-        if (c.IsDeleted)
+        if (comment.IsDeleted)
             throw new InvalidOperationException("Cannot vote on a deleted comment.");
 
-        if (c.UserCurrentVote == VoteType.Dislike)
+        if (comment.UserCurrentVote == VoteType.Dislike)
         {
-            commentsRepo.IncreaseScore(c);
-            commentsRepo.UpsertUserCommentVote(c.CommentID, currentUserID, VoteType.None);
-            c.UserCurrentVote = VoteType.None;
+            commentsRepo.IncreaseScore(comment);
+            commentsRepo.UpsertUserCommentVote(comment.CommentID, currentUserID, VoteType.None);
+            comment.UserCurrentVote = VoteType.None;
         }
-        else if (c.UserCurrentVote == VoteType.Like)
+        else if (comment.UserCurrentVote == VoteType.Like)
         {
-            commentsRepo.DecreaseScore(c);
-            commentsRepo.DecreaseScore(c);
-            commentsRepo.UpsertUserCommentVote(c.CommentID, currentUserID, VoteType.Dislike);
-            c.UserCurrentVote = VoteType.Dislike;
+            commentsRepo.DecrementCommentScore(comment);
+            commentsRepo.DecrementCommentScore(comment);
+            commentsRepo.UpsertUserCommentVote(comment.CommentID, currentUserID, VoteType.Dislike);
+            comment.UserCurrentVote = VoteType.Dislike;
         }
         else
         {
-            commentsRepo.DecreaseScore(c);
-            commentsRepo.UpsertUserCommentVote(c.CommentID, currentUserID, VoteType.Dislike);
-            c.UserCurrentVote = VoteType.Dislike;
+            commentsRepo.DecrementCommentScore(comment);
+            commentsRepo.UpsertUserCommentVote(comment.CommentID, currentUserID, VoteType.Dislike);
+            comment.UserCurrentVote = VoteType.Dislike;
         }
 
     }
@@ -108,13 +108,13 @@ public class CommentsService : ICommentsService
         var comments = commentsRepo.GetCommentsByPostID(postID, currentUserID);
 
         var childrenMap = new Dictionary<int, List<Comment>>();
-        foreach (var c in comments)
+        foreach (var comment in comments)
         {
-            int parentId = c.ParentComment?.CommentID ?? RootParentSentinel;
+            int parentId = comment.ParentComment?.CommentID ?? RootParentSentinel;
             if (!childrenMap.ContainsKey(parentId))
                 childrenMap[parentId] = new List<Comment>();
 
-            childrenMap[parentId].Add(c);
+            childrenMap[parentId].Add(comment);
         }
 
         var sortedComments = new List<Comment>();

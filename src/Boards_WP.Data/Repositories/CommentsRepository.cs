@@ -18,7 +18,7 @@ public class CommentsRepository : ICommentsRepository
         _connectionString = connectionString;
     }
 
-    public void AddComment(Comment c)
+    public void AddComment(Comment comment)
     {
         const string query = @"
             INSERT INTO Comments (postID, parentID, ownerID, description, score, creationTime, indentation, isDeleted)
@@ -28,17 +28,17 @@ public class CommentsRepository : ICommentsRepository
         using var connection = new SqlConnection(_connectionString);
         using var command = new SqlCommand(query, connection);
 
-        command.Parameters.Add("@postID", SqlDbType.Int).Value = c.ParentPost.PostID;
-        command.Parameters.Add("@parentID", SqlDbType.Int).Value = c.ParentComment != null && c.ParentComment.CommentID != 0 ? (object)c.ParentComment.CommentID : DBNull.Value;
-        command.Parameters.Add("@ownerID", SqlDbType.Int).Value = c.Owner.UserID;
-        command.Parameters.Add("@description", SqlDbType.NVarChar, 618).Value = c.Description;
-        command.Parameters.Add("@score", SqlDbType.Int).Value = c.Score;
-        command.Parameters.Add("@creationTime", SqlDbType.DateTime).Value = c.CreationTime;
-        command.Parameters.Add("@indentation", SqlDbType.Int).Value = c.Indentation;
-        command.Parameters.Add("@isDeleted", SqlDbType.Bit).Value = c.IsDeleted;
+        command.Parameters.Add("@postID", SqlDbType.Int).Value = comment.ParentPost.PostID;
+        command.Parameters.Add("@parentID", SqlDbType.Int).Value = comment.ParentComment != null && comment.ParentComment.CommentID != 0 ? (object)comment.ParentComment.CommentID : DBNull.Value;
+        command.Parameters.Add("@ownerID", SqlDbType.Int).Value = comment.Owner.UserID;
+        command.Parameters.Add("@description", SqlDbType.NVarChar, 618).Value = comment.Description;
+        command.Parameters.Add("@score", SqlDbType.Int).Value = comment.Score;
+        command.Parameters.Add("@creationTime", SqlDbType.DateTime).Value = comment.CreationTime;
+        command.Parameters.Add("@indentation", SqlDbType.Int).Value = comment.Indentation;
+        command.Parameters.Add("@isDeleted", SqlDbType.Bit).Value = comment.IsDeleted;
 
         connection.Open();
-        c.CommentID = (int)command.ExecuteScalar();
+        comment.CommentID = (int)command.ExecuteScalar();
     }
 
     public void SoftDeleteComment(int commentID)
@@ -57,34 +57,34 @@ public class CommentsRepository : ICommentsRepository
         command.ExecuteNonQuery();
     }
 
-    public void IncreaseScore(Comment c)
+    public void IncreaseScore(Comment comment)
     {
         const string query = "UPDATE Comments SET score = score + 1 WHERE commentID = @commentID";
 
         using var connection = new SqlConnection(_connectionString);
         using var command = new SqlCommand(query, connection);
 
-        command.Parameters.Add("@commentID", SqlDbType.Int).Value = c.CommentID;
+        command.Parameters.Add("@commentID", SqlDbType.Int).Value = comment.CommentID;
 
         connection.Open();
         command.ExecuteNonQuery();
 
-        c.Score += 1;
+        comment.Score += 1;
     }
 
-    public void DecreaseScore(Comment c)
+    public void DecrementCommentScore(Comment comment)
     {
         const string query = "UPDATE Comments SET score = score - 1 WHERE commentID = @commentID";
 
         using var connection = new SqlConnection(_connectionString);
         using var command = new SqlCommand(query, connection);
 
-        command.Parameters.Add("@commentID", SqlDbType.Int).Value = c.CommentID;
+        command.Parameters.Add("@commentID", SqlDbType.Int).Value = comment.CommentID;
 
         connection.Open();
         command.ExecuteNonQuery();
 
-        c.Score -= 1;
+        comment.Score -= 1;
     }
 
     public List<Comment> GetCommentsByPostID(int postID, int userID)

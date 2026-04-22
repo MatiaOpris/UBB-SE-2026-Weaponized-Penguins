@@ -19,7 +19,8 @@ public class PostsRepository : IPostsRepository
         _connectionString = connectionString;
     }
 
-    public void AddPost(Post p)
+    private const int MaxPostTags = 10;
+    public void CreatePost(Post post)
     {
         using var connection = new SqlConnection(_connectionString);
 
@@ -31,37 +32,37 @@ public class PostsRepository : IPostsRepository
         SELECT CAST(SCOPE_IDENTITY() AS INT);"; 
 
         using var command = new SqlCommand(insertPostQuery, connection);
-        command.Parameters.AddWithValue("@OwnerID", p.Owner.UserID);
-        command.Parameters.AddWithValue("@CommunityID", p.ParentCommunity.CommunityID);
-        command.Parameters.AddWithValue("@Title", p.Title);
-        command.Parameters.AddWithValue("@Description", p.Description);
+        command.Parameters.AddWithValue("@OwnerID", post.Owner.UserID);
+        command.Parameters.AddWithValue("@CommunityID", post.ParentCommunity.CommunityID);
+        command.Parameters.AddWithValue("@Title", post.Title);
+        command.Parameters.AddWithValue("@Description", post.Description);
 
         var imageParameter = new SqlParameter("@Image", SqlDbType.VarBinary);
-        imageParameter.Value = (object?)p.Image ?? DBNull.Value;
+        imageParameter.Value = (object?)post.Image ?? DBNull.Value;
         command.Parameters.Add(imageParameter);
 
-        command.Parameters.AddWithValue("@Score", p.Score);
-        command.Parameters.AddWithValue("@CommentsNumber", p.CommentsNumber);
+        command.Parameters.AddWithValue("@Score", post.Score);
+        command.Parameters.AddWithValue("@CommentsNumber", post.CommentsNumber);
 
         connection.Open();
 
         int newPostId = (int)command.ExecuteScalar();
 
         
-        if (p.Tags != null && p.Tags.Count > 0)
+        if (post.Tags != null && post.Tags.Count > 0)
         {
             const string insertTagQuery = @"
             INSERT INTO PostTags (postID, tagID, position) 
             VALUES (@PostID, @TagID, @Position)";
 
-            for (int i = 0; i < p.Tags.Count; i++)
+            for (int tagIndex = 0; tagIndex < post.Tags.Count; tagIndex++)
             {
-                if (i > 9) break; 
+                if (tagIndex >= MaxPostTags) break; 
 
                 using var tagCommand = new SqlCommand(insertTagQuery, connection);
                 tagCommand.Parameters.AddWithValue("@PostID", newPostId);
-                tagCommand.Parameters.AddWithValue("@TagID", p.Tags[i].TagID);
-                tagCommand.Parameters.AddWithValue("@Position", i);
+                tagCommand.Parameters.AddWithValue("@TagID", post.Tags[tagIndex].TagID);
+                tagCommand.Parameters.AddWithValue("@Position", tagIndex);
                 tagCommand.ExecuteNonQuery();
             }
         }
@@ -130,12 +131,12 @@ public class PostsRepository : IPostsRepository
     }
 
     
-    private void ExecuteSimpleUpdate(string query, int id)
+    private void ExecuteSimpleUpdate(string query, int postId)
     {
         using var connection = new SqlConnection(_connectionString);
         using var command = new SqlCommand(query, connection);
 
-        command.Parameters.AddWithValue("@ID", id);
+        command.Parameters.AddWithValue("@ID", postId);
 
         connection.Open();
         command.ExecuteNonQuery();
