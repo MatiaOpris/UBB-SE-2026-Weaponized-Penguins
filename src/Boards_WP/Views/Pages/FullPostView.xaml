@@ -37,12 +37,34 @@
                         <!-- Left Column: Voting -->
                         <StackPanel Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Center"
                                     Background="#F8F8FF" CornerRadius="8" Padding="4" BorderBrush="#E0E0FF" BorderThickness="1">
-                            <Button Content="▲" Command="{x:Bind ViewModel.UpvoteCommand}"
-                                    Background="Transparent" BorderThickness="0" HorizontalAlignment="Center"/>
-                            <TextBlock Text="{x:Bind ViewModel.CurrentPost.Score, Mode=OneWay}"
-                                       HorizontalAlignment="Center" FontWeight="Bold" Foreground="{x:Bind ViewModel.MainViewModel.VividThemeBrush, Mode=OneWay}"/>
-                            <Button Content="▼" Command="{x:Bind ViewModel.DownvoteCommand}"
-                                    Background="Transparent" BorderThickness="0" HorizontalAlignment="Center"/>
+                            <Button Content="▲" Command="{x:Bind ViewModel.UpvoteCommand, Mode=OneWay}" Foreground="#6B588C"
+                                Background="Transparent" BorderThickness="0" HorizontalAlignment="Center">
+                                <Button.Resources>
+                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#B09AD6"/>
+                                    <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#807099"/>
+                                </Button.Resources>
+                            </Button>
+
+                            <TextBlock Text="{x:Bind ViewModel.CurrentPost.Score, Mode=OneWay}" 
+                                HorizontalAlignment="Center" FontWeight="Bold" 
+                                Foreground="{x:Bind ViewModel.MainViewModel.VividThemeBrush, Mode=OneWay}"/>
+
+                            <Button Content="▼" Command="{x:Bind ViewModel.DownvoteCommand, Mode=OneWay}"  Foreground="#6B588C"
+                                Background="Transparent" BorderThickness="0" HorizontalAlignment="Center">
+                                <Button.Resources>
+                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#B09AD6"/>
+                                    <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#807099"/>
+                                </Button.Resources>
+                            </Button>
+
+                            <TextBlock Text="{x:Bind ViewModel.VoteStatusText, Mode=OneWay}"
+                                FontSize="10"
+                                Foreground="#6B588C"
+                                FontWeight="SemiBold"
+                                HorizontalAlignment="Center"
+                                TextWrapping="Wrap"
+                                TextAlignment="Center"
+                                Margin="0,5,0,0"/>
                         </StackPanel>
 
                         <!-- Middle Column: Content -->
@@ -137,18 +159,34 @@
                 </Border>
 
                 <!-- Write Comment Area -->
-                <Border Background="White" CornerRadius="12" Margin="0,0,0,20" Padding="15" 
-                        BorderBrush="#6A67E1" BorderThickness="2"
-                        Visibility="{x:Bind BooleanToVisibility(ViewModel.IsCommentAreaVisible), Mode=OneWay}">
+                <Border Background="{x:Bind ViewModel.MainViewModel.VividThemeBrush, Mode=OneWay}" 
+                    CornerRadius="20" Margin="0,0,0,20" Padding="15" 
+                    Visibility="{x:Bind BooleanToVisibility(ViewModel.IsCommentAreaVisible), Mode=OneWay}">
                     <Grid ColumnDefinitions="*, Auto">
+                        <!-- Textbox with matching resources from Search Communities -->
                         <TextBox x:Name="CommentInput" PlaceholderText="Write a comment...." 
-                                 Text="{x:Bind ViewModel.NewCommentText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 AcceptsReturn="True" TextWrapping="Wrap" BorderThickness="0" MinHeight="60"/>
+                            Text="{x:Bind ViewModel.NewCommentText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            AcceptsReturn="True" TextWrapping="Wrap" BorderThickness="0" MinHeight="60"
+                            Background="Transparent"
+                            Foreground="White">
+
+                            <TextBox.Resources>
+                                <!-- Match background hover/focus colors of Header Search -->
+                                <SolidColorBrush x:Key="TextControlBackgroundFocused" Color="#5F5870"/>
+                                <SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="#5F5870"/>
+                                <!-- Increase visibility for placeholder and text -->
+                                <SolidColorBrush x:Key="TextControlPlaceholderTextForeground" Color="#E0E0E0"/>
+                                <SolidColorBrush x:Key="TextControlForeground" Color="White" />
+                            </TextBox.Resources>
+                        </TextBox>
+
                         <StackPanel Grid.Column="1" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="10" Margin="10,0,0,0">
-                            <Button Content="Cancel" Command="{x:Bind ViewModel.CancelCommentCommand}" Background="Transparent"/>
-                           <Button Grid.Column="1" Content="Post Comment" 
+                            <Button Content="Cancel" Foreground="White" Command="{x:Bind ViewModel.CancelCommentCommand}" Background="#E53935" CornerRadius="8"/>
+                            <Button Content="Post Comment" 
                                 Command="{x:Bind ViewModel.PostCommentCommand}"
-                                Background="{x:Bind ViewModel.MainViewModel.VividThemeBrush, Mode=OneWay}" Foreground="White" CornerRadius="8" VerticalAlignment="Bottom" Margin="10,0,0,0"/>
+                                Background="White" 
+                                Foreground="#6A67E1" 
+                                CornerRadius="8" />
                         </StackPanel>
                     </Grid>
                 </Border>

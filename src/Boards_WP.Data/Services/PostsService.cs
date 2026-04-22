@@ -42,7 +42,7 @@ public class PostsService : IPostsService
     {
         ValidatePost(post);
 
-        _postsRepo.AddPost(post);
+        _postsRepo.CreatePost(post);
     }
 
     public void ValidatePost(Post post)

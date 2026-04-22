@@ -40,7 +40,7 @@ namespace Boards_WP.ViewModels
 
             if (IsExpired)
             {
-                HasWon = betsService.didUserWinBet(currentUserID, BetData.BetID);
+                HasWon = betsService.HasUserWonBet(currentUserID, BetData.BetID);
                 CanClaimPayout = HasWon && !claimedBetIDs.Contains(BetData.BetID);
             }
 

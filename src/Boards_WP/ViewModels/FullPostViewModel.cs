@@ -41,6 +41,9 @@ namespace Boards_WP.ViewModels
         [ObservableProperty]
         private bool canDeletePost;
 
+        [ObservableProperty]
+        private string voteStatusText = string.Empty;
+
         private VoteType finalVote = VoteType.None;
         private bool hasCommented = false;
 
@@ -89,6 +92,24 @@ namespace Boards_WP.ViewModels
         {
             var fullPost = postsService.GetPostByPostID(post.PostID);
             CurrentPost = fullPost ?? post;
+
+            // Load initial vote status
+            if (userSession.CurrentUser != null)
+            {
+                var vote = postsService.GetUserVoteForPost(userSession.CurrentUser.UserID, currentPost.PostID);
+                if (vote == VoteType.Like)
+                {
+                    VoteStatusText = "Liked";
+                }
+                else if (vote == VoteType.Dislike)
+                {
+                    VoteStatusText = "Disliked";
+                }
+                else
+                {
+                    VoteStatusText = string.Empty;
+                }
+            }
 
             if (CurrentPost != null && userSession.CurrentUser != null)
             {
@@ -185,6 +206,18 @@ namespace Boards_WP.ViewModels
             var newThemeColor = postsService.DetermineThemeForASinglePost(updatedPost);
             mainViewModel.ApplyNewTheme(newThemeColor);
             finalVote = VoteType.Like;
+            if (postsService.GetUserVoteForPost(userId, currentPost.PostID) == VoteType.Dislike)
+            {
+                VoteStatusText = "Disliked";
+            }
+            else if (postsService.GetUserVoteForPost(userId, currentPost.PostID) == VoteType.Like)
+            {
+                VoteStatusText = "Liked";
+            }
+            else
+            {
+                VoteStatusText = string.Empty;
+            }
         }
 
         [RelayCommand]
@@ -213,6 +246,18 @@ namespace Boards_WP.ViewModels
             var newThemeColor = postsService.DetermineFeedThemeColorByLastLikes();
             mainViewModel.ApplyNewTheme(newThemeColor);
             finalVote = VoteType.Dislike;
+            if (postsService.GetUserVoteForPost(userId, currentPost.PostID) == VoteType.Dislike)
+            {
+                VoteStatusText = "Disliked";
+            }
+            else if (postsService.GetUserVoteForPost(userId, currentPost.PostID) == VoteType.Like)
+            {
+                VoteStatusText = "Liked";
+            }
+            else
+            {
+                VoteStatusText = string.Empty;
+            }
         }
 
         [RelayCommand]
