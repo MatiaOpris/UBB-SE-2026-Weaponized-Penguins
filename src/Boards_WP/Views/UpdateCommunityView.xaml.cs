@@ -1,17 +1,15 @@
+using System.Runtime.InteropServices;
+
+using Boards_WP.ViewModels;
+
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Navigation;
 
 using Windows.Storage;
 using Windows.Storage.Pickers;
 
 using WinRT.Interop;
-
-using System.Collections.ObjectModel;
-using System.Runtime.InteropServices;
-
-using Boards_WP.Data.Models;
-using Boards_WP.ViewModels;
 
 namespace Boards_WP.Views.Pages
 {

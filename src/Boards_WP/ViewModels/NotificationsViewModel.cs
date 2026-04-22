@@ -1,6 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+
 using Microsoft.UI.Text;
+
 using Windows.UI.Text;
 
 namespace Boards_WP.ViewModels;
@@ -69,7 +71,7 @@ public partial class NotificationItemViewModel : ObservableObject
                 _notificationsService.ReadNotification(NotificationData);
             }
             NotificationData.IsRead = true;
-            IsUnread = false; 
+            IsUnread = false;
         }
 
         if (NotificationData.RelatedPost != null && NotificationData.ActionType != NotificationType.PostDeleted)

@@ -1,8 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+
 using Microsoft.UI.Xaml.Media;
-using Boards_WP.Data.Models;
-using Boards_WP.Data.Services.Interfaces;
-using System;
 
 namespace Boards_WP.ViewModels
 {

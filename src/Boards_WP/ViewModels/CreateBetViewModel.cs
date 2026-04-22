@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Linq.Expressions;
-
-using Boards_WP.Data.Models;
-using Boards_WP.Data.Services;
-
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Boards_WP.ViewModels
@@ -97,7 +90,7 @@ namespace Boards_WP.ViewModels
 
                 ErrorMessage = null;
 
-               
+
                 BetCreated?.Invoke();
             }
             catch (Exception ex)

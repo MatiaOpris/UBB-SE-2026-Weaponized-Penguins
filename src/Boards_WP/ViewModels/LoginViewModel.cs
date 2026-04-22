@@ -1,9 +1,3 @@
-using System;
-
-using Boards_WP.Data.Models;
-using Boards_WP.Data.Services;
-using Boards_WP.Data.Services.Interfaces;
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 

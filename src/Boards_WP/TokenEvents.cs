@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Boards_WP
+﻿namespace Boards_WP
 {
     public static class TokenEvents
     {

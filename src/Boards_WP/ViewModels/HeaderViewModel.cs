@@ -1,17 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-
-
-using Boards_WP.Data.Models;
-using Boards_WP.Data.Services.Interfaces;
-
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-
-using Boards_WP.Data.Models;
-using Boards_WP.Data.Services.Interfaces;
 
 namespace Boards_WP.ViewModels
 {
@@ -22,7 +10,7 @@ namespace Boards_WP.ViewModels
         private readonly UserSession _userSession;
         private readonly MainViewModel _mainViewModel;
 
-        public MainViewModel MainViewModel => _mainViewModel;  
+        public MainViewModel MainViewModel => _mainViewModel;
 
 
         [ObservableProperty]
@@ -48,7 +36,7 @@ namespace Boards_WP.ViewModels
             UserTokens = 1250;
         }
 
-        
+
         partial void OnSearchTextChanged(string searchedValue)
         {
             if (string.IsNullOrWhiteSpace(searchedValue))
@@ -58,7 +46,7 @@ namespace Boards_WP.ViewModels
                 return;
             }
 
-            
+
             var matches = _communitiesService.searchCommunities(searchedValue);
 
             SearchResults.Clear();
@@ -83,7 +71,7 @@ namespace Boards_WP.ViewModels
             SearchText = string.Empty;
             SearchResults.Clear();
 
-            
+
             _navigationService.NavigateTo(typeof(Views.Pages.CommunityView), selected);
         }
     }

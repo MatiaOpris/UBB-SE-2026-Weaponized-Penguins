@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-
-using Boards_WP.Data.Models; 
 namespace Boards_WP.Data
 {
     public class AppDbContext : DbContext

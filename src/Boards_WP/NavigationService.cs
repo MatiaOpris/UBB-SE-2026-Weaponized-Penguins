@@ -1,6 +1,4 @@
 ﻿using Microsoft.UI.Xaml.Controls;
-
-using System;
 namespace Boards_WP.Data.Services;
 
 public class NavigationService : INavigationService

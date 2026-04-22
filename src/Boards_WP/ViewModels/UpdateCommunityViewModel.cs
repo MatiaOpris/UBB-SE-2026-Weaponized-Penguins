@@ -1,8 +1,4 @@
-﻿using System.Collections.ObjectModel;
-
-using Boards_WP.Data.Models;
-using Boards_WP.Data.Services.Interfaces;
-using Boards_WP.Views.Pages;
+﻿using Boards_WP.Views.Pages;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;

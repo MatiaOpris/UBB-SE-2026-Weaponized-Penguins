@@ -1,13 +1,8 @@
-using System.IO;
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media.Imaging;
-
-using Boards_WP.Data.Models;
-using Boards_WP.Data.Services.Interfaces;
 
 namespace Boards_WP.ViewModels
 {
@@ -103,7 +98,7 @@ namespace Boards_WP.ViewModels
             {
                 PostData.Score = updatedPost.Score;
 
-                OnPropertyChanged(nameof(PostData)); 
+                OnPropertyChanged(nameof(PostData));
             }
 
             var newThemeColor = _postsService.DetermineFeedThemeColorByLastLikes();
@@ -125,7 +120,7 @@ namespace Boards_WP.ViewModels
             {
                 PostData.Score = updatedPost.Score;
 
-                OnPropertyChanged(nameof(PostData)); 
+                OnPropertyChanged(nameof(PostData));
             }
 
             var newThemeColor = _postsService.DetermineFeedThemeColorByLastLikes();

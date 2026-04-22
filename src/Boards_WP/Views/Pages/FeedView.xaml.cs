@@ -7,8 +7,8 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Boards_WP.Views.Pages
 {
-    
-    
+
+
     public sealed partial class FeedView : Page
     {
         public FeedViewModel? ViewModel { get; set; }

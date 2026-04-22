@@ -1,6 +1,5 @@
 using System.Runtime.InteropServices;
 
-using Boards_WP.Data.Models;
 using Boards_WP.ViewModels;
 
 using Microsoft.UI.Xaml;
@@ -33,7 +32,7 @@ namespace Boards_WP.Views.Pages
             if (e.Parameter is Community com)
             {
                 ViewModel.OriginCommunity = com;
-            }   
+            }
         }
 
         private async void ImagePicker_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)

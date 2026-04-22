@@ -1,11 +1,8 @@
-using Boards_WP.Data.Models;
 using Boards_WP.ViewModels;
 
 using Microsoft.UI.Xaml;
 
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
-using System;
 
 namespace Boards_WP.Views
 {
@@ -31,17 +28,17 @@ namespace Boards_WP.Views
             {
                 int adminId = 0;
 
-                
+
                 if (App.Current is App myApp && myApp.m_window.Content is FrameworkElement root)
                 {
                     var frame = root.FindName("ContentFrame") as Frame;
                     if (frame?.Content is Pages.FullPostView postPage)
-                    { 
+                    {
                         adminId = postPage.ViewModel.CurrentPost?.ParentCommunity?.Admin?.UserID ?? 0;
                     }
                 }
 
-                
+
                 control.ViewModel = new CommentViewModel(comment, adminId);
                 control.ViewModel.ReplySubmitted = control.HandleReplySubmission;
                 control.Bindings.Update();
@@ -76,7 +73,7 @@ namespace Boards_WP.Views
                         postsService.IncreaseCommentsNumber(postPage.ViewModel.CurrentPost.PostID);
 
 
-                       
+
                         postPage.ViewModel.Initialize(postPage.ViewModel.CurrentPost);
                     }
                     catch (Exception ex)

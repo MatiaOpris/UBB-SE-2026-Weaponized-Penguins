@@ -131,14 +131,14 @@ namespace Boards_WP.ViewModels
                 IsOwner = _communitiesService.CheckOwner(CurrentCommunity.CommunityID, userId);
 
                 IsMember = IsOwner || _communitiesService.IsPartOfCommunity(userId, CurrentCommunity.CommunityID);
-            }  
+            }
         }
 
         private void UpdateCommunityTheme()
         {
             if (CurrentCommunity != null)
             {
-                
+
                 _communityTheme = _communitiesService.DetermineCommunityThemeColor(CurrentCommunity.CommunityID);
             }
         }

@@ -1,12 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-using System;
-using System.Collections.ObjectModel;
-
-using Boards_WP.Data.Models;
-using Boards_WP.Data.Repositories.Interfaces;
-
 namespace Boards_WP.ViewModels;
 
 public partial class CreateTagViewModel : ObservableObject
@@ -24,7 +18,7 @@ public partial class CreateTagViewModel : ObservableObject
 
     public ObservableCollection<Category> AvailableCategories { get; } = new();
 
-    
+
     public event Action<Tag>? TagCreated;
     public event Action? Cancelled;
 

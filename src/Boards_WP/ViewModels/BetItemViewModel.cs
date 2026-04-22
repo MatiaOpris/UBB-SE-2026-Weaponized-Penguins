@@ -1,7 +1,4 @@
-﻿using System;
-using System.Windows.Input;
-
-using Boards_WP.Data.Models;
+﻿using System.Windows.Input;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;

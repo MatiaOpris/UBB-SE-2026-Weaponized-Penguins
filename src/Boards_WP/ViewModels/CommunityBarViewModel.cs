@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-
-using Boards_WP.Data.Models;
-using Boards_WP.Data.Services; 
-using Boards_WP.ViewModels;
+﻿using Boards_WP.ViewModels;
 using Boards_WP.Views.Pages;
-using Boards_WP;
 
 using CommunityToolkit.Mvvm.Input;
 
@@ -15,7 +7,7 @@ public partial class CommunityBarViewModel
 {
     private readonly INavigationService _navigationService;
     private readonly ICommunitiesService _communitiesService;
-    private readonly FeedViewModel _feedViewModel; 
+    private readonly FeedViewModel _feedViewModel;
     private readonly MainViewModel _mainViewModel;
     private readonly UserSession _userSession;
 
@@ -50,7 +42,7 @@ public partial class CommunityBarViewModel
     private void NavigateHome()
     {
         _feedViewModel.IsHome = true;
-        _feedViewModel.LoadHome(); 
+        _feedViewModel.LoadHome();
         _navigationService.NavigateTo(typeof(FeedView));
     }
 

@@ -1,8 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Boards_WP.ViewModels;
-using Boards_WP.Views.Pages;
+﻿using Boards_WP.ViewModels;
+
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 
 namespace Boards_WP;
 

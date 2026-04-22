@@ -1,13 +1,10 @@
 ﻿using System.ComponentModel;
 
+using Boards_WP.ViewModels;
+
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
-using Microsoft.Extensions.DependencyInjection;
-
-using Boards_WP.ViewModels;
-using Boards_WP.Data.Models;
-using Boards_WP.Data.Services;
 
 namespace Boards_WP.Views
 {
@@ -123,7 +120,7 @@ namespace Boards_WP.Views
                 if (selectedCommunity.CommunityID == -1) return;
 
                 ViewModel.SelectCommunityCommand.Execute(selectedCommunity);
-                sender.Text = string.Empty; 
+                sender.Text = string.Empty;
             }
         }
 

@@ -1,9 +1,4 @@
-﻿using System.Collections.ObjectModel;
-
-using Boards_WP.Data.Models;
-using Boards_WP.Data.Services;
-
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Boards_WP.ViewModels;

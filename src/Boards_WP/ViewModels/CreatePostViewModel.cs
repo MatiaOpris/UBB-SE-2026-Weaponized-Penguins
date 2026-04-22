@@ -1,9 +1,5 @@
-using System;
-using System.Collections.ObjectModel;
-using Boards_WP.Data.Models;
-using Boards_WP.Data.Repositories.Interfaces;
-using Boards_WP.Data.Services.Interfaces;
 using Boards_WP.Views.Pages;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -96,7 +92,7 @@ namespace Boards_WP.ViewModels
                 var inputTags = TagsInput.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
                 var createdTags = new System.Collections.Generic.List<Tag>();
 
-                foreach(var tagName in inputTags)
+                foreach (var tagName in inputTags)
                 {
                     var tag = new Tag
                     {
@@ -109,7 +105,7 @@ namespace Boards_WP.ViewModels
 
                 if (createdTags.Count == 0)
                 {
-                    
+
                     var tag = new Tag { TagName = SelectedCategory.CategoryName, CategoryBelongingTo = SelectedCategory };
                     _tagsRepository.AddTag(tag);
                     createdTags.Add(tag);
@@ -120,7 +116,7 @@ namespace Boards_WP.ViewModels
 
             _postsService.AddPost(newPost);
 
-            
+
             _navigationService.NavigateTo(typeof(CommunityView), OriginCommunity);
         }
 

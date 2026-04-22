@@ -1,16 +1,5 @@
-using System;
-using System.Collections.ObjectModel;
-using System.IO;
-
-using Boards_WP.Data.Models;
-using Boards_WP.Data.Models;
-using Boards_WP.Data.Services;
-using Boards_WP.Data.Services;
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Collections.Generic;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
@@ -20,7 +9,7 @@ namespace Boards_WP.ViewModels
 {
     public partial class FullPostViewModel : ObservableObject
     {
-        
+
         private readonly IPostsService _postsService;
         private readonly ICommentsService _commentsService;
         private readonly MainViewModel _mainViewModel;
@@ -64,7 +53,7 @@ namespace Boards_WP.ViewModels
             IsShareAreaVisible = !IsShareAreaVisible;
             if (IsShareAreaVisible)
             {
-                IsCommentAreaVisible = false; 
+                IsCommentAreaVisible = false;
             }
         }
 
@@ -82,7 +71,7 @@ namespace Boards_WP.ViewModels
 
         public ObservableCollection<Comment> PostComments { get; } = new();
 
-        
+
         public FullPostViewModel(
             IPostsService postsService,
             ICommentsService commentsService,
@@ -95,10 +84,10 @@ namespace Boards_WP.ViewModels
             _userSession = userSession;
         }
 
-        
+
         public void Initialize(Post post)
         {
-            
+
             var fullPost = _postsService.GetPostByPostID(post.PostID);
             CurrentPost = fullPost ?? post;
 
@@ -106,7 +95,7 @@ namespace Boards_WP.ViewModels
             {
                 int currentUserId = _userSession.CurrentUser.UserID;
 
-                
+
                 bool isOwner = CurrentPost.Owner?.UserID == currentUserId;
 
                 bool isAdmin = CurrentPost.ParentCommunity?.Admin?.UserID == currentUserId;
@@ -124,16 +113,16 @@ namespace Boards_WP.ViewModels
 
             try
             {
-                
+
                 _postsService.DeletePost(CurrentPost.PostID);
 
-                
+
                 var navService = App.Services.GetService<INavigationService>();
                 if (navService != null)
                 {
                     navService.GoBack();
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -148,7 +137,7 @@ namespace Boards_WP.ViewModels
 
             var userId = _userSession.CurrentUser?.UserID ?? 0;
 
-            
+
             var comments = _commentsService.GetCommentsByPost(CurrentPost.PostID, userId);
 
             foreach (var c in comments)
@@ -171,19 +160,19 @@ namespace Boards_WP.ViewModels
             var userId = _userSession.CurrentUser?.UserID ?? 0;
             if (userId == 0) return;
 
-            
+
             _postsService.IncreaseScore(CurrentPost.PostID);
             //_postsService.UpdateUserInterests(userId, CurrentPost, VoteType.Like, false);
 
-           
+
             var updatedPost = _postsService.GetPostByPostID(CurrentPost.PostID);
             if (updatedPost != null)
             {
                 CurrentPost.Score = updatedPost.Score;
-                OnPropertyChanged(nameof(CurrentPost)); 
+                OnPropertyChanged(nameof(CurrentPost));
             }
 
-            
+
             var newThemeColor = _postsService.DetermineThemeForASinglePost(updatedPost);
             _mainViewModel.ApplyNewTheme(newThemeColor);
             _finalVote = VoteType.Like;
@@ -196,19 +185,19 @@ namespace Boards_WP.ViewModels
             var userId = _userSession.CurrentUser?.UserID ?? 0;
             if (userId == 0) return;
 
-            
+
             _postsService.DecreaseScore(CurrentPost.PostID);
             //_postsService.UpdateUserInterests(userId, CurrentPost, VoteType.Dislike, false);
 
-           
+
             var updatedPost = _postsService.GetPostByPostID(CurrentPost.PostID);
             if (updatedPost != null)
             {
                 CurrentPost.Score = updatedPost.Score;
-                OnPropertyChanged(nameof(CurrentPost)); 
+                OnPropertyChanged(nameof(CurrentPost));
             }
 
-           
+
             var newThemeColor = _postsService.DetermineFeedThemeColorByLastLikes();
             _mainViewModel.ApplyNewTheme(newThemeColor);
             _finalVote = VoteType.Dislike;
@@ -227,7 +216,7 @@ namespace Boards_WP.ViewModels
             NewCommentText = string.Empty;
         }
 
-        
+
         [RelayCommand]
         private void PostComment()
         {

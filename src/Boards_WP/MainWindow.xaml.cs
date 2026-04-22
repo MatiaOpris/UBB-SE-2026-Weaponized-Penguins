@@ -1,7 +1,5 @@
-using System;
-
 using Boards_WP.ViewModels;
-using Boards_WP.Data.Services; 
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 
@@ -16,7 +14,7 @@ namespace Boards_WP
 
         public MainWindow()
         {
-            
+
             _mainViewModel = App.Services.GetRequiredService<MainViewModel>();
             _mainViewModel.IsLoggedIn = false;
 

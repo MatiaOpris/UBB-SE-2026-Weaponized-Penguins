@@ -1,8 +1,3 @@
-using System;
-
-using Boards_WP.Data.Models;
-using Boards_WP.Data.Services.Interfaces;
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -49,7 +44,7 @@ namespace Boards_WP.ViewModels
             {
                 if (CommentData == null || _userSession?.CurrentUser == null) return Visibility.Collapsed;
 
-                
+
                 if (CommentData.IsDeleted) return Visibility.Collapsed;
 
                 int currentUserId = _userSession.CurrentUser.UserID;
@@ -93,12 +88,12 @@ namespace Boards_WP.ViewModels
         private readonly ICommentsService _commentsService;
         private readonly UserSession _userSession;
 
-        public SolidColorBrush UpvoteColor => CommentData?.UserCurrentVote == VoteType.Like 
-            ? new SolidColorBrush(Colors.OrangeRed) 
+        public SolidColorBrush UpvoteColor => CommentData?.UserCurrentVote == VoteType.Like
+            ? new SolidColorBrush(Colors.OrangeRed)
             : new SolidColorBrush(Colors.Gray);
 
-        public SolidColorBrush DownvoteColor => CommentData?.UserCurrentVote == VoteType.Dislike 
-            ? new SolidColorBrush(Colors.CornflowerBlue) 
+        public SolidColorBrush DownvoteColor => CommentData?.UserCurrentVote == VoteType.Dislike
+            ? new SolidColorBrush(Colors.CornflowerBlue)
             : new SolidColorBrush(Colors.Gray);
 
         public CommentViewModel(Comment comment, int communityAdminId)
@@ -108,7 +103,8 @@ namespace Boards_WP.ViewModels
             _commentsService = App.Services?.GetService<ICommentsService>();
             _userSession = App.Services?.GetService<UserSession>();
 
-            UpvoteCommand = new RelayCommand(() => {
+            UpvoteCommand = new RelayCommand(() =>
+            {
                 if (_commentsService != null && _userSession != null)
                 {
                     _commentsService.IncreaseScore(CommentData, _userSession.CurrentUser.UserID);
@@ -118,7 +114,8 @@ namespace Boards_WP.ViewModels
                 }
             });
 
-            DownvoteCommand = new RelayCommand(() => {
+            DownvoteCommand = new RelayCommand(() =>
+            {
                 if (_commentsService != null && _userSession != null)
                 {
                     _commentsService.DecreaseScore(CommentData, _userSession.CurrentUser.UserID);
@@ -147,7 +144,7 @@ namespace Boards_WP.ViewModels
                 {
                     _commentsService.SoftDeleteComment(CommentData, _userSession.CurrentUser.UserID);
 
-                    
+
                     OnPropertyChanged(nameof(CommentText));
                     OnPropertyChanged(nameof(DeleteButtonVisibility));
                     OnPropertyChanged(nameof(ActionButtonsVisibility));

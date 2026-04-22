@@ -1,6 +1,4 @@
 using Microsoft.UI.Xaml.Media;
-using System;
-using Boards_WP.Data.Models;
 
 namespace Boards_WP.Helpers
 {
@@ -41,7 +39,7 @@ namespace Boards_WP.Helpers
                     byte b = Convert.ToByte(hex.Substring(5, 2), 16);
                     return new SolidColorBrush(Windows.UI.Color.FromArgb(255, r, g, b));
                 }
-                else 
+                else
                 {
                     byte a = Convert.ToByte(hex.Substring(1, 2), 16);
                     byte r = Convert.ToByte(hex.Substring(3, 2), 16);
