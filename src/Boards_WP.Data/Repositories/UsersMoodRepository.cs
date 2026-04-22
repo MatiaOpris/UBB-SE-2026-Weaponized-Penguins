@@ -37,7 +37,7 @@ public class UsersMoodRepository : IUsersMoodRepository
 
         if (scores.Count == 0)
         {
-            return GetDefaultDistribution(categoryCount);
+            return GetDefaultMoodDistribution(categoryCount);
         }
 
         return scores;
@@ -73,15 +73,15 @@ public class UsersMoodRepository : IUsersMoodRepository
         }
     }
 
-    internal Dictionary<int, int> GetDefaultDistribution(int categoryCount)
+    internal Dictionary<int, int> GetDefaultMoodDistribution(int categoryCount)
     {
         var defaults = new Dictionary<int, int>();
         int baseScore = _interestUnits / categoryCount;
         int leftover = _interestUnits % categoryCount;
 
-        for (int i = 1; i <= categoryCount; i++)
+        for (int categoryID = 1; categoryID <= categoryCount; categoryID++)
         {
-            defaults.Add(i, (leftover > 0) ? baseScore + 1 : baseScore);
+            defaults.Add(categoryID, (leftover > 0) ? baseScore + 1 : baseScore);
             if(leftover > 0) leftover--;
         }
         return defaults;

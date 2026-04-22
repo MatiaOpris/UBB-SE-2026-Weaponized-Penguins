@@ -14,7 +14,7 @@ public class BetsRepository : IBetsRepository
         _connectionString = connectionString;
     }
 
-    public int AddBet(Bet b)
+    public int AddBet(Bet bet)
     {
         const string query = @"
                 INSERT INTO Bets (communityID, betType, startingTime, endingTime, expression, yesAmount, notAmount)
@@ -24,13 +24,13 @@ public class BetsRepository : IBetsRepository
         using var connection = new SqlConnection(_connectionString);
         using var command = new SqlCommand(query, connection);
 
-        command.Parameters.Add("@communityID", SqlDbType.Int).Value = b.BetCommunity.CommunityID;
-        command.Parameters.Add("@betType", SqlDbType.Int).Value = b.Type;
-        command.Parameters.Add("@startingTime", SqlDbType.DateTime).Value = b.StartingTime;
-        command.Parameters.Add("@endingTime", SqlDbType.DateTime).Value = b.EndingTime;
-        command.Parameters.Add("@expression", SqlDbType.NVarChar).Value = b.Expression;
-        command.Parameters.Add("@yesAmount", SqlDbType.Int).Value = b.YesAmount;
-        command.Parameters.Add("@notAmount", SqlDbType.Int).Value = b.NoAmount;
+        command.Parameters.Add("@communityID", SqlDbType.Int).Value = bet.BetCommunity.CommunityID;
+        command.Parameters.Add("@betType", SqlDbType.Int).Value = bet.Type;
+        command.Parameters.Add("@startingTime", SqlDbType.DateTime).Value = bet.StartingTime;
+        command.Parameters.Add("@endingTime", SqlDbType.DateTime).Value = bet.EndingTime;
+        command.Parameters.Add("@expression", SqlDbType.NVarChar).Value = bet.Expression;
+        command.Parameters.Add("@yesAmount", SqlDbType.Int).Value = bet.YesAmount;
+        command.Parameters.Add("@notAmount", SqlDbType.Int).Value = bet.NoAmount;
 
         connection.Open();
         return (int)command.ExecuteScalar()!;

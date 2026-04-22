@@ -40,19 +40,19 @@ public class TagsRepository : ITagsRepository
         return categories;
     }
 
-    public int AddTag(Tag t)
+    public int AddTag(Tag tag)
     {
         using var connection = new SqlConnection(_connectionString);
 
         const string query = "INSERT INTO Tags (tagCategoryID, tagName) VALUES (@CategoryID, @TagName); SELECT CAST(SCOPE_IDENTITY() AS INT);";
         using var command = new SqlCommand(query, connection);
 
-        command.Parameters.AddWithValue("@CategoryID", t.CategoryBelongingTo.CategoryID);
-        command.Parameters.AddWithValue("@TagName", t.TagName);
+        command.Parameters.AddWithValue("@CategoryID", tag.CategoryBelongingTo.CategoryID);
+        command.Parameters.AddWithValue("@TagName", tag.TagName);
 
         connection.Open();
         int newId = (int)command.ExecuteScalar();
-        t.TagID = newId;
+        tag.TagID = newId;
         return newId;
     }
 

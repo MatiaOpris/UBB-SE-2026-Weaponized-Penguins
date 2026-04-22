@@ -161,14 +161,14 @@ public class PostsService : IPostsService
             _postsRepo.DecreaseScore(postId);
             _postsRepo.DecreaseScore(postId);
 
-            _lastLikesOfCurrentUser.RemoveAll(p => p.PostID == postId);
+            _lastLikesOfCurrentUser.RemoveAll(post => post.PostID == postId);
         }
         else
         {
             _postsRepo.SetUserVoteForPost(userId, postId, VoteType.Dislike);
             _postsRepo.DecreaseScore(postId);
 
-            _lastLikesOfCurrentUser.RemoveAll(p => p.PostID == postId);
+            _lastLikesOfCurrentUser.RemoveAll(post => post.PostID == postId);
         }
     }
 
@@ -182,7 +182,7 @@ public class PostsService : IPostsService
         
         List<Community> communities = _communitiesRepo.GetCommunitiesUserIsPartOf(userId);
 
-        int[] communityIds = communities.Select(c => c.CommunityID).ToArray();
+        int[] communityIds = communities.Select(community => community.CommunityID).ToArray();
 
         return _postsRepo.GetPostsByCommunityIDs(communityIds, offset, limit).OrderByDescending(post => post.CreationTime).ToList(); 
     }
@@ -207,7 +207,7 @@ public class PostsService : IPostsService
     private void RunDiscoveryAlgorithmCycle(int userId)
     {
         List<Community> communities = _communitiesRepo.GetCommunitiesUserIsPartOf(userId);
-        int[] communityIds = communities.Select(c => c.CommunityID).ToArray();
+        int[] communityIds = communities.Select(community => community.CommunityID).ToArray();
 
         var freshPosts = _postsRepo.GetPostExceptCommunityIDs(communityIds, _discoveryDbOffset, _initialDiscoveryBatch);
         _discoveryDbOffset += _initialDiscoveryBatch;
@@ -220,7 +220,7 @@ public class PostsService : IPostsService
         if (_cachedCategoryCount == 0)
             _cachedCategoryCount = _tagsRepo.GetCategoryCount();
         var userScores = _usersMoodRepository.GetUsersMoodScores(userId, _cachedCategoryCount);
-        List<int> allCategoryIds = _tagsRepo.GetAllCategories().Select(c => c.CategoryID).ToList();
+        List<int> allCategoryIds = _tagsRepo.GetAllCategories().Select(category => category.CategoryID).ToList();
         var rankedPool = totalPool.Select(post => new
         {
             OriginalPost = post,
@@ -250,7 +250,7 @@ public class PostsService : IPostsService
         if (_discoveryBuffer.Count + nextKeptPool.Count >= _safetyDiscoveryThreshHold)
         {
             var elitePool = _discoveryBuffer.Concat(nextKeptPool)
-                .Select(p => new { Post = p, Score = CalculateManhattanDistance(userScores, p, allCategoryIds) })
+                .Select(post => new { Post = post, Score = CalculateManhattanDistance(userScores, post, allCategoryIds) })
                 .OrderBy(x => x.Score)
                 .Take(_safetyDiscoveryResetCount)
                 .Select(x => x.Post)
@@ -304,12 +304,12 @@ public class PostsService : IPostsService
             {
                 if (post.Tags == null) continue;
 
-                for (int i = 0; i < post.Tags.Count; i++)
+                for (int tagIndex = 0; tagIndex < post.Tags.Count; tagIndex++)
                 {
                     
-                    int weight = (i < _tagWeights.Length) ? _tagWeights[i] : 1;
+                    int weight = (tagIndex < _tagWeights.Length) ? _tagWeights[tagIndex] : 1;
 
-                    int categoryId = post.Tags[i].CategoryBelongingTo.CategoryID;
+                    int categoryId = post.Tags[tagIndex].CategoryBelongingTo.CategoryID;
                     ThemeColor tagColor = CategoryThemeMapper.GetColorForCategoryId(categoryId);
 
                    
@@ -359,10 +359,10 @@ public class PostsService : IPostsService
 
         int appliedChange = 0;
 
-        for (int i = 0; i < post.Tags.Count; i++)
+        for (int tagIndex = 0; tagIndex < post.Tags.Count; tagIndex++)
         {
-            int catId = post.Tags[i].CategoryBelongingTo.CategoryID;
-            int change = (int)Math.Round(((10 - i) * 10) * intensity);
+            int catId = post.Tags[tagIndex].CategoryBelongingTo.CategoryID;
+            int change = (int)Math.Round(((10 - tagIndex) * 10) * intensity);
             userScores[catId] += change;
             appliedChange += change;
         }
@@ -418,11 +418,11 @@ public class PostsService : IPostsService
         int totalDistance = 0;
 
         var postCategories = new Dictionary<int, int>();
-        for (int i = 0; i < post.Tags.Count; i++)
+        for (int tagIndex = 0; tagIndex < post.Tags.Count; tagIndex++)
         {
-            int catId = post.Tags[i].CategoryBelongingTo.CategoryID;
+            int catId = post.Tags[tagIndex].CategoryBelongingTo.CategoryID;
 
-            int baseWeight = (10 - i) * 10;
+            int baseWeight = (10 - tagIndex) * 10;
             int weightedInfluence = baseWeight * 100;
 
             if (postCategories.ContainsKey(catId)) postCategories[catId] += weightedInfluence;

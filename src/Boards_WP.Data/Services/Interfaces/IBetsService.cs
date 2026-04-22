@@ -27,6 +27,6 @@ namespace Boards_WP.Data.Services
         public List<Bet> GetExpiredBetsOfUser(int UserID);
         public BetVote CheckBetCondition(int BetID);
         public void ExecuteActionsByBetResult(int UserID, int BetID);
-        public Boolean didUserWinBet(int UserID, int BetID);
+        public Boolean HasUserWonBet(int UserID, int BetID);
     }
 }

@@ -139,15 +139,15 @@ public class CommunitiesService : ICommunitiesService
         }
     }
 
-    private void validateCommunity(Community c)
+    private void validateCommunity(Community community)
     {
-        if (string.IsNullOrEmpty(c.Name))
+        if (string.IsNullOrEmpty(community.Name))
             throw new Exception("Community name cannot be empty.");
-        if (c.Name.Length > 200)
+        if (community.Name.Length > 200)
             throw new Exception("Community name cannot exceed 200 characters.");
-        if (string.IsNullOrEmpty(c.Description))
+        if (string.IsNullOrEmpty(community.Description))
             throw new Exception("Community description cannot be empty.");
-        if (c.Description.Length > 500)
+        if (community.Description.Length > 500)
             throw new Exception("Community description cannot exceed 500 characters.");
     }
 

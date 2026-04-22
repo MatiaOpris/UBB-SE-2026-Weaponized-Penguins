@@ -23,25 +23,25 @@ public class BetsService : IBetsService
         {
             Bet bet = _betsRepository.GetBetByID(BetID);
 
-            decimal Vyes = bet.YesAmount;
-            decimal Vno = bet.NoAmount;
+            decimal yesAmount = bet.YesAmount;
+            decimal noAmount = bet.NoAmount;
 
-            const decimal S = 1000m;
-            const decimal M = 0.05m;
+            const decimal BaseSmoothingFactor = 1000m;
+            const decimal BaseMargin = 0.05m;
 
-            decimal Pyes = (Vyes + S) / (Vyes + Vno + (2 * S));
-            decimal Pno = (Vno + S) / (Vyes + Vno + (2 * S));
+            decimal probabilityYes = (yesAmount + BaseSmoothingFactor) / (yesAmount + noAmount + (2 * BaseSmoothingFactor));
+            decimal probabilityNo = (noAmount + BaseSmoothingFactor) / (yesAmount + noAmount + (2 * BaseSmoothingFactor));
 
-            decimal M_dynamic_yes = M + Math.Max(0, Pyes - 0.50m) * 0.2m;
-            decimal M_dynamic_no = M + Math.Max(0, Pno - 0.50m) * 0.2m;
+            decimal M_dynamic_yes = BaseMargin + Math.Max(0, probabilityYes - 0.50m) * 0.2m;
+            decimal M_dynamic_no = BaseMargin + Math.Max(0, probabilityNo - 0.50m) * 0.2m;
 
             decimal discount = GetUserTokenFeeDiscount(UserID);
 
             decimal M_final_yes = M_dynamic_yes * (1 - discount);
             decimal M_final_no = M_dynamic_no * (1 - discount);
 
-            decimal YesOdd = 1 / (Pyes * (1 + M_final_yes));
-            decimal NoOdd = 1 / (Pno * (1 + M_final_no));
+            decimal YesOdd = 1 / (probabilityYes * (1 + M_final_yes));
+            decimal NoOdd = 1 / (probabilityNo * (1 + M_final_no));
 
             return (YesOdd, NoOdd);
         }
@@ -51,15 +51,15 @@ public class BetsService : IBetsService
         }
     }
 
-    private List<Post> GetPostsFromBetInterval(Bet b)
+    private List<Post> GetPostsFromBetInterval(Bet bet)
     {
         List<Post> PostsFromInterval = new List<Post>();
 
-        List<Post> AllPosts = _postsService.GetPostsByCommunityIDs(new[] { b.BetCommunity.CommunityID }, 0, int.MaxValue);
+        List<Post> AllPosts = _postsService.GetPostsByCommunityIDs(new[] { bet.BetCommunity.CommunityID }, 0, int.MaxValue);
 
         foreach (Post post in AllPosts)
         {
-            if (post.CreationTime >= b.StartingTime && post.CreationTime <= b.EndingTime)
+            if (post.CreationTime >= bet.StartingTime && post.CreationTime <= bet.EndingTime)
                 PostsFromInterval.Add(post);
         }
 
@@ -79,18 +79,18 @@ public class BetsService : IBetsService
 
             if (BetToCheck.Type == BetType.Post)
             {
-                foreach (Post p in PostsFromBetInterval)
-                    if (p.Title.Contains(Expression) || p.Description.Contains(Expression))
+                foreach (Post post in PostsFromBetInterval)
+                    if (post.Title.Contains(Expression) || post.Description.Contains(Expression))
                         return BetVote.YES;
             }
             else
             {
-                foreach (Post p in PostsFromBetInterval)
+                foreach (Post post in PostsFromBetInterval)
                 {
 
-                    List<Comment> CommentsOfPost = _commentsService.GetCommentsByPost(p.PostID, p.Owner.UserID);
-                    foreach (Comment c in CommentsOfPost)
-                        if (c.Description.Contains(Expression))
+                    List<Comment> CommentsOfPost = _commentsService.GetCommentsByPost(post.PostID, post.Owner.UserID);
+                    foreach (Comment comment in CommentsOfPost)
+                        if (comment.Description.Contains(Expression))
                             return BetVote.YES;
                 }
             }
@@ -121,7 +121,7 @@ public class BetsService : IBetsService
     {
         try
         {
-            if (didUserWinBet(UserID, BetID) == true)
+            if (HasUserWonBet(UserID, BetID) == true)
             {
                 UsersBets BetPlacedByUser = _betsRepository.GetUserBetByID(UserID, BetID);
 
@@ -368,7 +368,7 @@ public class BetsService : IBetsService
         }
     }
 
-    public Boolean didUserWinBet(int UserID, int BetID)
+    public Boolean HasUserWonBet(int UserID, int BetID)
     {
         try
         {
