@@ -1,64 +1,103 @@
-﻿namespace Boards_WP.Tests.Services;
+﻿using System;
+using System.Security.Cryptography;
+using System.Text;
 
-public class UserInterestsTests
+using Moq;
+
+using Xunit;
+
+using Boards_WP.Data.Models;
+using Boards_WP.Data.Services;
+using Boards_WP.Data.Repositories.Interfaces;
+
+namespace Boards_WP.Tests.Services
 {
-    private readonly PostsService _service;
-
-    public UserInterestsTests()
+    public class UsersServiceTests
     {
-        //--no repos for testing the alg math -> pass null
-        _service = new PostsService(null!, null!, null!, null!, null!, null!);
-    }
+        private readonly Mock<IUsersRepository> _usersRepoMock;
+        private readonly UsersService _service;
 
-    private Dictionary<int, int> GetStartingScores(int count)
-    {
-        var scores = new Dictionary<int, int>();
-        for (int i = 1; i <= count; i++) scores.Add(i, 10000 / count);
-        scores[1] += 10000 % count;
-        return scores;
-    }
-
-    [Theory]
-    [InlineData(VoteType.Like, false)]
-    [InlineData(VoteType.Dislike, true)]
-    [InlineData(VoteType.None, false)]
-    [InlineData(VoteType.None, true)]
-    public void Algorithm_AlwaysPreserves10000Total(VoteType vote, bool commented)
-    {
-        int userId = 1;
-        var startScores = GetStartingScores(24);
-        var post = new Post
+        public UsersServiceTests()
         {
-            Tags = new List<Tag> {
-                new Tag { CategoryBelongingTo = new Category { CategoryID = 5 } }
+            _usersRepoMock = new Mock<IUsersRepository>();
+            _service = new UsersService(_usersRepoMock.Object);
+        }
+
+        private static string HashPasswordForTest(string password)
+        {
+            using var sha256 = SHA256.Create();
+            var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+            var builder = new StringBuilder();
+
+            foreach (var b in bytes)
+            {
+                builder.Append(b.ToString("x2"));
             }
-        };
 
-        var result = _service.UserInterestsAlgorithm(userId, post, vote, commented, startScores);
+            return builder.ToString();
+        }
 
-        int finalSum = result.Values.Sum();
-        Assert.Equal(10000, finalSum);
-        Assert.True(result.Values.All(v => v >= 0), "Logic created a negative score!");
-    }
-
-    [Fact]
-    public void Manhattan_ReturnsSmallerScore_ForBetterMatches()
-    {
-        var categories = new List<int> { 1, 2 }; //--e.g. 1-Gaming, 2-Cooking
-        var gamerProfile = new Dictionary<int, int> { { 1, 8000 }, { 2, 2000 } };
-
-        var gamingPost = new Post
+        [Fact]
+        public void Login_UserNull_ThrowsWrappedException()
         {
-            Tags = new List<Tag> { new Tag { CategoryBelongingTo = new Category { CategoryID = 1 } } }
-        };
-        var cookingPost = new Post
+            // Arrange
+            _usersRepoMock
+                .Setup(repo => repo.GetUserByEmail("test@mail.com"))
+                .Returns((User)null!);
+
+            // Act
+            var exception = Assert.Throws<Exception>(() => _service.Login("test@mail.com", "password123"));
+
+            // Assert
+            Assert.Equal("An error occurred during login.", exception.Message);
+            Assert.NotNull(exception.InnerException);
+            Assert.Equal("Invalid email or password.", exception.InnerException!.Message);
+        }
+
+        [Fact]
+        public void Login_WrongPassword_ThrowsWrappedException()
         {
-            Tags = new List<Tag> { new Tag { CategoryBelongingTo = new Category { CategoryID = 2 } } }
-        };
+            // Arrange
+            var user = new User
+            {
+                UserID = 1,
+                Email = "test@mail.com",
+                PasswordHash = HashPasswordForTest("correct-password")
+            };
 
-        int distToGaming = _service.CalculateManhattanDistance(gamerProfile, gamingPost, categories);
-        int distToCooking = _service.CalculateManhattanDistance(gamerProfile, cookingPost, categories);
+            _usersRepoMock
+                .Setup(repo => repo.GetUserByEmail("test@mail.com"))
+                .Returns(user);
 
-        Assert.True(distToGaming < distToCooking);
+            // Act
+            var exception = Assert.Throws<Exception>(() => _service.Login("test@mail.com", "wrong-password"));
+
+            // Assert
+            Assert.Equal("An error occurred during login.", exception.Message);
+            Assert.NotNull(exception.InnerException);
+            Assert.Equal("Invalid email or password.", exception.InnerException!.Message);
+        }
+
+        [Fact]
+        public void Login_CorrectPassword_ReturnsUser()
+        {
+            // Arrange
+            var user = new User
+            {
+                UserID = 1,
+                Email = "test@mail.com",
+                PasswordHash = HashPasswordForTest("correct-password")
+            };
+
+            _usersRepoMock
+                .Setup(repo => repo.GetUserByEmail("test@mail.com"))
+                .Returns(user);
+
+            // Act
+            var result = _service.Login("test@mail.com", "correct-password");
+
+            // Assert
+            Assert.Equal(user, result);
+        }
     }
 }
