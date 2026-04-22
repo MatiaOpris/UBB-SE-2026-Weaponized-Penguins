@@ -19,7 +19,6 @@ namespace Boards_WP.ViewModels
         private readonly UserSession userSession;
         public MainViewModel MainViewModel => mainViewModel;
 
-
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(PostImageSource))]
         [NotifyPropertyChangedFor(nameof(PostImageVisibility))]
@@ -44,8 +43,6 @@ namespace Boards_WP.ViewModels
 
         private VoteType finalVote = VoteType.None;
         private bool hasCommented = false;
-
-        public MainViewModel MainViewModel => mainViewModel;
 
         public ObservableCollection<string> HardcodedChats { get; } = new ()
         {
