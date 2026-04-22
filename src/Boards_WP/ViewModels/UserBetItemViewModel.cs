@@ -1,8 +1,4 @@
-using System;
 using System.Windows.Input;
-
-using Boards_WP.Data.Models;
-using Boards_WP.Data.Services;
 
 using CommunityToolkit.Mvvm.Input;
 
@@ -50,7 +46,10 @@ namespace Boards_WP.ViewModels
 
             ClaimPayoutCommand = new RelayCommand(() =>
             {
-                if (!CanClaimPayout) return;
+                if (!CanClaimPayout)
+                {
+                    return;
+                }
 
                 betsService.ExecuteActionsByBetResult(currentUserID, BetData.BetID);
                 claimedBetIDs.Add(BetData.BetID);

@@ -1,6 +1,5 @@
 using System.Runtime.InteropServices;
 
-using Boards_WP.Data.Models;
 using Boards_WP.ViewModels;
 
 using Microsoft.UI.Xaml;
@@ -33,13 +32,16 @@ namespace Boards_WP.Views.Pages
             if (e.Parameter is Community com)
             {
                 ViewModel.OriginCommunity = com;
-            }   
+            }
         }
 
         private async void ImagePicker_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         {
-            byte[]? bytes = await PickImageBytesAsync();
-            if (bytes is null) return;
+            byte[] bytes = await PickImageBytesAsync();
+            if (bytes is null)
+            {
+                return;
+            }
 
             ViewModel.PostImage = bytes;
 
@@ -51,7 +53,7 @@ namespace Boards_WP.Views.Pages
             PictureIcon.Visibility = Microsoft.UI.Xaml.Visibility.Collapsed;
         }
 
-        private async Task<byte[]?> PickImageBytesAsync()
+        private async Task<byte[]> PickImageBytesAsync()
         {
             var picker = new FileOpenPicker
             {
@@ -66,7 +68,10 @@ namespace Boards_WP.Views.Pages
             InitializeWithWindow.Initialize(picker, GetActiveWindow());
 
             StorageFile? file = await picker.PickSingleFileAsync();
-            if (file is null) return null;
+            if (file is null)
+            {
+                return null;
+            }
 
             using var stream = await file.OpenReadAsync();
             using var ms = new MemoryStream();

@@ -1,8 +1,4 @@
-﻿using System.Collections.ObjectModel;
-
-using Boards_WP.Data.Models;
-using Boards_WP.Data.Services.Interfaces;
-using Boards_WP.Views.Pages;
+﻿using Boards_WP.Views.Pages;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -11,34 +7,46 @@ namespace Boards_WP.ViewModels
 {
     public partial class CreateCommunityViewModel : ObservableObject
     {
-        private readonly ICommunitiesService _communitiesService;
-        private readonly INavigationService _navigationService;
-        private readonly UserSession _userSession;
-        private readonly MainViewModel _mainViewModel;
+        private readonly ICommunitiesService communitiesService;
+        private readonly INavigationService navigationService;
+        private readonly UserSession userSession;
+        private readonly MainViewModel mainViewModel;
 
-        public MainViewModel MainViewModel => _mainViewModel;
-
-        [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(CreateCommunityCommand))]
-        private string _communityName = string.Empty;
+        public MainViewModel MainViewModel => mainViewModel;
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(CreateCommunityCommand))]
-        private string _communityDescription = string.Empty;
+        private string communityName = string.Empty;
 
         [ObservableProperty]
-        private byte[]? _communityPicture;
+        [NotifyCanExecuteChangedFor(nameof(CreateCommunityCommand))]
+        private string communityDescription = string.Empty;
 
-        [ObservableProperty]
-        private byte[]? _communityBanner;
+        private byte[] communityPicture = null!;
+
+        [global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public byte[] CommunityPicture
+        {
+            get => communityPicture;
+            set => SetProperty(ref communityPicture, value!);
+        }
+
+        private byte[] communityBanner = null!;
+
+        [global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public byte[] CommunityBanner
+        {
+            get => communityBanner;
+            set => SetProperty(ref communityBanner, value!);
+        }
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(HasError))]
-        private string? _errorMessage;
+        private string? errorMessage;
 
         public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
 
-        public ObservableCollection<Community> SidebarList { get; set; } = [];
+        public ObservableCollection<Community> SidebarList { get; set; } = new ObservableCollection<Community>();
 
         public CreateCommunityViewModel(
             ICommunitiesService communitiesService,
@@ -46,10 +54,10 @@ namespace Boards_WP.ViewModels
             UserSession userSession,
             MainViewModel mainViewModel)
         {
-            _communitiesService = communitiesService;
-            _navigationService = navigationService;
-            _userSession = userSession;
-            _mainViewModel = mainViewModel;
+            this.communitiesService = communitiesService;
+            this.navigationService = navigationService;
+            this.userSession = userSession;
+            this.mainViewModel = mainViewModel;
         }
 
         [RelayCommand(CanExecute = nameof(CanCreateCommunity))]
@@ -58,18 +66,18 @@ namespace Boards_WP.ViewModels
             ErrorMessage = null;
             try
             {
-                Community createdCommunity = new()
+                Community createdCommunity = new ()
                 {
                     Name = CommunityName,
                     Description = CommunityDescription,
                     Picture = CommunityPicture,
                     Banner = CommunityBanner,
-                    Admin = _userSession.CurrentUser
+                    Admin = userSession.CurrentUser
                 };
 
-                _communitiesService.AddCommunity(createdCommunity);
+                communitiesService.AddCommunity(createdCommunity);
                 SidebarList.Add(createdCommunity);
-                _navigationService.NavigateTo(typeof(CommunityView), createdCommunity);
+                navigationService.NavigateTo(typeof(CommunityView), createdCommunity);
             }
             catch (Exception ex)
             {
@@ -78,7 +86,7 @@ namespace Boards_WP.ViewModels
         }
 
         [RelayCommand]
-        private void Cancel() => _navigationService.GoBack();
+        private void Cancel() => navigationService.GoBack();
 
         private bool CanCreateCommunity() =>
             !string.IsNullOrWhiteSpace(CommunityName) &&
