@@ -130,7 +130,7 @@ namespace Boards_WP.ViewModels
             }
 
             // Properly commit changes to standard repository
-            postsService.AddPost(newPost);
+            postsService.CreatePost(newPost);
 
             // Cleanup fields after successful post
             PostTitle = string.Empty;
